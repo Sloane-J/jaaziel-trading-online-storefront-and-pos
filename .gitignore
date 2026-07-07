@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+apps/web/node_modules/
+apps/web/.env
+apps/api/node_modules/
+apps/api/.env
+
+# env files
+.env
+.env.local
+.env.*.local
+
+# build output
+dist/
+build/
+.vercel/
+
+# drizzle
+drizzle/
+
+# logs
+*.log
+pnpm-debug.log*
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# typescript
+*.tsbuildinfo
