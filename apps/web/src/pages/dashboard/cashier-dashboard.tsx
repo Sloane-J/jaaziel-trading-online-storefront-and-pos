@@ -1,3 +1,4 @@
+import { LogOutIcon } from "lucide-react";
 import { useNavigate } from "react-router";
 import { authClient } from "@/lib/auth-client";
 
@@ -12,13 +13,16 @@ export function CashierDashboard(): React.JSX.Element {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b border-border px-6 py-4">
-        <h1 className="text-lg font-semibold text-foreground">Point of Sale</h1>
+        <h1 className="font-heading text-lg font-semibold text-foreground">
+          Point of Sale
+        </h1>
         <button
           type="button"
           onClick={handleLogout}
           aria-label="Log out"
-          className="rounded-lg px-3 py-2 text-sm text-destructive hover:bg-accent"
+          className="flex items-center gap-2 rounded-full px-3 py-2 text-sm text-destructive transition-colors duration-200 ease-out hover:bg-destructive/10"
         >
+          <LogOutIcon className="size-4" aria-hidden="true" />
           Log out
         </button>
       </header>
