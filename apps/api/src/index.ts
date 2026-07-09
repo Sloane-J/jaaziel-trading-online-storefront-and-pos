@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { auth } from "./lib/auth";
 import { sessionMiddleware } from "./middleware/session";
 import categoriesRoutes from "./routes/categories";
+import productsRoutes from "./routes/products";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
 
@@ -16,5 +17,6 @@ app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/categories", categoriesRoutes);
 app.route("/uploads", uploadsRoutes);
+app.route("/products", productsRoutes);
 
 export default app;
