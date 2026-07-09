@@ -38,6 +38,14 @@ export async function fetchCategories(): Promise<Category[]> {
   return handleResponse<Category[]>(res);
 }
 
+// Admin-only: returns ALL categories (active + inactive) so deactivated ones stay visible/reactivatable.
+export async function fetchAllCategoriesAdmin(): Promise<Category[]> {
+  const res = await fetch(`${API_URL}/categories/admin/all`, {
+    credentials: "include",
+  });
+  return handleResponse<Category[]>(res);
+}
+
 export async function createCategory(
   input: CreateCategoryInput,
 ): Promise<Category> {
@@ -65,6 +73,14 @@ export async function updateCategory(
 
 export async function deactivateCategory(id: string): Promise<Category> {
   const res = await fetch(`${API_URL}/categories/${id}/deactivate`, {
+    method: "PATCH",
+    credentials: "include",
+  });
+  return handleResponse<Category>(res);
+}
+
+export async function activateCategory(id: string): Promise<Category> {
+  const res = await fetch(`${API_URL}/categories/${id}/activate`, {
     method: "PATCH",
     credentials: "include",
   });
