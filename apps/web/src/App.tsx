@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router";
 import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { AdminCategoriesPage } from "@/pages/dashboard/admin/categories";
+import { AdminProductsPage } from "@/pages/dashboard/admin/products";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
 import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
 import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
@@ -25,6 +26,14 @@ function App() {
 				element={
 					<ProtectedRoute allowedRoles={["admin"]}>
 						<AdminCategoriesPage />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/admin/products"
+				element={
+					<ProtectedRoute allowedRoles={["admin"]}>
+						<AdminProductsPage />
 					</ProtectedRoute>
 				}
 			/>
