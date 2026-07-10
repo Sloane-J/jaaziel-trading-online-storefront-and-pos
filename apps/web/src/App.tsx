@@ -10,6 +10,7 @@ import { SuperadminDashboard } from "@/pages/dashboard/superadmin-dashboard";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
+import { CategoryPage } from "@/pages/storefront/category";
 
 function App() {
 	return (
@@ -65,7 +66,8 @@ function App() {
 				}
 			/>
 			<Route path="/contact" element={<ContactPage />} />
-			<Route path="/products/:id" element={<ProductDetailPage />} />
+      <Route path="/products/:id" element={<ProductDetailPage />} />
+			<Route path="/shop/:slug" element={<CategoryPage />} />
 		</Routes>
 	);
 }
