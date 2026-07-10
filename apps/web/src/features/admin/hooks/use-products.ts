@@ -1,64 +1,64 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  fetchAllProductsAdmin,
-  createProduct,
-  updateProduct,
-  deactivateProduct,
-  activateProduct,
-  type CreateProductInput,
-  type UpdateProductInput,
+	activateProduct,
+	type CreateProductInput,
+	createProduct,
+	deactivateProduct,
+	fetchAllProductsAdmin,
+	type UpdateProductInput,
+	updateProduct,
 } from "@/lib/api/products";
 
 const PRODUCTS_KEY = ["products"] as const;
 
 export function useProducts() {
-  return useQuery({
-    queryKey: PRODUCTS_KEY,
-    queryFn: fetchAllProductsAdmin,
-  });
+	return useQuery({
+		queryKey: PRODUCTS_KEY,
+		queryFn: fetchAllProductsAdmin,
+	});
 }
 
 export function useCreateProduct() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (input: CreateProductInput) => createProduct(input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
-    },
-  });
+	return useMutation({
+		mutationFn: (input: CreateProductInput) => createProduct(input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
+		},
+	});
 }
 
 export function useUpdateProduct() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ id, input }: { id: string; input: UpdateProductInput }) =>
-      updateProduct(id, input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
-    },
-  });
+	return useMutation({
+		mutationFn: ({ id, input }: { id: string; input: UpdateProductInput }) =>
+			updateProduct(id, input),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
+		},
+	});
 }
 
 export function useDeactivateProduct() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => deactivateProduct(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
-    },
-  });
+	return useMutation({
+		mutationFn: (id: string) => deactivateProduct(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
+		},
+	});
 }
 
 export function useActivateProduct() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (id: string) => activateProduct(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
-    },
-  });
+	return useMutation({
+		mutationFn: (id: string) => activateProduct(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: PRODUCTS_KEY });
+		},
+	});
 }

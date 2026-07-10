@@ -1,5 +1,6 @@
 import { and, desc, eq, inArray } from "drizzle-orm";
 import { Hono } from "hono";
+import { z } from "zod";
 import { db } from "../db/client";
 import { categories } from "../db/schema/categories";
 import { products } from "../db/schema/products";
@@ -10,10 +11,7 @@ const storefrontRoutes = new Hono<{ Variables: Variables }>();
 
 const DEFAULT_TENANT_ID = process.env.DEFAULT_TENANT_ID;
 
-async function latestProductForCategory(
-	categoryId: string,
-	tenantId: string,
-) {
+async function latestProductForCategory(categoryId: string, tenantId: string) {
 	const [product] = await db
 		.select()
 		.from(products)
@@ -79,14 +77,8 @@ storefrontRoutes.get("/home", async (c) => {
 	}
 
 	const [primaryCategory, secondaryCategory] = await Promise.all([
-		resolveActiveCategory(
-			settings.heroPrimaryCategoryId,
-			DEFAULT_TENANT_ID,
-		),
-		resolveActiveCategory(
-			settings.heroSecondaryCategoryId,
-			DEFAULT_TENANT_ID,
-		),
+		resolveActiveCategory(settings.heroPrimaryCategoryId, DEFAULT_TENANT_ID),
+		resolveActiveCategory(settings.heroSecondaryCategoryId, DEFAULT_TENANT_ID),
 	]);
 
 	const [primaryProduct, secondaryProduct] = await Promise.all([
@@ -118,15 +110,11 @@ storefrontRoutes.get("/home", async (c) => {
 		spotlightCategoryIds
 			.map((id) => spotlightCategories.find((cat) => cat.id === id))
 			.filter(
-				(cat): cat is (typeof spotlightCategories)[number] =>
-					cat !== undefined,
+				(cat): cat is (typeof spotlightCategories)[number] => cat !== undefined,
 			)
 			.map(async (category) => ({
 				category,
-				product: await latestProductForCategory(
-					category.id,
-					DEFAULT_TENANT_ID,
-				),
+				product: await latestProductForCategory(category.id, DEFAULT_TENANT_ID),
 			})),
 	);
 
@@ -173,14 +161,98 @@ storefrontRoutes.get("/categories-preview", async (c) => {
 	const results = await Promise.all(
 		activeCategories.map(async (category) => ({
 			category,
-			product: await latestProductForCategory(
-				category.id,
-				DEFAULT_TENANT_ID,
-			),
+			product: await latestProductForCategory(category.id, DEFAULT_TENANT_ID),
 		})),
 	);
 
 	return c.json(results);
 });
+
+const updateSettingsSchema = z.object({
+	topBannerImages: z.array(z.string().url()).optional(),
+	secondBannerImages: z.array(z.string().url()).optional(),
+	heroPrimaryCategoryId: z.string().uuid().nullable().optional(),
+	heroSecondaryCategoryId: z.string().uuid().nullable().optional(),
+	spotlightCategoryIds: z
+		.array(z.string().uuid())
+		.max(3, "Choose up to 3 categories")
+		.optional(),
+});
+
+// GET /settings — admin/superadmin only. Returns the tenant's storefront settings row.
+storefrontRoutes.get(
+	"/settings",
+	requireAuth(["admin", "superadmin"]),
+	async (c) => {
+		const tenantId = c.get("tenantId");
+
+		if (!tenantId) {
+			return c.json({ error: "No tenant associated with this account" }, 400);
+		}
+
+		const [settings] = await db
+			.select()
+			.from(storefrontSettings)
+			.where(eq(storefrontSettings.tenantId, tenantId))
+			.limit(1);
+
+		if (!settings) {
+			// No row yet — return sensible defaults rather than erroring.
+			return c.json({
+				tenantId,
+				topBannerImages: [],
+				secondBannerImages: [],
+				heroPrimaryCategoryId: null,
+				heroSecondaryCategoryId: null,
+				spotlightCategoryIds: [],
+			});
+		}
+
+		return c.json(settings);
+	},
+);
+
+// PATCH /settings — admin/superadmin only. Creates or updates the tenant's storefront settings.
+storefrontRoutes.patch(
+	"/settings",
+	requireAuth(["admin", "superadmin"]),
+	async (c) => {
+		const tenantId = c.get("tenantId");
+
+		if (!tenantId) {
+			return c.json({ error: "No tenant associated with this account" }, 400);
+		}
+
+		const body = await c.req.json();
+		const parsed = updateSettingsSchema.safeParse(body);
+
+		if (!parsed.success) {
+			return c.json({ error: parsed.error.flatten() }, 400);
+		}
+
+		const [existing] = await db
+			.select()
+			.from(storefrontSettings)
+			.where(eq(storefrontSettings.tenantId, tenantId))
+			.limit(1);
+
+		if (existing) {
+			const [updated] = await db
+				.update(storefrontSettings)
+				.set({ ...parsed.data, updatedAt: new Date() })
+				.where(eq(storefrontSettings.tenantId, tenantId))
+				.returning();
+
+			return c.json(updated);
+		}
+
+		const [created] = await db
+			.insert(storefrontSettings)
+			.values({ tenantId, ...parsed.data })
+			.returning();
+
+		return c.json(created, 201);
+	},
+);
 
 export default storefrontRoutes;
