@@ -9,6 +9,7 @@ import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
 import { SuperadminDashboard } from "@/pages/dashboard/superadmin-dashboard";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
+import { ProductDetailPage } from "@/pages/storefront/product-detail";
 
 function App() {
 	return (
@@ -62,8 +63,9 @@ function App() {
 						<StaffDashboard />
 					</ProtectedRoute>
 				}
-      />
+			/>
 			<Route path="/contact" element={<ContactPage />} />
+			<Route path="/products/:id" element={<ProductDetailPage />} />
 		</Routes>
 	);
 }
