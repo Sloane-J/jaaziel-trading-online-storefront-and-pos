@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
-import { Button } from "@/components/ui/button";
+import { CategoriesMenu } from "@/features/storefront/components/categories-menu";
 import { useSession } from "@/hooks/use-session";
 
 type StorefrontLayoutProps = {
@@ -29,34 +29,55 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
 
 	return (
 		<div className="min-h-screen bg-white">
-			<header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
-				<div className="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-6 py-4">
+			<header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur transition-shadow">
+				<div className="mx-auto grid max-w-[1600px] grid-cols-[1fr_auto_1fr] items-center gap-6 px-6 py-4">
+					{/* Left: search bar */}
+					<div className="relative max-w-xs">
+						<SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+						<input
+							type="search"
+							placeholder="Search products..."
+							aria-label="Search products"
+							className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
+						/>
+					</div>
+
+					{/* Center: logo */}
 					<Link
 						to="/"
-						className="font-heading text-xl font-semibold text-foreground"
+						className="whitespace-nowrap font-heading text-xl font-semibold text-foreground"
 					>
 						Jaaziel Trading
 					</Link>
 
-					<nav
-						aria-label="Main navigation"
-						className="hidden items-center gap-6 md:flex"
-					>
-						<Link
-							to="/"
-							className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+					{/* Right: nav links + cart + dashboard/login */}
+					<div className="flex items-center justify-end gap-6">
+						<nav
+							aria-label="Main navigation"
+							className="hidden items-center gap-6 lg:flex"
 						>
-							Shop
-						</Link>
-					</nav>
+							<CategoriesMenu />
+							<Link
+								to="/delivery"
+								className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							>
+								Delivery
+							</Link>
+							<Link
+								to="/contact"
+								className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+							>
+								Contact
+							</Link>
+						</nav>
 
-					<div className="flex items-center gap-2">
-						<Button variant="ghost" size="icon" aria-label="Search">
-							<SearchIcon className="size-5" />
-						</Button>
-						<Button variant="ghost" size="icon" aria-label="Cart">
+						<Link
+							to="/cart"
+							aria-label="Cart"
+							className="text-muted-foreground transition-colors hover:text-foreground"
+						>
 							<ShoppingCartIcon className="size-5" />
-						</Button>
+						</Link>
 
 						{session && dashboardHref ? (
 							<Link to={dashboardHref} className={OUTLINE_LINK_CLASS}>
