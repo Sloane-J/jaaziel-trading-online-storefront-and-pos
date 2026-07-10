@@ -164,7 +164,7 @@ export function DashboardLayout({
 					<SidebarTrigger className="rounded-sm transition-colors duration-200 ease-out hover:bg-accent hover:text-accent-foreground" />
 				</header>
 				<main className="flex-1 p-8">
-					<div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
+					<div className="rounded-md border border-border bg-card p-6 shadow-sm">
 						{children}
 					</div>
 				</main>
