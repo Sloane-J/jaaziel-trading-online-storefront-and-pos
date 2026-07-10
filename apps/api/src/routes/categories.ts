@@ -40,7 +40,7 @@ categoriesRoutes.get("/", async (c) => {
 });
 
 // GET /admin/all — admin/superadmin only. Returns ALL categories (active + inactive) for the tenant.
-// Used by the admin categories table, so deactivated categories stay visible/reactivatable.
+// Registered BEFORE /:slug so "admin" is never matched as a slug value.
 categoriesRoutes.get("/admin/all", requireAuth(["admin", "superadmin"]), async (c) => {
   const tenantId = c.get("tenantId");
 
@@ -51,6 +51,33 @@ categoriesRoutes.get("/admin/all", requireAuth(["admin", "superadmin"]), async (
   const results = await db.select().from(categories).where(eq(categories.tenantId, tenantId));
 
   return c.json(results);
+});
+
+// GET /:slug — public. Returns a single active category by slug, for /shop/:slug pages.
+categoriesRoutes.get("/:slug", async (c) => {
+  if (!DEFAULT_TENANT_ID) {
+    return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
+  }
+
+  const slug = c.req.param("slug");
+
+  const [category] = await db
+    .select()
+    .from(categories)
+    .where(
+      and(
+        eq(categories.slug, slug),
+        eq(categories.tenantId, DEFAULT_TENANT_ID),
+        eq(categories.isActive, true),
+      ),
+    )
+    .limit(1);
+
+  if (!category) {
+    return c.json({ error: "Category not found" }, 404);
+  }
+
+  return c.json(category);
 });
 
 // POST / — admin/superadmin only. Creates a category scoped to the caller's tenant.
