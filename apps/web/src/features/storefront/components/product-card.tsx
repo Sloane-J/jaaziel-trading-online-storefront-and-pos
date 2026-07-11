@@ -1,5 +1,6 @@
-import { ShoppingBagIcon } from "lucide-react";
+import { ShoppingCartIcon } from "lucide-react";
 import { Link } from "react-router";
+import { useAddCartItem } from "@/features/storefront/hooks/use-cart";
 import type { Product } from "@/lib/api/products";
 
 function formatPrice(price: string): string {
@@ -11,7 +12,14 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+	const addCartItem = useAddCartItem();
 	const isOutOfStock = product.stock === 0;
+
+	function handleAddToCart(e: React.MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+		addCartItem.mutate({ productId: product.id });
+	}
 
 	return (
 		<Link
@@ -44,9 +52,15 @@ export function ProductCard({ product }: ProductCardProps) {
 							Out of stock
 						</span>
 					) : (
-						<span className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
-							<ShoppingBagIcon className="size-3.5" />
-						</span>
+						<button
+							type="button"
+							onClick={handleAddToCart}
+							disabled={addCartItem.isPending}
+							aria-label="Add to cart"
+							className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform hover:scale-110 active:scale-95 disabled:opacity-60"
+						>
+							<ShoppingCartIcon className="size-3.5" />
+						</button>
 					)}
 				</div>
 			</div>

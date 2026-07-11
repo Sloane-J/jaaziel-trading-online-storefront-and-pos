@@ -14,7 +14,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CartDrawer } from "@/features/storefront/components/cart-drawer";
 import { CategoriesMenu } from "@/features/storefront/components/categories-menu";
+import { useCart } from "@/features/storefront/hooks/use-cart";
 import { usePublicCategories } from "@/features/storefront/hooks/use-storefront";
 import { useSession } from "@/hooks/use-session";
 
@@ -36,6 +38,11 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
   const { data: session } = useSession();
   const { data: categories } = usePublicCategories();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { data: cartData } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
+  const itemCount =
+    cartData?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
   const role = (session?.user as { role?: string } | undefined)?.role;
   const dashboardHref = role ? ROLE_HOME[role] : undefined;
@@ -94,7 +101,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 type="search"
                 placeholder="Search products..."
                 aria-label="Search products"
-              className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
+                className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
               />
             </div>
           </div>
@@ -122,13 +129,19 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
               </Link>
             </nav>
 
-            <Link
-              to="/cart"
+            <button
+              type="button"
+              onClick={() => setCartOpen(true)}
               aria-label="Cart"
-              className="text-muted-foreground transition-colors hover:text-foreground"
+              className="relative text-muted-foreground transition-colors hover:text-foreground"
             >
               <ShoppingCartIcon className="size-5" />
-            </Link>
+              {itemCount > 0 && (
+                <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+                  {itemCount}
+                </span>
+              )}
+            </button>
 
             {session && dashboardHref ? (
               <Link
@@ -170,6 +183,8 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
           © {new Date().getFullYear()} Jaaziel Trading Enterprise
         </div>
       </footer>
+      
+      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </div>
   );
 }

@@ -1,12 +1,13 @@
-import { useParams, Link } from "react-router";
 import { ShoppingBagIcon } from "lucide-react";
+import { Link, useParams } from "react-router";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
 import { Button } from "@/components/ui/button";
-import { ProductGallery } from "@/features/storefront/components/product-gallery";
 import { ProductCard } from "@/features/storefront/components/product-card";
+import { ProductGallery } from "@/features/storefront/components/product-gallery";
+import { useAddCartItem } from "@/features/storefront/hooks/use-cart";
 import {
-  usePublicProduct,
   usePublicCategories,
+  usePublicProduct,
   usePublicProducts,
 } from "@/features/storefront/hooks/use-storefront";
 
@@ -17,6 +18,7 @@ function formatPrice(price: string): string {
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: product, isLoading, isError } = usePublicProduct(id ?? "");
+  const addCartItem = useAddCartItem();
   const { data: categories } = usePublicCategories();
   const { data: relatedProducts } = usePublicProducts(product?.categoryId);
 
@@ -24,7 +26,9 @@ export function ProductDetailPage() {
   const attributesEntries = product ? Object.entries(product.attributes) : [];
   const isOutOfStock = product?.stock === 0;
 
-  const otherProducts = (relatedProducts ?? []).filter((p) => p.id !== product?.id).slice(0, 5);
+  const otherProducts = (relatedProducts ?? [])
+    .filter((p) => p.id !== product?.id)
+    .slice(0, 5);
 
   if (isLoading) {
     return (
@@ -47,7 +51,9 @@ export function ProductDetailPage() {
     return (
       <StorefrontLayout>
         <div className="mx-auto max-w-[1600px] px-6 py-24 text-center">
-          <p className="text-lg font-medium text-foreground">Product not found</p>
+          <p className="text-lg font-medium text-foreground">
+            Product not found
+          </p>
           <p className="mt-2 text-muted-foreground">
             This product may have been removed or is no longer available.
           </p>
@@ -66,8 +72,14 @@ export function ProductDetailPage() {
     <StorefrontLayout>
       <div className="mx-auto max-w-[1600px] px-6 py-8">
         {category && (
-          <nav aria-label="Breadcrumb" className="mb-6 text-sm text-muted-foreground">
-            <Link to={`/shop/${category.slug}`} className="hover:text-foreground">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-6 text-sm text-muted-foreground"
+          >
+            <Link
+              to={`/shop/${category.slug}`}
+              className="hover:text-foreground"
+            >
               {category.name}
             </Link>
             <span className="mx-2">/</span>
@@ -94,7 +106,9 @@ export function ProductDetailPage() {
                 {formatPrice(product.price)}
               </p>
               {isOutOfStock ? (
-                <span className="text-sm font-medium text-destructive">Out of stock</span>
+                <span className="text-sm font-medium text-destructive">
+                  Out of stock
+                </span>
               ) : (
                 <span className="text-sm font-medium text-muted-foreground">
                   {product.stock} in stock
@@ -119,11 +133,16 @@ export function ProductDetailPage() {
 
             <Button
               size="lg"
-              disabled={isOutOfStock}
+              disabled={isOutOfStock || addCartItem.isPending}
+              onClick={() => addCartItem.mutate({ productId: product.id })}
               className="w-full gap-2 transition-transform active:scale-[0.98]"
             >
               <ShoppingBagIcon className="size-4" />
-              {isOutOfStock ? "Out of stock" : "Add to cart"}
+              {isOutOfStock
+                ? "Out of stock"
+                : addCartItem.isPending
+                  ? "Adding..."
+                  : "Add to cart"}
             </Button>
           </div>
         </div>
