@@ -236,4 +236,106 @@ cartRoutes.delete("/items/:id", async (c) => {
 	return c.json({ success: true });
 });
 
+const mergeCartSchema = z.object({
+  guestToken: z.string().min(1),
+});
+
+// POST /merge — called right after login. Merges a guest cart's items into the
+// logged-in customer's cart (creating one if needed), then deletes the guest cart.
+cartRoutes.post("/merge", async (c) => {
+  if (!DEFAULT_TENANT_ID) {
+    return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
+  }
+
+  const user = c.get("user");
+  if (!user) {
+    return c.json({ error: "Must be logged in to merge a cart" }, 401);
+  }
+
+  const body = await c.req.json();
+  const parsed = mergeCartSchema.safeParse(body);
+  if (!parsed.success) {
+    return c.json({ error: parsed.error.flatten() }, 400);
+  }
+
+  const [guestCart] = await db
+    .select()
+    .from(carts)
+    .where(
+      and(eq(carts.tenantId, DEFAULT_TENANT_ID), eq(carts.guestToken, parsed.data.guestToken)),
+    )
+    .limit(1);
+
+  // No guest cart to merge — just return (or create) the customer's own cart.
+  if (!guestCart) {
+    const [existingCustomerCart] = await db
+      .select()
+      .from(carts)
+      .where(and(eq(carts.tenantId, DEFAULT_TENANT_ID), eq(carts.customerId, user.id)))
+      .limit(1);
+
+    const customerCart =
+      existingCustomerCart ??
+      (
+        await db
+          .insert(carts)
+          .values({ tenantId: DEFAULT_TENANT_ID, customerId: user.id })
+          .returning()
+      )[0];
+
+    const items = await getCartWithItems(customerCart.id);
+    return c.json({ cart: customerCart, items });
+  }
+
+  const guestItems = await db.select().from(cartItems).where(eq(cartItems.cartId, guestCart.id));
+
+  const [existingCustomerCart] = await db
+    .select()
+    .from(carts)
+    .where(and(eq(carts.tenantId, DEFAULT_TENANT_ID), eq(carts.customerId, user.id)))
+    .limit(1);
+
+  const customerCart =
+    existingCustomerCart ??
+    (
+      await db
+        .insert(carts)
+        .values({ tenantId: DEFAULT_TENANT_ID, customerId: user.id })
+        .returning()
+    )[0];
+
+  for (const guestItem of guestItems) {
+    const [existingCustomerItem] = await db
+      .select()
+      .from(cartItems)
+      .where(
+        and(
+          eq(cartItems.cartId, customerCart.id),
+          eq(cartItems.productId, guestItem.productId),
+        ),
+      )
+      .limit(1);
+
+    if (existingCustomerItem) {
+      await db
+        .update(cartItems)
+        .set({ quantity: existingCustomerItem.quantity + guestItem.quantity })
+        .where(eq(cartItems.id, existingCustomerItem.id));
+    } else {
+      await db.insert(cartItems).values({
+        cartId: customerCart.id,
+        productId: guestItem.productId,
+        quantity: guestItem.quantity,
+      });
+    }
+  }
+
+  // Clean up the now-merged guest cart entirely.
+  await db.delete(cartItems).where(eq(cartItems.cartId, guestCart.id));
+  await db.delete(carts).where(eq(carts.id, guestCart.id));
+
+  const items = await getCartWithItems(customerCart.id);
+  return c.json({ cart: customerCart, items });
+});
+
 export default cartRoutes;
