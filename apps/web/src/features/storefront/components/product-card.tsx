@@ -1,4 +1,4 @@
-import { ShoppingCartIcon } from "lucide-react";
+import { ShoppingBagIcon } from "lucide-react";
 import { Link } from "react-router";
 import type { Product } from "@/lib/api/products";
 
@@ -30,11 +30,11 @@ export function ProductCard({ product }: ProductCardProps) {
 				)}
 			</div>
 
-			<div className="space-y-1 p-4">
-				<p className="truncate font-heading text-base font-semibold text-foreground">
+			<div className="space-y-1 p-3">
+				<p className="truncate font-heading text-sm font-semibold text-foreground">
 					{product.name}
 				</p>
-				<div className="flex items-center justify-between pt-1">
+				<div className="flex items-center justify-between pt-0.5">
 					<p className="text-sm font-semibold text-foreground">
 						{formatPrice(product.price)}
 					</p>
@@ -44,10 +44,8 @@ export function ProductCard({ product }: ProductCardProps) {
 							Out of stock
 						</span>
 					) : (
-						<span
-							className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105"
-						>
-							<ShoppingCartIcon className="size-4" />
+						<span className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
+							<ShoppingBagIcon className="size-3.5" />
 						</span>
 					)}
 				</div>

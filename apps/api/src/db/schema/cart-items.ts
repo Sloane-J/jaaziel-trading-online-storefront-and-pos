@@ -1,4 +1,4 @@
-import { pgTable, uuid, integer } from "drizzle-orm/pg-core";
+import { integer, pgTable, uuid } from "drizzle-orm/pg-core";
 import { carts } from "./carts";
 import { products } from "./products";
 
