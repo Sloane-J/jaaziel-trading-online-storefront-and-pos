@@ -27,7 +27,7 @@ export function CategorySection({ category, products }: CategorySectionProps) {
 				</Link>
 			</div>
 
-			<div className="grid grid-flow-col auto-cols-[42%] gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
+			<div className="grid grid-flow-col auto-cols-[42%] items-start gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:items-stretch sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
 				{products.map((product) => (
 					<ProductCard key={product.id} product={product} />
 				))}

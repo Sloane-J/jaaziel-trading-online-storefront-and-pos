@@ -56,6 +56,26 @@ export function StorefrontHomePage() {
           />
         );
       })}
+
+      {!categories && (
+        <div className="mx-auto max-w-[1600px] px-6 py-8">
+          <div className="mb-4 h-7 w-40 animate-pulse rounded bg-muted" />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square animate-pulse rounded-2xl bg-muted"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {categories && categories.length === 0 && (
+        <div className="mx-auto max-w-[1600px] px-6 py-16 text-center text-muted-foreground">
+          Products are coming soon — check back shortly.
+        </div>
+      )}
     </StorefrontLayout>
   );
 }
