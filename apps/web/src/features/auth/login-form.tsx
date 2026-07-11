@@ -1,7 +1,7 @@
+import { Eye, EyeOff } from "lucide-react";
 import type { FormEvent, JSX } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -118,7 +118,7 @@ export function LoginForm(): JSX.Element {
 					<div className="flex items-center gap-3">
 						<span
 							className="text-[11px] font-semibold uppercase tracking-[0.2em] text-white/90"
-							style={{ fontFamily: "'Playfair Display', serif"  }}
+							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Jaaziel Trading Enterprise
 						</span>
@@ -128,14 +128,14 @@ export function LoginForm(): JSX.Element {
 					<div className="max-w-xs">
 						<h2
 							className="text-4xl font-bold leading-[1.1] text-white"
-							style={{ fontFamily: "'Playfair Display', serif"  }}
+							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Run Every Sale With Confidence
 						</h2>
 						<p className="mt-4 text-sm leading-relaxed text-white/70">
-							One dashboard for your inventory, your till, and
-							your team — built to keep every transaction accurate
-							and every role in control of exactly what they need.
+							One dashboard for your inventory, your till, and your team — built
+							to keep every transaction accurate and every role in control of
+							exactly what they need.
 						</p>
 					</div>
 				</div>
@@ -150,7 +150,7 @@ export function LoginForm(): JSX.Element {
 						</span>
 						<span
 							className="text-sm font-semibold text-zinc-900"
-							style={{ fontFamily: "'Playfair Display', serif"  }}
+							style={{ fontFamily: "'Playfair Display', serif" }}
 						>
 							Jaaziel Trading Enterprise
 						</span>
@@ -175,10 +175,7 @@ export function LoginForm(): JSX.Element {
 						noValidate
 					>
 						<div className="flex flex-col gap-1.5">
-							<Label
-								htmlFor="email"
-								className="text-sm text-zinc-700"
-							>
+							<Label htmlFor="email" className="text-sm text-zinc-700">
 								Email
 							</Label>
 							<Input
@@ -194,10 +191,7 @@ export function LoginForm(): JSX.Element {
 						</div>
 
 						<div className="flex flex-col gap-1.5">
-							<Label
-								htmlFor="password"
-								className="text-sm text-zinc-700"
-							>
+							<Label htmlFor="password" className="text-sm text-zinc-700">
 								Password
 							</Label>
 							<div className="relative">
@@ -207,9 +201,7 @@ export function LoginForm(): JSX.Element {
 									autoComplete="current-password"
 									placeholder="Enter your password"
 									value={password}
-									onChange={(e) =>
-										setPassword(e.target.value)
-									}
+									onChange={(e) => setPassword(e.target.value)}
 									required
 									className="h-11 rounded-xl border-zinc-200 bg-zinc-100 px-4 pr-10 text-sm placeholder:text-zinc-400 focus-visible:ring-zinc-900"
 								/>
@@ -217,11 +209,7 @@ export function LoginForm(): JSX.Element {
 									type="button"
 									onClick={() => setShowPassword((v) => !v)}
 									className="absolute inset-y-0 right-3 flex items-center text-zinc-400 hover:text-zinc-600"
-									aria-label={
-										showPassword
-											? "Hide password"
-											: "Show password"
-									}
+									aria-label={showPassword ? "Hide password" : "Show password"}
 								>
 									{showPassword ? (
 										<EyeOff className="h-4 w-4" />
@@ -237,9 +225,7 @@ export function LoginForm(): JSX.Element {
 								<input
 									type="checkbox"
 									checked={rememberMe}
-									onChange={(e) =>
-										setRememberMe(e.target.checked)
-									}
+									onChange={(e) => setRememberMe(e.target.checked)}
 									className="h-4 w-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900"
 								/>
 								Remember me
@@ -271,10 +257,7 @@ export function LoginForm(): JSX.Element {
 						</Button>
 
 						{message && (
-							<p
-								role="alert"
-								className="text-center text-sm text-red-600"
-							>
+							<p role="alert" className="text-center text-sm text-red-600">
 								{message}
 							</p>
 						)}
