@@ -5,11 +5,11 @@ export type StorefrontSettings = {
   topBannerImages: string[];
   secondBannerImages: string[];
   heroPrimaryCategoryId: string | null;
-  heroSecondaryCategoryId: string | null;
+  heroSecondaryCategoryId: string |null;
   spotlightCategoryIds: string[];
 };
 
-export type UpdateStorefrontSettingsInput = Partial
+export type UpdateStorefrontSettingsInput = Partial<
   Omit<StorefrontSettings, "tenantId">
 >;
 
@@ -22,13 +22,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
         : `Request failed with status ${res.status}`;
     throw new Error(message);
   }
-  return res.json();
+
+  return res.json() as Promise<T>;
 }
 
 export async function fetchStorefrontSettings(): Promise<StorefrontSettings> {
   const res = await fetch(`${API_URL}/storefront/settings`, {
     credentials: "include",
   });
+
   return handleResponse<StorefrontSettings>(res);
 }
 
@@ -37,9 +39,12 @@ export async function updateStorefrontSettings(
 ): Promise<StorefrontSettings> {
   const res = await fetch(`${API_URL}/storefront/settings`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+    },
     credentials: "include",
     body: JSON.stringify(input),
   });
+
   return handleResponse<StorefrontSettings>(res);
 }

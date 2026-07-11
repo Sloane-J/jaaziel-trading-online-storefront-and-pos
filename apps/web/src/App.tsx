@@ -3,14 +3,15 @@ import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { AdminCategoriesPage } from "@/pages/dashboard/admin/categories";
 import { AdminProductsPage } from "@/pages/dashboard/admin/products";
+import { AdminStorefrontPage } from "@/pages/dashboard/admin/storefront";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
 import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
 import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
 import { SuperadminDashboard } from "@/pages/dashboard/superadmin-dashboard";
+import { CategoryPage } from "@/pages/storefront/category";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
-import { CategoryPage } from "@/pages/storefront/category";
 
 function App() {
 	return (
@@ -65,8 +66,16 @@ function App() {
 					</ProtectedRoute>
 				}
 			/>
+			<Route
+				path="/admin/storefront"
+				element={
+					<ProtectedRoute allowedRoles={["admin"]}>
+						<AdminStorefrontPage />
+					</ProtectedRoute>
+				}
+			/>
 			<Route path="/contact" element={<ContactPage />} />
-      <Route path="/products/:id" element={<ProductDetailPage />} />
+			<Route path="/products/:id" element={<ProductDetailPage />} />
 			<Route path="/shop/:slug" element={<CategoryPage />} />
 		</Routes>
 	);

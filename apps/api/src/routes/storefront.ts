@@ -5,6 +5,7 @@ import { db } from "../db/client";
 import { categories } from "../db/schema/categories";
 import { products } from "../db/schema/products";
 import { storefrontSettings } from "../db/schema/storefront-settings";
+import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
 const storefrontRoutes = new Hono<{ Variables: Variables }>();
