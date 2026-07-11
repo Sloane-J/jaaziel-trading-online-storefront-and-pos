@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { auth } from "./lib/auth";
 import { sessionMiddleware } from "./middleware/session";
+import cartRoutes from "./routes/cart";
 import categoriesRoutes from "./routes/categories";
 import productsRoutes from "./routes/products";
 import storefrontRoutes from "./routes/storefront";
@@ -20,5 +21,6 @@ app.route("/categories", categoriesRoutes);
 app.route("/uploads", uploadsRoutes);
 app.route("/products", productsRoutes);
 app.route("/storefront", storefrontRoutes);
+app.route("/cart", cartRoutes);
 
 export default app;
