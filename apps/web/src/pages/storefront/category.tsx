@@ -14,7 +14,7 @@ export function CategoryPage() {
       <StorefrontLayout>
         <div className="mx-auto max-w-[1600px] px-6 py-12">
           <div className="mb-8 h-8 w-48 animate-pulse rounded bg-muted" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-flow-col auto-cols-[42%] gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
             {Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="aspect-square animate-pulse rounded-2xl bg-muted" />
             ))}
@@ -56,13 +56,13 @@ export function CategoryPage() {
         </div>
 
         {productsLoading ? (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-flow-col auto-cols-[42%] gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
             {Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="aspect-square animate-pulse rounded-2xl bg-muted" />
             ))}
           </div>
         ) : products && products.length > 0 ? (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-flow-col auto-cols-[42%] gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

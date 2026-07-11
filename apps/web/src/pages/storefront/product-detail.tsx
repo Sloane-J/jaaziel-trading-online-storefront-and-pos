@@ -133,7 +133,7 @@ export function ProductDetailPage() {
             <h2 className="mb-4 font-heading text-xl font-semibold text-foreground">
               You might also like
             </h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid grid-flow-col auto-cols-[42%] gap-3 overflow-x-auto pb-1 [scrollbar-width:none] sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 sm:overflow-visible sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 [&::-webkit-scrollbar]:hidden">
               {otherProducts.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
