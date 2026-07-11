@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMergeGuestCart } from "@/features/storefront/hooks/use-cart";
 import { authClient } from "@/lib/auth-client";
 
 /**
@@ -19,12 +20,13 @@ import { authClient } from "@/lib/auth-client";
  * They're also linked inline below so this component works standalone.
  */
 
-const ROLE_ROUTES: Record<string, string> = {
+ const ROLE_ROUTES: Record<string, string> = {
 	superadmin: "/superadmin",
 	admin: "/admin",
 	cashier: "/pos",
 	staff: "/orders",
-};
+	customer: "/",
+ };
 
 // Abstract flowing light photo — Shubham Dhage, Unsplash (unsplash.com/license, free to use)
 const HERO_IMAGE_URL =
@@ -60,7 +62,8 @@ export function LoginForm(): JSX.Element {
 	const [rememberMe, setRememberMe] = useState<boolean>(false);
 	const [message, setMessage] = useState<string>("");
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-	const navigate = useNavigate();
+  const navigate = useNavigate();
+	const mergeGuestCart = useMergeGuestCart();
 
 	async function handleLogin(e: FormEvent<HTMLFormElement>): Promise<void> {
 		e.preventDefault();
@@ -70,22 +73,35 @@ export function LoginForm(): JSX.Element {
 			email,
 			password,
 		});
-		setIsSubmitting(false);
 
 		if (error) {
+			setIsSubmitting(false);
 			setMessage(`Error: ${error.message}`);
 			return;
 		}
+
 		const role = (data.user as { role?: string }).role;
 		const destination = role ? ROLE_ROUTES[role] : undefined;
+
 		if (!destination) {
+			setIsSubmitting(false);
 			setMessage(
 				"Your account role is not recognized. Contact an administrator.",
 			);
 			return;
 		}
+
+		// Merge any items added to the cart before logging in.
+		try {
+			await mergeGuestCart.mutateAsync();
+		} catch {
+			// Non-fatal — if the merge fails, the customer's own cart still loads normally.
+			// Don't block login over a cart-merge hiccup.
+		}
+
+		setIsSubmitting(false);
 		navigate(destination);
-	}
+}
 
 	async function handleGoogleSignIn(): Promise<void> {
 		setMessage("");
