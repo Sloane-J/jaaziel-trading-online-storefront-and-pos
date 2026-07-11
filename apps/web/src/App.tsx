@@ -14,71 +14,71 @@ import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 
 function App() {
-	return (
-		<Routes>
-			<Route path="/" element={<StorefrontHomePage />} />
-			<Route path="/login" element={<LoginForm />} />
-			<Route
-				path="/admin"
-				element={
-					<ProtectedRoute allowedRoles={["admin"]}>
-						<AdminDashboard />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/admin/categories"
-				element={
-					<ProtectedRoute allowedRoles={["admin"]}>
-						<AdminCategoriesPage />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/admin/products"
-				element={
-					<ProtectedRoute allowedRoles={["admin"]}>
-						<AdminProductsPage />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/superadmin"
-				element={
-					<ProtectedRoute allowedRoles={["superadmin"]}>
-						<SuperadminDashboard />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/pos"
-				element={
-					<ProtectedRoute allowedRoles={["cashier"]}>
-						<CashierDashboard />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/orders"
-				element={
-					<ProtectedRoute allowedRoles={["staff"]}>
-						<StaffDashboard />
-					</ProtectedRoute>
-				}
-			/>
-			<Route
-				path="/admin/storefront"
-				element={
-					<ProtectedRoute allowedRoles={["admin"]}>
-						<AdminStorefrontPage />
-					</ProtectedRoute>
-				}
-			/>
-			<Route path="/contact" element={<ContactPage />} />
-			<Route path="/products/:id" element={<ProductDetailPage />} />
-			<Route path="/shop/:slug" element={<CategoryPage />} />
-		</Routes>
-	);
+  return (
+    <Routes>
+      <Route path="/" element={<StorefrontHomePage />} />
+      <Route path="/login" element={<LoginForm />} />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/categories"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminCategoriesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/products"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminProductsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin"
+        element={
+          <ProtectedRoute allowedRoles={["superadmin"]}>
+            <SuperadminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/pos"
+        element={
+          <ProtectedRoute allowedRoles={["cashier", "admin"]}>
+            <CashierDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/orders"
+        element={
+          <ProtectedRoute allowedRoles={["staff"]}>
+            <StaffDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/storefront"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminStorefrontPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/contact" element={<ContactPage />} />
+      <Route path="/products/:id" element={<ProductDetailPage />} />
+      <Route path="/shop/:slug" element={<CategoryPage />} />
+    </Routes>
+  );
 }
 
 export default App;
