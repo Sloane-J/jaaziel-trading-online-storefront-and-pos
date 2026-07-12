@@ -34,13 +34,15 @@ export function PosInvoice({
   const total = subtotal - discount + tax;
 
   return (
-    <div className="flex h-full flex-col rounded-2xl border border-border bg-card">
+    <div className="flex h-full min-h-0 flex-col rounded-2xl border border-border bg-card">
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Order
           </p>
-          <p className="font-heading text-lg font-semibold text-foreground">{orderNumber}</p>
+          <p className="font-heading text-lg font-semibold text-foreground">
+            {orderNumber}
+          </p>
         </div>
         {items.length > 0 && (
           <button
@@ -55,16 +57,21 @@ export function PosInvoice({
         )}
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
+      <div className="flex-1 min-h-0 space-y-3 overflow-y-auto px-4 py-3">
         {items.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
             No items added yet.
           </p>
         ) : (
           items.map((item) => (
-            <div key={item.product.id} className="flex items-center justify-between gap-2">
+            <div
+              key={item.product.id}
+              className="flex items-center justify-between gap-2"
+            >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-foreground">{item.product.name}</p>
+                <p className="truncate text-sm font-medium text-foreground">
+                  {item.product.name}
+                </p>
                 <p className="text-xs text-muted-foreground">
                   {item.quantity} × {formatPrice(Number(item.product.price))}
                 </p>

@@ -2,12 +2,12 @@ import { and, eq, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { db } from "../db/client";
+import { categories } from "../db/schema/categories";
 import { orderItems } from "../db/schema/order-items";
 import { orders } from "../db/schema/orders";
 import { products } from "../db/schema/products";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
-import { categories } from "../db/schema/categories";
 
 const posRoutes = new Hono<{ Variables: Variables }>();
 
@@ -125,23 +125,40 @@ posRoutes.post(
 );
 
 // GET /catalog — cashier/admin/superadmin. Returns active categories and products for POS selection.
-posRoutes.get("/catalog", requireAuth(["cashier", "admin", "superadmin"]), async (c) => {
-  if (!DEFAULT_TENANT_ID) {
-    return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
-  }
+posRoutes.get(
+	"/catalog",
+	requireAuth(["cashier", "admin", "superadmin"]),
+	async (c) => {
+		if (!DEFAULT_TENANT_ID) {
+			return c.json(
+				{ error: "Server misconfigured: missing DEFAULT_TENANT_ID" },
+				500,
+			);
+		}
 
-  const [activeCategories, activeProducts] = await Promise.all([
-    db
-      .select()
-      .from(categories)
-      .where(and(eq(categories.tenantId, DEFAULT_TENANT_ID), eq(categories.isActive, true))),
-    db
-      .select()
-      .from(products)
-      .where(and(eq(products.tenantId, DEFAULT_TENANT_ID), eq(products.isActive, true))),
-  ]);
+		const [activeCategories, activeProducts] = await Promise.all([
+			db
+				.select()
+				.from(categories)
+				.where(
+					and(
+						eq(categories.tenantId, DEFAULT_TENANT_ID),
+						eq(categories.isActive, true),
+					),
+				),
+			db
+				.select()
+				.from(products)
+				.where(
+					and(
+						eq(products.tenantId, DEFAULT_TENANT_ID),
+						eq(products.isActive, true),
+					),
+				),
+		]);
 
-  return c.json({ categories: activeCategories, products: activeProducts });
-});
+		return c.json({ categories: activeCategories, products: activeProducts });
+	},
+);
 
 export default posRoutes;

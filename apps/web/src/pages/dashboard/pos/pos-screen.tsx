@@ -88,8 +88,8 @@ export function PosScreen(): React.JSX.Element {
 				</button>
 			</header>
 
-			<div className="grid flex-1 grid-cols-1 gap-4 overflow-hidden p-4 md:grid-cols-[1fr_360px]">
-				<div className="flex flex-col gap-4 overflow-hidden">
+			<div className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-hidden p-4 md:grid-cols-[1fr_360px]">
+				<div className="flex min-h-0 flex-col gap-4 overflow-hidden">
 					{isLoading ? (
 						<p className="text-sm text-muted-foreground">Loading catalog…</p>
 					) : (
