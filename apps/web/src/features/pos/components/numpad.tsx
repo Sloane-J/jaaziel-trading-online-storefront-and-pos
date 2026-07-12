@@ -52,7 +52,7 @@ export function Numpad({ value, onChange }: NumpadProps) {
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
             aria-label={isBack ? "Backspace" : key === "." ? "Decimal point" : `Digit ${key}`}
-            className={`flex h-16 items-center justify-center rounded-md text-2xl font-semibold transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+            className={`flex h-16 items-center justify-center rounded-full text-2xl font-semibold transition-all duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
               isBack
                 ? "border border-destructive/20 bg-destructive/10 text-destructive hover:bg-destructive/15"
                 : "border border-border bg-card text-foreground hover:bg-accent"
