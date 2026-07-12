@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, gte, inArray } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { db } from "../db/client";
@@ -160,5 +160,28 @@ posRoutes.get(
 		return c.json({ categories: activeCategories, products: activeProducts });
 	},
 );
+// GET /next-order-number — cashier/admin. Returns a display-only sequential
+// number based on how many in-store orders exist for the tenant today.
+posRoutes.get("/next-order-number", requireAuth(["cashier", "admin", "superadmin"]), async (c) => {
+  if (!DEFAULT_TENANT_ID) {
+    return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
+  }
+
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const todaysOrders = await db
+    .select({ id: orders.id })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.tenantId, DEFAULT_TENANT_ID),
+        eq(orders.channel, "in_store"),
+        gte(orders.createdAt, startOfDay),
+      ),
+    );
+
+  return c.json({ nextOrderNumber: todaysOrders.length + 1 });
+});
 
 export default posRoutes;

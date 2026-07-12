@@ -12,6 +12,7 @@ import {
 	useRemoveCartItem,
 	useUpdateCartItem,
 } from "@/features/storefront/hooks/use-cart";
+import { formatPrice } from "@/lib/format-price";
 
 type CartDrawerProps = {
 	open: boolean;

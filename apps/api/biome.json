@@ -1,0 +1,37 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
+  "files": {
+    "includes": [
+      "app/**/*.php",
+      "config/**/*.php",
+      "database/**/*.php",
+      "resources/**/*.blade.php",
+      "resources/**/*.js",
+      "resources/**/*.css",
+      "routes/**/*.php",
+      "tests/**/*.php",
+      "!**/*.generated.*"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 4,
+    "lineWidth": 120
+  },
+  "linter": {
+    "enabled": true,
+    "includes": [
+      "**",
+      "!tests/**"
+    ]
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}
