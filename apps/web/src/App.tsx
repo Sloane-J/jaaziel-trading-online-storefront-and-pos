@@ -6,6 +6,7 @@ import { AdminCategoriesPage } from "@/pages/dashboard/admin/categories";
 import { AdminOrderDetailPage } from "@/pages/dashboard/admin/order-detail";
 import { AdminOrdersPage } from "@/pages/dashboard/admin/orders";
 import { AdminProductsPage } from "@/pages/dashboard/admin/products";
+import { AdminSettingsPage } from "@/pages/dashboard/admin/settings";
 import { AdminStorefrontPage } from "@/pages/dashboard/admin/storefront";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
 //import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
@@ -102,6 +103,14 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <AdminOrderDetailPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/settings"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminSettingsPage />
           </ProtectedRoute>
         }
       />
