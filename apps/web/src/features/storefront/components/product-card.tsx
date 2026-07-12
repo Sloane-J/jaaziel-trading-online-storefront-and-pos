@@ -2,10 +2,7 @@ import { ShoppingCartIcon } from "lucide-react";
 import { Link } from "react-router";
 import { useAddCartItem } from "@/features/storefront/hooks/use-cart";
 import type { Product } from "@/lib/api/products";
-
-function formatPrice(price: string): string {
-	return `GHS ${Number(price).toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 type ProductCardProps = {
 	product: Product;

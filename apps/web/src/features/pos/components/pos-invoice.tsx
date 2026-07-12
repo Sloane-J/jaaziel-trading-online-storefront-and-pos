@@ -1,10 +1,7 @@
 import { MinusIcon, PlusIcon, Trash2Icon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PosCartItem } from "@/features/pos/hooks/use-pos-cart";
-
-function formatPrice(amount: number): string {
-  return `GHS ${amount.toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 type PosInvoiceProps = {
   orderNumber: string;

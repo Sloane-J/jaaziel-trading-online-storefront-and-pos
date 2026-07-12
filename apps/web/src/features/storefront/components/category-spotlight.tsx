@@ -1,9 +1,6 @@
 import { Link } from "react-router";
 import type { SpotlightItem } from "@/lib/api/storefront";
-
-function formatPrice(price: string): string {
-  return `GHS ${Number(price).toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 function SpotlightCard({ item }: { item: SpotlightItem }) {
   const { category, product } = item;

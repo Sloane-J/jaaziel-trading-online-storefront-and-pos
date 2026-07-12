@@ -1,9 +1,6 @@
 import { MinusIcon, PlusIcon } from "lucide-react";
 import type { Product } from "@/lib/api/products";
-
-function formatPrice(price: string): string {
-  return `GHS ${Number(price).toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 type PosProductTileProps = {
   product: Product;

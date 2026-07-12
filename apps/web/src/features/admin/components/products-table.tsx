@@ -27,6 +27,7 @@ import {
   useProducts,
 } from "@/features/admin/hooks/use-products";
 import type { Product } from "@/lib/api/products";
+import { formatPrice } from "@/lib/format-price";
 
 export function ProductsTable() {
   const { data: products, isLoading, isError, error } = useProducts();
@@ -121,7 +122,7 @@ export function ProductsTable() {
                 <TableCell className="text-muted-foreground">
                   {categoryNameById.get(product.categoryId) ?? "—"}
                 </TableCell>
-                <TableCell>GHS {Number(product.price).toFixed(2)}</TableCell>
+                <TableCell>{formatPrice(product.price)}</TableCell>
                 <TableCell>
                   {product.stock === 0 ? (
                     <span className="text-destructive">Out of stock</span>

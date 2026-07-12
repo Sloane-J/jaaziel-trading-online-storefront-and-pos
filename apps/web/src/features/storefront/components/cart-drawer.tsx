@@ -13,10 +13,6 @@ import {
 	useUpdateCartItem,
 } from "@/features/storefront/hooks/use-cart";
 
-function formatPrice(amount: number): string {
-	return `GHS ${amount.toFixed(2)}`;
-}
-
 type CartDrawerProps = {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;

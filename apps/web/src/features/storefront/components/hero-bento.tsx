@@ -1,10 +1,7 @@
 import { Link } from "react-router";
 import { ImageCarousel } from "@/features/storefront/components/image-carousel";
 import { useStorefrontHome } from "@/features/storefront/hooks/use-storefront";
-
-function formatPrice(price: string): string {
-  return `GHS ${Number(price).toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 const HERO_HEIGHT = "h-80 md:h-96";
 
