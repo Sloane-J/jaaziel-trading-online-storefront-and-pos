@@ -50,3 +50,19 @@ export async function fetchTodaySummary(): Promise<TodaySummary> {
   });
   return handleResponse<TodaySummary>(res);
 }
+
+export type OverviewStatsResponse = {
+  grossSales: number;
+  todaysSales: number;
+  yesterdaysSales: number;
+  todaysOrderCount: number;
+  yesterdaysOrderCount: number;
+  lowStockCount: number;
+};
+
+export async function fetchOverviewStats(): Promise<OverviewStatsResponse> {
+  const res = await fetch(`${API_URL}/reports/overview-stats`, {
+    credentials: "include",
+  });
+  return handleResponse<OverviewStatsResponse>(res);
+}

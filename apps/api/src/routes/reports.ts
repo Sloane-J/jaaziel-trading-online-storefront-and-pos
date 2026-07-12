@@ -113,4 +113,49 @@ reportsRoutes.get("/today-summary", requireAuth(["admin", "superadmin"]), async 
   return c.json({ revenue, orderCount: todaysOrders.length });
 });
 
+// GET /overview-stats — admin/superadmin. Gross sales (all-time), today's sales and
+// order count with day-over-day trend, and low-stock count.
+reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async (c) => {
+  const tenantId = c.get("tenantId");
+  if (!tenantId) {
+    return c.json({ error: "No tenant associated with this account" }, 400);
+  }
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const startOfYesterday = new Date(startOfToday);
+  startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+
+  const [allOrders, lowStockProducts] = await Promise.all([
+    db
+      .select()
+      .from(orders)
+      .where(and(eq(orders.tenantId, tenantId), ne(orders.status, "cancelled"))),
+    db
+      .select({ id: products.id })
+      .from(products)
+      .where(and(eq(products.tenantId, tenantId), eq(products.isActive, true), lte(products.stock, 5))),
+  ]);
+
+  const grossSales = allOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+
+  const todaysOrders = allOrders.filter((o) => new Date(o.createdAt) >= startOfToday);
+  const yesterdaysOrders = allOrders.filter(
+    (o) => new Date(o.createdAt) >= startOfYesterday && new Date(o.createdAt) < startOfToday,
+  );
+
+  const todaysSales = todaysOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+  const yesterdaysSales = yesterdaysOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+
+  return c.json({
+    grossSales,
+    todaysSales,
+    yesterdaysSales,
+    todaysOrderCount: todaysOrders.length,
+    yesterdaysOrderCount: yesterdaysOrders.length,
+    lowStockCount: lowStockProducts.length,
+  });
+});
+
 export default reportsRoutes;

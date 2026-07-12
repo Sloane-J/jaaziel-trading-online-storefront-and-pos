@@ -1,5 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchLowStock, fetchSalesByCategory, fetchTodaySummary } from "@/lib/api/reports";
+import { fetchLowStock, fetchOverviewStats, fetchSalesByCategory, fetchTodaySummary } from "@/lib/api/reports";
+
+export function useOverviewStats() {
+  return useQuery({
+    queryKey: ["admin", "reports", "overview-stats"],
+    queryFn: fetchOverviewStats,
+  });
+}
 
 export function useLowStock(threshold = 5) {
   return useQuery({
