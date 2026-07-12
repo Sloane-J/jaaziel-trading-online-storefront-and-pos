@@ -7,6 +7,7 @@ import categoriesRoutes from "./routes/categories";
 import ordersRoutes from "./routes/orders";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
+import reportsRoutes from "./routes/reports";
 import storefrontRoutes from "./routes/storefront";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
@@ -26,5 +27,8 @@ app.route("/cart", cartRoutes);
 app.route("/pos", posRoutes);
 // ...
 app.route("/orders", ordersRoutes);
+
+// ...
+app.route("/reports", reportsRoutes);
 
 export default app;
