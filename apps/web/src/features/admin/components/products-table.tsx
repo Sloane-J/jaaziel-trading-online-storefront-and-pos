@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +30,43 @@ import {
 import type { Product } from "@/lib/api/products";
 import { formatPrice } from "@/lib/format-price";
 
+type SortKey = "name" | "price" | "stock";
+type SortDirection = "asc" | "desc";
+
+function SortableHeader({
+  label,
+  sortKey,
+  currentSort,
+  currentDirection,
+  onSort,
+}: {
+  label: string;
+  sortKey: SortKey;
+  currentSort: SortKey | null;
+  currentDirection: SortDirection;
+  onSort: (key: SortKey) => void;
+}) {
+  const isActive = currentSort === sortKey;
+  const Icon = isActive
+    ? currentDirection === "asc"
+      ? ArrowUpIcon
+      : ArrowDownIcon
+    : ArrowUpDownIcon;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSort(sortKey)}
+      className={`flex items-center gap-1 text-left font-medium transition-colors hover:text-foreground ${
+        isActive ? "text-foreground" : "text-muted-foreground"
+      }`}
+    >
+      {label}
+      <Icon className="size-3.5" aria-hidden="true" />
+    </button>
+  );
+}
+
 export function ProductsTable() {
   const { data: products, isLoading, isError, error } = useProducts();
   const { data: categories } = useCategories();
@@ -37,12 +75,36 @@ export function ProductsTable() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deactivatingProduct, setDeactivatingProduct] =
-    useState<Product | null>(null);
+  const [deactivatingProduct, setDeactivatingProduct] = useState<Product | null>(null);
 
-  const categoryNameById = new Map(
-    (categories ?? []).map((c) => [c.id, c.name]),
-  );
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  const categoryNameById = new Map((categories ?? []).map((c) => [c.id, c.name]));
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDirection("asc");
+    }
+  }
+
+  const sortedProducts = (() => {
+    if (!products) return products;
+    if (!sortKey) return products;
+
+    const sorted = [...products].sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "name") comparison = a.name.localeCompare(b.name);
+      if (sortKey === "price") comparison = Number(a.price) - Number(b.price);
+      if (sortKey === "stock") comparison = a.stock - b.stock;
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+
+    return sorted;
+  })();
 
   function openCreateForm() {
     setEditingProduct(null);
@@ -71,8 +133,7 @@ export function ProductsTable() {
   if (isError) {
     return (
       <p role="alert" className="text-destructive">
-        Couldn't load products:{" "}
-        {error instanceof Error ? error.message : "Unknown error"}
+        Couldn't load products: {error instanceof Error ? error.message : "Unknown error"}
       </p>
     );
   }
@@ -84,7 +145,7 @@ export function ProductsTable() {
         <Button onClick={openCreateForm}>Add product</Button>
       </div>
 
-      {products && products.length === 0 ? (
+      {sortedProducts && sortedProducts.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
           <p className="text-muted-foreground">No products yet.</p>
           <Button variant="outline" className="mt-4" onClick={openCreateForm}>
@@ -96,16 +157,40 @@ export function ProductsTable() {
           <TableHeader>
             <TableRow>
               <TableHead>Photo</TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>
+                <SortableHeader
+                  label="Name"
+                  sortKey="name"
+                  currentSort={sortKey}
+                  currentDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </TableHead>
               <TableHead>Category</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Stock</TableHead>
+              <TableHead>
+                <SortableHeader
+                  label="Price"
+                  sortKey="price"
+                  currentSort={sortKey}
+                  currentDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </TableHead>
+              <TableHead>
+                <SortableHeader
+                  label="Stock"
+                  sortKey="stock"
+                  currentSort={sortKey}
+                  currentDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products?.map((product) => (
+            {sortedProducts?.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
                   {product.images[0] ? (
@@ -136,11 +221,7 @@ export function ProductsTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditForm(product)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => openEditForm(product)}>
                     Edit
                   </Button>
                   {product.isActive ? (
@@ -152,11 +233,7 @@ export function ProductsTable() {
                       Deactivate
                     </Button>
                   ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleActivate(product)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => handleActivate(product)}>
                       Reactivate
                     </Button>
                   )}
@@ -167,11 +244,7 @@ export function ProductsTable() {
         </Table>
       )}
 
-      <ProductFormDialog
-        open={formOpen}
-        onOpenChange={setFormOpen}
-        product={editingProduct}
-      />
+      <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} />
 
       <AlertDialog
         open={Boolean(deactivatingProduct)}
@@ -181,15 +254,13 @@ export function ProductsTable() {
           <AlertDialogHeader>
             <AlertDialogTitle>Deactivate this product?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deactivatingProduct?.name}" will be hidden from the storefront.
-              You can reactivate it later by editing it.
+              "{deactivatingProduct?.name}" will be hidden from the storefront. You can
+              reactivate it later by editing it.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeactivate}>
-              Deactivate
-            </AlertDialogAction>
+            <AlertDialogAction onClick={confirmDeactivate}>Deactivate</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
