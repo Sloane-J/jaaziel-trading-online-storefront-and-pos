@@ -1,4 +1,6 @@
-import { useState, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCallback, useState, } from "react";
+import { useNextOrderNumber } from "@/features/pos/hooks/use-pos";
 import type { Product } from "@/lib/api/products";
 
 export type PosCartItem = {
@@ -6,11 +8,16 @@ export type PosCartItem = {
   quantity: number;
 };
 
-let orderCounter = 1;
+function formatOrderNumber(n: number): string {
+  return `#${String(n).padStart(4, "0")}`;
+}
 
 export function usePosCart() {
   const [items, setItems] = useState<PosCartItem[]>([]);
-  const [orderNumber, setOrderNumber] = useState(() => `#${String(orderCounter).padStart(4, "0")}`);
+  const { data: nextOrderNumber } = useNextOrderNumber();
+  const queryClient = useQueryClient();
+
+  const orderNumber = formatOrderNumber(nextOrderNumber ?? 1);
 
   const addItem = useCallback((product: Product) => {
     setItems((prev) => {
@@ -44,9 +51,10 @@ export function usePosCart() {
 
   const clearSale = useCallback(() => {
     setItems([]);
-    orderCounter += 1;
-    setOrderNumber(`#${String(orderCounter).padStart(4, "0")}`);
-  }, []);
+    // Refetch the real count from the backend so the next order number reflects
+    // the sale that was just completed (or simply resets after a manual clear).
+    queryClient.invalidateQueries({ queryKey: ["pos", "next-order-number"] });
+  }, [queryClient]);
 
   const quantityOf = useCallback(
     (productId: string) => items.find((item) => item.product.id === productId)?.quantity ?? 0,

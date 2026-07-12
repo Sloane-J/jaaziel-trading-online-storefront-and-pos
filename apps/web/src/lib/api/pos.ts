@@ -46,3 +46,11 @@ export async function createSale(input: CreateSaleInput) {
   });
   return handleResponse<{ order: any; items: any[] }>(res);
 }
+
+export async function fetchNextOrderNumber(): Promise<number> {
+  const res = await fetch(`${API_URL}/pos/next-order-number`, {
+    credentials: "include",
+  });
+  const data = await handleResponse<{ nextOrderNumber: number }>(res);
+  return data.nextOrderNumber;
+}
