@@ -5,7 +5,7 @@ import { CategoryTiles } from "@/features/pos/components/category-tiles";
 import { PosInvoice } from "@/features/pos/components/pos-invoice";
 import { PosProductTile } from "@/features/pos/components/pos-product-tile";
 import { usePosCatalog } from "@/features/pos/hooks/use-pos";
-import { usePosCart } from "@/features/pos/hooks/use-pos-cart";
+import { usePosSale } from "@/features/pos/context/pos-sale-context";
 import { useSession } from "@/hooks/use-session";
 import { authClient } from "@/lib/auth-client";
 
@@ -19,16 +19,8 @@ export function PosScreen(): React.JSX.Element {
 		null,
 	);
 
-	const {
-		items,
-		orderNumber,
-		addItem,
-		removeItem,
-		deleteItem,
-		clearSale,
-		quantityOf,
-		subtotal,
-	} = usePosCart();
+	const { items, orderNumber, addItem, removeItem, deleteItem, clearSale, quantityOf, subtotal } =
+  usePosSale();
 
 	const productsInCategory = useMemo(() => {
 		if (!catalog || !selectedCategoryId) return [];
@@ -46,19 +38,8 @@ export function PosScreen(): React.JSX.Element {
 	}
 
 	function handlePlaceOrder() {
-		navigate("/pos/payment", {
-			state: {
-				orderNumber,
-				items: items.map((item) => ({
-					productId: item.product.id,
-					name: item.product.name,
-					quantity: item.quantity,
-					unitPrice: item.product.price,
-				})),
-				subtotal,
-			},
-		});
-	}
+  navigate("/pos/payment");
+}
 
 	return (
 		<div className="flex h-screen flex-col bg-background">

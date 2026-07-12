@@ -1,11 +1,13 @@
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
+import { PosSaleProvider } from "@/features/pos/context/pos-sale-context";
 import { AdminCategoriesPage } from "@/pages/dashboard/admin/categories";
 import { AdminProductsPage } from "@/pages/dashboard/admin/products";
 import { AdminStorefrontPage } from "@/pages/dashboard/admin/storefront";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
 import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
+import { PosPaymentPage } from "@/pages/dashboard/pos/pos-payment";
 import { PosScreen } from "@/pages/dashboard/pos/pos-screen";
 import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
 import { SuperadminDashboard } from "@/pages/dashboard/superadmin-dashboard";
@@ -13,6 +15,14 @@ import { CategoryPage } from "@/pages/storefront/category";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
+
+function PosLayout() {
+  return (
+    <PosSaleProvider>
+      <Outlet />
+    </PosSaleProvider>
+  );
+}
 
 function App() {
   return (
@@ -44,6 +54,14 @@ function App() {
         }
       />
       <Route
+        path="/admin/storefront"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminStorefrontPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/superadmin"
         element={
           <ProtectedRoute allowedRoles={["superadmin"]}>
@@ -52,26 +70,20 @@ function App() {
         }
       />
       <Route
-        path="/pos"
         element={
           <ProtectedRoute allowedRoles={["cashier", "admin"]}>
-            <PosScreen />
+            <PosLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route path="/pos" element={<PosScreen />} />
+        <Route path="/pos/payment" element={<PosPaymentPage />} />
+      </Route>
       <Route
         path="/orders"
         element={
           <ProtectedRoute allowedRoles={["staff"]}>
             <StaffDashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/storefront"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AdminStorefrontPage />
           </ProtectedRoute>
         }
       />
