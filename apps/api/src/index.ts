@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import { sessionMiddleware } from "./middleware/session";
 import cartRoutes from "./routes/cart";
 import categoriesRoutes from "./routes/categories";
+import ordersRoutes from "./routes/orders";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
 import storefrontRoutes from "./routes/storefront";
@@ -23,5 +24,7 @@ app.route("/products", productsRoutes);
 app.route("/storefront", storefrontRoutes);
 app.route("/cart", cartRoutes);
 app.route("/pos", posRoutes);
+// ...
+app.route("/orders", ordersRoutes);
 
 export default app;

@@ -3,10 +3,12 @@ import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { PosSaleProvider } from "@/features/pos/context/pos-sale-context";
 import { AdminCategoriesPage } from "@/pages/dashboard/admin/categories";
+import { AdminOrderDetailPage } from "@/pages/dashboard/admin/order-detail";
+import { AdminOrdersPage } from "@/pages/dashboard/admin/orders";
 import { AdminProductsPage } from "@/pages/dashboard/admin/products";
 import { AdminStorefrontPage } from "@/pages/dashboard/admin/storefront";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
-import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
+//import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
 import { PosPaymentPage } from "@/pages/dashboard/pos/pos-payment";
 import { PosScreen } from "@/pages/dashboard/pos/pos-screen";
 import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
@@ -84,6 +86,22 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["staff"]}>
             <StaffDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/orders"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminOrdersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/orders/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminOrderDetailPage />
           </ProtectedRoute>
         }
       />
