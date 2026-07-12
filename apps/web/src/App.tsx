@@ -6,6 +6,7 @@ import { AdminProductsPage } from "@/pages/dashboard/admin/products";
 import { AdminStorefrontPage } from "@/pages/dashboard/admin/storefront";
 import { AdminDashboard } from "@/pages/dashboard/admin-dashboard";
 import { CashierDashboard } from "@/pages/dashboard/cashier-dashboard";
+import { PosScreen } from "@/pages/dashboard/pos/pos-screen";
 import { StaffDashboard } from "@/pages/dashboard/staff-dashboard";
 import { SuperadminDashboard } from "@/pages/dashboard/superadmin-dashboard";
 import { CategoryPage } from "@/pages/storefront/category";
@@ -54,7 +55,7 @@ function App() {
         path="/pos"
         element={
           <ProtectedRoute allowedRoles={["cashier", "admin"]}>
-            <CashierDashboard />
+            <PosScreen />
           </ProtectedRoute>
         }
       />
