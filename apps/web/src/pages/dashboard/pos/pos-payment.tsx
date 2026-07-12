@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   ArrowLeftIcon,
@@ -9,8 +9,7 @@ import {
   CheckCircle2Icon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Numpad } from "@/features/pos/components/numpad";
 import { useCreateSale } from "@/features/pos/hooks/use-pos";
 import { usePosSale } from "@/features/pos/context/pos-sale-context";
 import { formatPrice } from "@/lib/format-price";
@@ -38,6 +37,29 @@ export function PosPaymentPage(): React.JSX.Element {
     change: number;
   } | null>(null);
 
+  const total = subtotal;
+  const tendered = Number(amountTendered) || 0;
+  const change = method === "cash" ? Math.max(0, tendered - total) : 0;
+  const cashInsufficient = method === "cash" && amountTendered !== "" && tendered < total;
+
+  // Let the physical keyboard drive the numpad too.
+  useEffect(() => {
+    if (method !== "cash" || completedOrder) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (/^[0-9]$/.test(e.key)) {
+        setAmountTendered((prev) => (prev.replace(".", "").length >= 9 ? prev : prev + e.key));
+      } else if (e.key === "." ) {
+        setAmountTendered((prev) => (prev.includes(".") ? prev : prev + "."));
+      } else if (e.key === "Backspace") {
+        setAmountTendered((prev) => prev.slice(0, -1));
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [method, completedOrder]);
+
   if (items.length === 0 && !completedOrder) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background text-center">
@@ -46,11 +68,6 @@ export function PosPaymentPage(): React.JSX.Element {
       </div>
     );
   }
-
-  const total = subtotal;
-  const tendered = Number(amountTendered) || 0;
-  const change = method === "cash" ? Math.max(0, tendered - total) : 0;
-  const cashInsufficient = method === "cash" && amountTendered !== "" && tendered < total;
 
   async function handleConfirm() {
     setError(null);
@@ -109,12 +126,17 @@ export function PosPaymentPage(): React.JSX.Element {
           </div>
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
             {items.map((item) => (
-              <div key={item.product.id} className="flex justify-between gap-2 text-sm">
-                <span className="min-w-0 flex-1 truncate text-foreground">
-                  {item.product.name} × {item.quantity}
-                </span>
-                <span className="shrink-0 text-foreground">
-                  {formatPrice(Number(item.product.price) * item.quantity)}
+              <div key={item.product.id} className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {item.product.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatPrice(Number(item.product.price))}
+                  </p>
+                </div>
+                <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-xs font-medium text-foreground">
+                  × {item.quantity}
                 </span>
               </div>
             ))}
@@ -127,7 +149,7 @@ export function PosPaymentPage(): React.JSX.Element {
           </div>
         </aside>
 
-        {/* Payment area — spacious, large total */}
+        {/* Payment area */}
         <main className="flex flex-1 items-center justify-center overflow-y-auto p-8">
           {completedOrder ? (
             <div className="w-full max-w-sm space-y-6">
@@ -191,68 +213,63 @@ export function PosPaymentPage(): React.JSX.Element {
               </div>
             </div>
           ) : (
-            <div className="w-full max-w-md space-y-8 text-center">
-              <div>
-                <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+            <div className="w-full max-w-md space-y-6">
+              {/* Payment method — no header, large equal cards */}
+              <div className="grid grid-cols-3 gap-3">
+                {PAYMENT_OPTIONS.map(({ value, label, icon: Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setMethod(value)}
+                    aria-pressed={method === value}
+                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border p-5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                      method === value
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-muted-foreground hover:bg-accent"
+                    }`}
+                  >
+                    <Icon className="size-7" />
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Amount due */}
+              <div className="text-center">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Amount due
                 </p>
-                <p className="mt-2 font-heading text-6xl font-bold text-foreground">
+                <p className="mt-1 font-heading text-5xl font-bold text-foreground">
                   {formatPrice(total)}
                 </p>
               </div>
 
-              <div className="space-y-2 text-left">
-                <Label>Payment method</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {PAYMENT_OPTIONS.map(({ value, label, icon: Icon }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setMethod(value)}
-                      aria-pressed={method === value}
-                      className={`flex flex-col items-center gap-1.5 rounded-xl border p-4 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                        method === value
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground hover:bg-accent"
-                      }`}
-                    >
-                      <Icon className="size-6" />
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {method === "cash" && (
-                <div className="space-y-2 text-left">
-                  <Label htmlFor="amount-tendered">Amount tendered</Label>
-                  <Input
-                    id="amount-tendered"
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    step="0.01"
-                    value={amountTendered}
-                    onChange={(e) => setAmountTendered(e.target.value)}
-                    placeholder="0.00"
-                    className="text-center text-lg"
-                  />
-                  {amountTendered !== "" && !cashInsufficient && (
-                    <p className="text-center text-sm text-muted-foreground">
-                      Change due:{" "}
-                      <span className="font-medium text-foreground">{formatPrice(change)}</span>
+                <div className="space-y-3">
+                  <div className="text-center">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Amount tendered
                     </p>
-                  )}
-                  {cashInsufficient && (
-                    <p className="text-center text-sm text-destructive">
-                      Amount is less than the total.
+                    <p className="mt-1 text-3xl font-heading font-bold text-foreground">
+                      {amountTendered ? formatPrice(Number(amountTendered)) : formatPrice(0)}
                     </p>
-                  )}
+                    {amountTendered !== "" && !cashInsufficient && (
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Change due:{" "}
+                        <span className="font-medium text-foreground">{formatPrice(change)}</span>
+                      </p>
+                    )}
+                    {cashInsufficient && (
+                      <p className="mt-1 text-sm text-destructive">Amount is less than the total.</p>
+                    )}
+                  </div>
+
+                  <Numpad value={amountTendered} onChange={setAmountTendered} />
                 </div>
               )}
 
               {error && (
-                <p role="alert" className="text-sm text-destructive">
+                <p role="alert" className="text-center text-sm text-destructive">
                   {error}
                 </p>
               )}

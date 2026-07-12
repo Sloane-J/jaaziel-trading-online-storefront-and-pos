@@ -32,6 +32,7 @@ export function PosInvoice({
 
   return (
     <div className="flex h-full min-h-0 flex-col rounded-2xl border border-border bg-card">
+      {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -54,6 +55,7 @@ export function PosInvoice({
         )}
       </div>
 
+      {/* Items List */}
       <div className="flex-1 min-h-0 space-y-3 overflow-y-auto px-4 py-3">
         {items.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">
@@ -66,11 +68,11 @@ export function PosInvoice({
               className="flex items-center justify-between gap-2"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-foreground">
+                <p className="truncate text-sm font-semibold text-foreground">
                   {item.product.name}
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {item.quantity} × {formatPrice(Number(item.product.price))}
+                  {formatPrice(Number(item.product.price))}
                 </p>
               </div>
 
@@ -83,7 +85,9 @@ export function PosInvoice({
                 >
                   <MinusIcon className="size-3" />
                 </button>
-                <span className="w-4 text-center text-sm">{item.quantity}</span>
+                <span className="w-4 text-center text-sm tabular-nums">
+                  {item.quantity}
+                </span>
                 <button
                   type="button"
                   onClick={() => onAdd(item.product.id)}
@@ -106,6 +110,7 @@ export function PosInvoice({
         )}
       </div>
 
+      {/* Totals */}
       <div className="space-y-1.5 border-t border-border px-4 py-3 text-sm">
         <div className="flex justify-between text-muted-foreground">
           <span>Subtotal</span>
@@ -125,6 +130,7 @@ export function PosInvoice({
         </div>
       </div>
 
+      {/* Place Order Button */}
       <div className="px-4 pb-4">
         <Button
           size="lg"
