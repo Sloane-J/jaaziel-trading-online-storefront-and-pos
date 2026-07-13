@@ -13,9 +13,4 @@ export default defineConfig({
 	server: {
 		cors: false,
 	},
-	test: {
-		environment: "jsdom",
-		globals: true,
-		setupFiles: "./src/test/setup.ts",
-	},
 });

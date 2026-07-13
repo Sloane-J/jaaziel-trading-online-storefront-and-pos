@@ -51,7 +51,7 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
 							variant="outline"
 							size="sm"
 							onClick={() => onOpenChange(false)}
-							asChild
+							aschild
 						>
 							<Link to="/">Continue shopping</Link>
 						</Button>

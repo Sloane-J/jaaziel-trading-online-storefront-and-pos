@@ -1,6 +1,5 @@
 import { ImagePlusIcon, Loader2Icon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { uploadProductImage } from "@/lib/api/uploads";
 
 const MAX_FILE_SIZE_MB = 5;
