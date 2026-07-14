@@ -11,7 +11,7 @@ export function HeroBento() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto grid max-w-7xl grid-cols-1 gap-4 px-6 py-8 md:grid-cols-3`}>
+      <div className={`mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-6 py-8 md:grid-cols-3`}>
         <div className={`col-span-1 animate-pulse rounded-3xl bg-muted md:col-span-2 ${HERO_HEIGHT}`} />
         <div className={`col-span-1 animate-pulse rounded-3xl bg-muted ${HERO_HEIGHT}`} />
       </div>
@@ -25,7 +25,7 @@ export function HeroBento() {
   const { primary, secondary } = data;
 
   return (
-    <div className="mx-auto grid grid-cols-1 gap-4 max-w-7xl px-6 py-8 md:grid-cols-3">
+    <div className="mx-auto grid grid-cols-1 gap-4 max-w-[1600px] px-6 py-8 md:grid-cols-3">
       {/* Primary bento — wide, frosted glass panel + prev/next controls */}
       {primary?.product ? (
         <Link
