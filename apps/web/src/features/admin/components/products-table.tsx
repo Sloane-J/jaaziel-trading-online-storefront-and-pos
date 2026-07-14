@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon } from "lucide-react";
+import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -79,6 +80,7 @@ export function ProductsTable() {
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categoryNameById = new Map((categories ?? []).map((c) => [c.id, c.name]));
 
@@ -91,11 +93,19 @@ export function ProductsTable() {
     }
   }
 
-  const sortedProducts = (() => {
+  const filteredProducts = (() => {
     if (!products) return products;
-    if (!sortKey) return products;
+    if (!searchQuery.trim()) return products;
 
-    const sorted = [...products].sort((a, b) => {
+    const q = searchQuery.trim().toLowerCase();
+    return products.filter((p) => p.name.toLowerCase().includes(q));
+  })();
+
+  const sortedProducts = (() => {
+    if (!filteredProducts) return filteredProducts;
+    if (!sortKey) return filteredProducts;
+
+    const sorted = [...filteredProducts].sort((a, b) => {
       let comparison = 0;
       if (sortKey === "name") comparison = a.name.localeCompare(b.name);
       if (sortKey === "price") comparison = Number(a.price) - Number(b.price);
@@ -140,17 +150,34 @@ export function ProductsTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-heading">Products</h2>
-        <Button onClick={openCreateForm}>Add product</Button>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 sm:w-64"
+              aria-label="Search products"
+            />
+          </div>
+          <Button onClick={openCreateForm}>Add product</Button>
+        </div>
       </div>
 
       {sortedProducts && sortedProducts.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
-          <p className="text-muted-foreground">No products yet.</p>
-          <Button variant="outline" className="mt-4" onClick={openCreateForm}>
-            Create your first product
-          </Button>
+          <p className="text-muted-foreground">
+            {searchQuery ? "No products match your search." : "No products yet."}
+          </p>
+          {!searchQuery && (
+            <Button variant="outline" className="mt-4" onClick={openCreateForm}>
+              Create your first product
+            </Button>
+          )}
         </div>
       ) : (
         <Table>

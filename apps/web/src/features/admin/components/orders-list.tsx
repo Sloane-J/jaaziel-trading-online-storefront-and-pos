@@ -1,7 +1,8 @@
-import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -11,8 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useOrders } from "@/features/admin/hooks/use-orders";
-import type { Order, OrderStatus } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/format-price";
+import type { Order, OrderStatus } from "@/lib/api/orders";
 
 const STATUS_FILTERS: { value: OrderStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -89,6 +90,7 @@ export function OrdersList() {
   const [channelFilter, setChannelFilter] = useState<string>("all");
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: orders, isLoading, isError, error } = useOrders({
     status: statusFilter === "all" ? undefined : statusFilter,
@@ -104,11 +106,19 @@ export function OrdersList() {
     }
   }
 
-  const sortedOrders = (() => {
+  const filteredOrders = (() => {
     if (!orders) return orders;
-    if (!sortKey) return orders;
+    if (!searchQuery.trim()) return orders;
 
-    const sorted = [...orders].sort((a: Order, b: Order) => {
+    const q = searchQuery.trim().toLowerCase();
+    return orders.filter((o) => o.id.toLowerCase().includes(q));
+  })();
+
+  const sortedOrders = (() => {
+    if (!filteredOrders) return filteredOrders;
+    if (!sortKey) return filteredOrders;
+
+    const sorted = [...filteredOrders].sort((a: Order, b: Order) => {
       let comparison = 0;
       if (sortKey === "totalAmount") comparison = Number(a.totalAmount) - Number(b.totalAmount);
       if (sortKey === "createdAt") {
@@ -122,7 +132,20 @@ export function OrdersList() {
 
   return (
     <div className="space-y-5">
-      <h2 className="text-2xl font-heading">Orders</h2>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-2xl font-heading">Orders</h2>
+        <div className="relative">
+          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="search"
+            placeholder="Search by order ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 sm:w-64"
+            aria-label="Search orders"
+          />
+        </div>
+      </div>
 
       <div className="space-y-3">
         <div className="flex flex-wrap gap-2">
@@ -170,7 +193,9 @@ export function OrdersList() {
         </p>
       ) : sortedOrders && sortedOrders.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-16 text-center">
-          <p className="text-muted-foreground">No orders match these filters.</p>
+          <p className="text-muted-foreground">
+            {searchQuery ? "No orders match your search." : "No orders match these filters."}
+          </p>
         </div>
       ) : (
         <Table>

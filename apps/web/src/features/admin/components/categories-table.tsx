@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon } from "lucide-react";
+import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
@@ -76,6 +77,7 @@ export function CategoriesTable() {
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [searchQuery, setSearchQuery] = useState("");
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -86,11 +88,19 @@ export function CategoriesTable() {
     }
   }
 
-  const sortedCategories = (() => {
+  const filteredCategories = (() => {
     if (!categories) return categories;
-    if (!sortKey) return categories;
+    if (!searchQuery.trim()) return categories;
 
-    const sorted = [...categories].sort((a, b) => {
+    const q = searchQuery.trim().toLowerCase();
+    return categories.filter((c) => c.name.toLowerCase().includes(q));
+  })();
+
+  const sortedCategories = (() => {
+    if (!filteredCategories) return filteredCategories;
+    if (!sortKey) return filteredCategories;
+
+    const sorted = [...filteredCategories].sort((a, b) => {
       const comparison = a[sortKey].localeCompare(b[sortKey]);
       return sortDirection === "asc" ? comparison : -comparison;
     });
@@ -132,17 +142,34 @@ export function CategoriesTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-2xl font-heading">Categories</h2>
-        <Button onClick={openCreateForm}>Add category</Button>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search categories..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 sm:w-64"
+              aria-label="Search categories"
+            />
+          </div>
+          <Button onClick={openCreateForm}>Add category</Button>
+        </div>
       </div>
 
       {sortedCategories && sortedCategories.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
-          <p className="text-muted-foreground">No categories yet.</p>
-          <Button variant="outline" className="mt-4" onClick={openCreateForm}>
-            Create your first category
-          </Button>
+          <p className="text-muted-foreground">
+            {searchQuery ? "No categories match your search." : "No categories yet."}
+          </p>
+          {!searchQuery && (
+            <Button variant="outline" className="mt-4" onClick={openCreateForm}>
+              Create your first category
+            </Button>
+          )}
         </div>
       ) : (
         <Table>
