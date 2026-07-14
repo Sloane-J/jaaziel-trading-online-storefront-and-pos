@@ -1,3 +1,4 @@
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Badge } from "@/components/ui/badge";
@@ -10,8 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useOrders } from "@/features/admin/hooks/use-orders";
+import type { Order, OrderStatus } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/format-price";
-import type { OrderStatus } from "@/lib/api/orders";
 
 const STATUS_FILTERS: { value: OrderStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -38,6 +39,9 @@ const STATUS_BADGE_VARIANT: Record<OrderStatus, "default" | "secondary" | "destr
   cancelled: "destructive",
 };
 
+type SortKey = "totalAmount" | "createdAt";
+type SortDirection = "asc" | "desc";
+
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleString("en-GH", {
     dateStyle: "medium",
@@ -45,15 +49,76 @@ function formatDate(dateString: string): string {
   });
 }
 
+function SortableHeader({
+  label,
+  sortKey,
+  currentSort,
+  currentDirection,
+  onSort,
+}: {
+  label: string;
+  sortKey: SortKey;
+  currentSort: SortKey | null;
+  currentDirection: SortDirection;
+  onSort: (key: SortKey) => void;
+}) {
+  const isActive = currentSort === sortKey;
+  const Icon = isActive
+    ? currentDirection === "asc"
+      ? ArrowUpIcon
+      : ArrowDownIcon
+    : ArrowUpDownIcon;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onSort(sortKey)}
+      className={`flex items-center gap-1 text-left font-medium transition-colors hover:text-foreground ${
+        isActive ? "text-foreground" : "text-muted-foreground"
+      }`}
+    >
+      {label}
+      <Icon className="size-3.5" aria-hidden="true" />
+    </button>
+  );
+}
+
 export function OrdersList() {
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "all">("all");
   const [channelFilter, setChannelFilter] = useState<string>("all");
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const { data: orders, isLoading, isError, error } = useOrders({
     status: statusFilter === "all" ? undefined : statusFilter,
     channel: channelFilter === "all" ? undefined : channelFilter,
   });
+
+  function handleSort(key: SortKey) {
+    if (sortKey === key) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDirection("desc");
+    }
+  }
+
+  const sortedOrders = (() => {
+    if (!orders) return orders;
+    if (!sortKey) return orders;
+
+    const sorted = [...orders].sort((a: Order, b: Order) => {
+      let comparison = 0;
+      if (sortKey === "totalAmount") comparison = Number(a.totalAmount) - Number(b.totalAmount);
+      if (sortKey === "createdAt") {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sortDirection === "asc" ? comparison : -comparison;
+    });
+
+    return sorted;
+  })();
 
   return (
     <div className="space-y-5">
@@ -103,7 +168,7 @@ export function OrdersList() {
         <p role="alert" className="text-destructive">
           Couldn't load orders: {error instanceof Error ? error.message : "Unknown error"}
         </p>
-      ) : orders && orders.length === 0 ? (
+      ) : sortedOrders && sortedOrders.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border py-16 text-center">
           <p className="text-muted-foreground">No orders match these filters.</p>
         </div>
@@ -114,12 +179,28 @@ export function OrdersList() {
               <TableHead>Order</TableHead>
               <TableHead>Channel</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead>
+                <SortableHeader
+                  label="Total"
+                  sortKey="totalAmount"
+                  currentSort={sortKey}
+                  currentDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </TableHead>
+              <TableHead>
+                <SortableHeader
+                  label="Date"
+                  sortKey="createdAt"
+                  currentSort={sortKey}
+                  currentDirection={sortDirection}
+                  onSort={handleSort}
+                />
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders?.map((order) => (
+            {sortedOrders?.map((order) => (
               <TableRow
                 key={order.id}
                 onClick={() => navigate(`/admin/orders/${order.id}`)}
