@@ -177,7 +177,7 @@ export function ProductFormDialog({
 
 					<div className="space-y-2">
 						<Label htmlFor="product-category">Category</Label>
-						<Select value={categoryId} onValueChange={setCategoryId}>
+						<Select value={categoryId} onValueChange={(value) => setCategoryId(value ?? "")}>
 							<SelectTrigger id="product-category">
 								<SelectValue placeholder="Choose a category" />
 							</SelectTrigger>

@@ -18,6 +18,7 @@ import { CategoryPage } from "@/pages/storefront/category";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
+import { SearchResultsPage } from "@/pages/storefront/search";
 
 function PosLayout() {
   return (
@@ -117,6 +118,7 @@ function App() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/products/:id" element={<ProductDetailPage />} />
       <Route path="/shop/:slug" element={<CategoryPage />} />
+      <Route path="/search" element={<SearchResultsPage />} />
     </Routes>
   );
 }

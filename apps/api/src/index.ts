@@ -8,13 +8,20 @@ import ordersRoutes from "./routes/orders";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
 import reportsRoutes from "./routes/reports";
+import sitemapRoutes from "./routes/sitemap";
 import storefrontRoutes from "./routes/storefront";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
 
 const app = new Hono<{ Variables: Variables }>();
 
-app.use("*", cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(
+  "*",
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:4173"],
+    credentials: true,
+  }),
+);
 app.use("*", sessionMiddleware); // runs on every request, populates context
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
@@ -25,10 +32,8 @@ app.route("/products", productsRoutes);
 app.route("/storefront", storefrontRoutes);
 app.route("/cart", cartRoutes);
 app.route("/pos", posRoutes);
-// ...
 app.route("/orders", ordersRoutes);
-
-// ...
 app.route("/reports", reportsRoutes);
+app.route("/", sitemapRoutes);
 
 export default app;

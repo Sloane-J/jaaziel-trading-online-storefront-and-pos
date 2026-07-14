@@ -1,5 +1,10 @@
+import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
+  SearchIcon,
+} from "lucide-react";
 import { useState } from "react";
-import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +35,7 @@ import {
 } from "@/features/admin/hooks/use-products";
 import type { Product } from "@/lib/api/products";
 import { formatPrice } from "@/lib/format-price";
+import { getImageUrl } from "@/lib/get-image-url";
 
 type SortKey = "name" | "price" | "stock";
 type SortDirection = "asc" | "desc";
@@ -76,13 +82,16 @@ export function ProductsTable() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [deactivatingProduct, setDeactivatingProduct] = useState<Product | null>(null);
+  const [deactivatingProduct, setDeactivatingProduct] =
+    useState<Product | null>(null);
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const categoryNameById = new Map((categories ?? []).map((c) => [c.id, c.name]));
+  const categoryNameById = new Map(
+    (categories ?? []).map((c) => [c.id, c.name]),
+  );
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -143,7 +152,8 @@ export function ProductsTable() {
   if (isError) {
     return (
       <p role="alert" className="text-destructive">
-        Couldn't load products: {error instanceof Error ? error.message : "Unknown error"}
+        Couldn't load products:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
       </p>
     );
   }
@@ -171,7 +181,9 @@ export function ProductsTable() {
       {sortedProducts && sortedProducts.length === 0 ? (
         <div className="rounded-lg border border-dashed p-8 text-center">
           <p className="text-muted-foreground">
-            {searchQuery ? "No products match your search." : "No products yet."}
+            {searchQuery
+              ? "No products match your search."
+              : "No products yet."}
           </p>
           {!searchQuery && (
             <Button variant="outline" className="mt-4" onClick={openCreateForm}>
@@ -222,8 +234,9 @@ export function ProductsTable() {
                 <TableCell>
                   {product.images[0] ? (
                     <img
-                      src={product.images[0]}
+                    src={getImageUrl(product.images[0], { width: 60 })}
                       alt=""
+                      loading="lazy"
                       className="size-10 rounded-md object-cover"
                     />
                   ) : (
@@ -248,7 +261,11 @@ export function ProductsTable() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="outline" size="sm" onClick={() => openEditForm(product)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openEditForm(product)}
+                  >
                     Edit
                   </Button>
                   {product.isActive ? (
@@ -260,7 +277,11 @@ export function ProductsTable() {
                       Deactivate
                     </Button>
                   ) : (
-                    <Button variant="outline" size="sm" onClick={() => handleActivate(product)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleActivate(product)}
+                    >
                       Reactivate
                     </Button>
                   )}
@@ -271,7 +292,11 @@ export function ProductsTable() {
         </Table>
       )}
 
-      <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editingProduct} />
+      <ProductFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        product={editingProduct}
+      />
 
       <AlertDialog
         open={Boolean(deactivatingProduct)}
@@ -281,13 +306,15 @@ export function ProductsTable() {
           <AlertDialogHeader>
             <AlertDialogTitle>Deactivate this product?</AlertDialogTitle>
             <AlertDialogDescription>
-              "{deactivatingProduct?.name}" will be hidden from the storefront. You can
-              reactivate it later by editing it.
+              "{deactivatingProduct?.name}" will be hidden from the storefront.
+              You can reactivate it later by editing it.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDeactivate}>Deactivate</AlertDialogAction>
+            <AlertDialogAction onClick={confirmDeactivate}>
+              Deactivate
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

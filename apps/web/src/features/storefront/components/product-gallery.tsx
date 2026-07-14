@@ -1,5 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useState } from "react";
+import { getImageUrl } from "@/lib/get-image-url";
 
 type ProductGalleryProps = {
 	images: string[];
@@ -26,8 +27,9 @@ export function ProductGallery({ images, alt }: ProductGalleryProps) {
 		<div className="space-y-3">
 			<div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-muted">
 				<img
-					src={images[index]}
-					alt={alt}
+				  src={getImageUrl(images[index], { width: 800 })}
+          alt={alt}
+					loading="lazy"
 					className="size-full object-cover transition-opacity duration-300"
 				/>
 
@@ -65,7 +67,7 @@ export function ProductGallery({ images, alt }: ProductGalleryProps) {
 								i === index ? "border-primary" : "border-transparent"
 							}`}
 						>
-							<img src={src} alt="" className="size-full object-cover" />
+							<img src={getImageUrl(src, { width: 100 })} alt="" loading="lazy" className="size-full object-cover" />
 						</button>
 					))}
 				</div>

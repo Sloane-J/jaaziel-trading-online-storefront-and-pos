@@ -1,6 +1,7 @@
 import { ImagePlusIcon, Loader2Icon, XIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { uploadProductImage } from "@/lib/api/uploads";
+import { getImageUrl } from "@/lib/get-image-url";
 
 const MAX_FILE_SIZE_MB = 5;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -67,7 +68,7 @@ export function ImageUpload({
 						key={url}
 						className="group relative size-24 overflow-hidden rounded-lg border border-border"
 					>
-						<img src={url} alt="" className="size-full object-cover" />
+					<img src={getImageUrl(url, { width: 200 })} alt="" loading="lazy" className="size-full object-cover" />
 						<button
 							type="button"
 							onClick={() => removeImage(url)}

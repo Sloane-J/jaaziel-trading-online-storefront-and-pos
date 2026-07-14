@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import type { SpotlightItem } from "@/lib/api/storefront";
 import { formatPrice } from "@/lib/format-price";
+import { getImageUrl } from "@/lib/get-image-url";
 
 function SpotlightCard({ item }: { item: SpotlightItem }) {
   const { category, product } = item;
@@ -21,8 +22,9 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
       <div className="aspect-square w-full overflow-hidden border-b border-border bg-muted">
         {product.images[0] ? (
           <img
-            src={product.images[0]}
+            src={getImageUrl(product.images[0], { width: 400 })}
             alt={product.name}
+            loading="lazy"
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
@@ -33,7 +35,9 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
         <p className="truncate font-heading text-base font-semibold text-foreground">
           {product.name}
         </p>
-        <p className="text-sm font-semibold text-foreground">{formatPrice(product.price)}</p>
+        <p className="text-sm font-semibold text-foreground">
+          {formatPrice(product.price)}
+        </p>
       </div>
     </Link>
   );
@@ -43,7 +47,9 @@ type CategorySpotlightSectionProps = {
   items: SpotlightItem[];
 };
 
-export function CategorySpotlightSection({ items }: CategorySpotlightSectionProps) {
+export function CategorySpotlightSection({
+  items,
+}: CategorySpotlightSectionProps) {
   if (items.length === 0) return null;
 
   return (
@@ -53,8 +59,8 @@ export function CategorySpotlightSection({ items }: CategorySpotlightSectionProp
           Our top picks, handpicked for you
         </h2>
         <p className="text-muted-foreground">
-          A closer look at what's new across our favorite categories, chosen to help you find
-          something you'll love.
+          A closer look at what's new across our favorite categories, chosen to
+          help you find something you'll love.
         </p>
       </div>
 

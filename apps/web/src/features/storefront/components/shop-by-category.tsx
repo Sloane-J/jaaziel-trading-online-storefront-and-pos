@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useCategoriesPreview } from "@/features/storefront/hooks/use-storefront";
+import { getImageUrl } from "@/lib/get-image-url";
 
 export function ShopByCategory() {
   const { data: previews, isLoading } = useCategoriesPreview();
@@ -35,8 +36,9 @@ export function ShopByCategory() {
             <div className="size-32 overflow-hidden rounded-full border border-border bg-muted transition-transform duration-300 group-hover:scale-105 md:size-40">
               {product?.images[0] ? (
                 <img
-                  src={product.images[0]}
+                  src={getImageUrl(product.images[0], { width: 200 })}
                   alt={category.name}
+                  loading="lazy"
                   className="size-full object-cover"
                 />
               ) : (

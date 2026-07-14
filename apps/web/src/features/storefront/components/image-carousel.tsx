@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { getImageUrl } from "@/lib/get-image-url";
 import { useEffect, useState } from "react";
 
 type ImageCarouselProps = {
@@ -46,7 +47,7 @@ export function ImageCarousel({
 			{images.map((src, i) => (
 				<img
 					key={src}
-					src={src}
+					src={getImageUrl(src, { width: 800 })}
 					alt={i === 0 ? alt : ""}
 					className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ease-out ${
 						i === index ? "opacity-100" : "opacity-0"

@@ -1,9 +1,9 @@
+import { and, eq, ilike } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
-import { eq, and } from "drizzle-orm";
 import { db } from "../db/client";
-import { products } from "../db/schema/products";
 import { categories } from "../db/schema/categories";
+import { products } from "../db/schema/products";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
@@ -48,10 +48,26 @@ productsRoutes.get("/", async (c) => {
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
   }
 
+  const categoryId = c.req.query("categoryId");
+  const q = c.req.query("q");
+
+  const conditions = [
+    eq(products.tenantId, DEFAULT_TENANT_ID),
+    eq(products.isActive, true),
+  ];
+
+  if (categoryId) {
+    conditions.push(eq(products.categoryId, categoryId));
+  }
+
+  if (q) {
+    conditions.push(ilike(products.name, `%${q}%`));
+  }
+
   const results = await db
     .select()
     .from(products)
-    .where(and(eq(products.tenantId, DEFAULT_TENANT_ID), eq(products.isActive, true)));
+    .where(and(...conditions));
 
   return c.json(results);
 });

@@ -10,6 +10,7 @@ import {
   usePublicProduct,
   usePublicProducts,
 } from "@/features/storefront/hooks/use-storefront";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 function formatPrice(price: string): string {
   return `GHS ${Number(price).toFixed(2)}`;
@@ -25,6 +26,8 @@ export function ProductDetailPage() {
   const category = categories?.find((c) => c.id === product?.categoryId);
   const attributesEntries = product ? Object.entries(product.attributes) : [];
   const isOutOfStock = product?.stock === 0;
+
+  useDocumentTitle(product?.name);
 
   const otherProducts = (relatedProducts ?? [])
     .filter((p) => p.id !== product?.id)

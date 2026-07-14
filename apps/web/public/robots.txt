@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /pos
+Disallow: /superadmin
+Disallow: /orders
+Disallow: /login
+
+Sitemap: https://jaazieltrading.com/sitemap.xml

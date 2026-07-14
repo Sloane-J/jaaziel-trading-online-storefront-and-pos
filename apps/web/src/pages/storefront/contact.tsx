@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
@@ -26,6 +27,7 @@ const SHOP_EMAIL = "jaazieltradingenterprise@gmail.com"; // replace with real em
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
 export function ContactPage() {
+  useDocumentTitle("Contact");
 	const [status, setStatus] = useState<SubmitState>("idle");
 	const [error, setError] = useState<string | null>(null);
 

@@ -1,12 +1,14 @@
-import { useParams, Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
 import { ProductCard } from "@/features/storefront/components/product-card";
 import { useCategoryBySlug, usePublicProducts } from "@/features/storefront/hooks/use-storefront";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: category, isLoading: categoryLoading, isError: categoryError } =
     useCategoryBySlug(slug ?? "");
+  useDocumentTitle(category?.name);
   const { data: products, isLoading: productsLoading } = usePublicProducts(category?.id);
 
   if (categoryLoading) {

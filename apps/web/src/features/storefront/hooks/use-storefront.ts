@@ -30,11 +30,11 @@ export function useCategoryBySlug(slug: string) {
 	});
 }
 
-export function usePublicProducts(categoryId?: string) {
-	return useQuery({
-		queryKey: ["storefront", "products", categoryId ?? "all"],
-		queryFn: () => fetchPublicProducts(categoryId),
-	});
+export function usePublicProducts(categoryId?: string, q?: string) {
+  return useQuery({
+    queryKey: ["storefront", "products", categoryId ?? "all", q ?? ""],
+    queryFn: () => fetchPublicProducts(categoryId, q),
+  });
 }
 
 export function usePublicProduct(id: string) {
@@ -50,4 +50,12 @@ export function useCategoriesPreview() {
 		queryKey: ["storefront", "categories-preview"],
 		queryFn: fetchCategoriesPreview,
 	});
+}
+
+export function useProductSearch(query: string) {
+  return useQuery({
+    queryKey: ["storefront", "search", query],
+    queryFn: () => fetchPublicProducts(undefined, query),
+    enabled: query.trim().length > 1,
+  });
 }

@@ -1,7 +1,6 @@
 import {
   LayoutDashboardIcon,
   MenuIcon,
-  SearchIcon,
   ShoppingCartIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { CartDrawer } from "@/features/storefront/components/cart-drawer";
 import { CategoriesMenu } from "@/features/storefront/components/categories-menu";
+import { SearchBar } from "@/features/storefront/components/search-bar";
 import { useCart } from "@/features/storefront/hooks/use-cart";
 import { usePublicCategories } from "@/features/storefront/hooks/use-storefront";
 import { useSession } from "@/hooks/use-session";
@@ -95,14 +95,8 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
               </SheetContent>
             </Sheet>
 
-            <div className="relative hidden max-w-xs sm:block">
-              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                placeholder="Search products..."
-                aria-label="Search products"
-                className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
-              />
+            <div className="hidden sm:block">
+              <SearchBar />
             </div>
           </div>
 
@@ -164,15 +158,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
 
         {/* Search bar, mobile only, below the main row */}
         <div className="border-t border-border px-4 py-2 sm:hidden">
-          <div className="relative">
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="search"
-              placeholder="Search products..."
-              aria-label="Search products"
-              className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
-            />
-          </div>
+          <SearchBar />
         </div>
       </header>
 
@@ -183,7 +169,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
           © {new Date().getFullYear()} Jaaziel Trading Enterprise
         </div>
       </footer>
-      
+
       <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </div>
   );

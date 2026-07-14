@@ -56,11 +56,13 @@ export async function fetchCategoryBySlug(slug: string): Promise<Category> {
   return handleResponse<Category>(res);
 }
 
-export async function fetchPublicProducts(categoryId?: string): Promise<Product[]> {
-  const url = categoryId
-    ? `${API_URL}/products?categoryId=${categoryId}`
-    : `${API_URL}/products`;
-  const res = await fetch(url);
+export async function fetchPublicProducts(categoryId?: string, q?: string): Promise<Product[]> {
+  const params = new URLSearchParams();
+  if (categoryId) params.set("categoryId", categoryId);
+  if (q) params.set("q", q);
+
+  const query = params.toString();
+  const res = await fetch(`${API_URL}/products${query ? `?${query}` : ""}`);
   return handleResponse<Product[]>(res);
 }
 
