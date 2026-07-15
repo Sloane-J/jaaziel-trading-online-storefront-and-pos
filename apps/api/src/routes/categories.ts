@@ -1,6 +1,6 @@
+import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
-import { eq, and } from "drizzle-orm";
 import { db } from "../db/client";
 import { categories } from "../db/schema/categories";
 import { requireAuth } from "../middleware/require-auth";
@@ -122,7 +122,7 @@ categoriesRoutes.post("/", requireAuth(["admin", "superadmin"]), async (c) => {
 // PATCH /:id — admin/superadmin only. Updates a category within the caller's tenant.
 categoriesRoutes.patch("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
   const tenantId = c.get("tenantId");
-  const id = c.req.param("id");
+  const id = c.req.param("id") as string;
 
   if (!tenantId) {
     return c.json({ error: "No tenant associated with this account" }, 400);
@@ -164,7 +164,7 @@ categoriesRoutes.patch(
   requireAuth(["admin", "superadmin"]),
   async (c) => {
     const tenantId = c.get("tenantId");
-    const id = c.req.param("id");
+    const id = c.req.param("id") as string;
 
     if (!tenantId) {
       return c.json({ error: "No tenant associated with this account" }, 400);
@@ -190,7 +190,7 @@ categoriesRoutes.patch(
   requireAuth(["admin", "superadmin"]),
   async (c) => {
     const tenantId = c.get("tenantId");
-    const id = c.req.param("id");
+    const id = c.req.param("id") as string;
 
     if (!tenantId) {
       return c.json({ error: "No tenant associated with this account" }, 400);

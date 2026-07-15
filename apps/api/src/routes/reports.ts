@@ -48,7 +48,7 @@ reportsRoutes.get("/sales-by-category", requireAuth(["admin", "superadmin"]), as
     const d = new Date(since);
     d.setDate(d.getDate() + i);
     const key = d.toISOString().slice(0, 10);
-    dayMap.set(key, { date: key });
+    dayMap.set(key, { date: key } as Record<string, number> & { date: string });
   }
 
   for (const row of rows) {

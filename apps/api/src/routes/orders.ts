@@ -46,7 +46,7 @@ ordersRoutes.get("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
 
-  const id = c.req.param("id");
+  const id = c.req.param("id") as string;
 
   const [order] = await db
     .select()
@@ -81,7 +81,7 @@ ordersRoutes.patch("/:id/status", requireAuth(["admin", "superadmin"]), async (c
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
 
-  const id = c.req.param("id");
+  const id = c.req.param("id") as string;
   const body = await c.req.json();
   const parsed = updateStatusSchema.safeParse(body);
 

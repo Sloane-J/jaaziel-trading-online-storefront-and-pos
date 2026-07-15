@@ -187,7 +187,7 @@ cartRoutes.patch("/items/:id", async (c) => {
 		return c.json({ error: "Could not identify your cart." }, 400);
 	}
 
-	const id = c.req.param("id");
+	const id = c.req.param("id") as string;
 	const body = await c.req.json();
 	const parsed = updateItemSchema.safeParse(body);
 
@@ -222,7 +222,7 @@ cartRoutes.delete("/items/:id", async (c) => {
 		return c.json({ error: "Could not identify your cart." }, 400);
 	}
 
-	const id = c.req.param("id");
+	const id = c.req.param("id") as string;
 
 	const [deleted] = await db
 		.delete(cartItems)

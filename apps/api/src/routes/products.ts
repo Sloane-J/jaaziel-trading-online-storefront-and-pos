@@ -93,7 +93,7 @@ productsRoutes.get("/:id", async (c) => {
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
   }
 
-  const id = c.req.param("id");
+  const id = c.req.param("id") as string;
 
   const [product] = await db
     .select()
@@ -165,7 +165,7 @@ productsRoutes.post("/", requireAuth(["admin", "superadmin"]), async (c) => {
 // PATCH /:id — admin/superadmin only.
 productsRoutes.patch("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
   const tenantId = c.get("tenantId");
-  const id = c.req.param("id");
+  const id = c.req.param("id") as string;
 
   if (!tenantId) {
     return c.json({ error: "No tenant associated with this account" }, 400);
@@ -220,7 +220,7 @@ productsRoutes.patch(
   requireAuth(["admin", "superadmin"]),
   async (c) => {
     const tenantId = c.get("tenantId");
-    const id = c.req.param("id");
+    const id = c.req.param("id") as string;
 
     if (!tenantId) {
       return c.json({ error: "No tenant associated with this account" }, 400);
@@ -246,7 +246,7 @@ productsRoutes.patch(
   requireAuth(["admin", "superadmin"]),
   async (c) => {
     const tenantId = c.get("tenantId");
-    const id = c.req.param("id");
+    const id = c.req.param("id") as string;
 
     if (!tenantId) {
       return c.json({ error: "No tenant associated with this account" }, 400);
