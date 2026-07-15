@@ -16,10 +16,18 @@ export default defineConfig({
 	build: {
 		rollupOptions: {
 			output: {
-				manualChunks: {
-					"react-vendor": ["react", "react-dom", "react-router"],
-					"query-vendor": ["@tanstack/react-query"],
-					"charts-vendor": ["recharts"],
+				manualChunks(id) {
+					if (id.includes("node_modules")) {
+						if (id.includes("react-router") || id.includes("react-dom") || id.includes("/react/")) {
+							return "react-vendor";
+						}
+						if (id.includes("@tanstack/react-query")) {
+							return "query-vendor";
+						}
+						if (id.includes("recharts")) {
+							return "charts-vendor";
+						}
+					}
 				},
 			},
 		},
