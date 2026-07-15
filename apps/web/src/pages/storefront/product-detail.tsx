@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ShoppingBagIcon } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
@@ -28,6 +29,36 @@ export function ProductDetailPage() {
   const isOutOfStock = product?.stock === 0;
 
   useDocumentTitle(product?.name);
+
+  // JSON-LD structured data for SEO — must stay above any early return
+  // to satisfy React's Rules of Hooks (hooks can't be called conditionally).
+  useEffect(() => {
+    if (!product) return;
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: product.description || undefined,
+      image: product.images[0] || undefined,
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "GHS",
+        price: product.price,
+        availability:
+          product.stock > 0
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+      },
+    });
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [product]);
 
   const otherProducts = (relatedProducts ?? [])
     .filter((p) => p.id !== product?.id)

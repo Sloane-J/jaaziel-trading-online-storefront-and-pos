@@ -52,7 +52,8 @@ async function resolveActiveCategory(
 
 // GET /storefront/home
 storefrontRoutes.get("/home", async (c) => {
-	if (!DEFAULT_TENANT_ID) {
+  if (!DEFAULT_TENANT_ID) {
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
 		return c.json(
 			{ error: "Server misconfigured: missing DEFAULT_TENANT_ID" },
 			500,
@@ -142,7 +143,8 @@ storefrontRoutes.get("/home", async (c) => {
 
 // GET /storefront/categories-preview
 storefrontRoutes.get("/categories-preview", async (c) => {
-	if (!DEFAULT_TENANT_ID) {
+  if (!DEFAULT_TENANT_ID) {
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
 		return c.json(
 			{ error: "Server misconfigured: missing DEFAULT_TENANT_ID" },
 			500,

@@ -13,4 +13,15 @@ export default defineConfig({
 	server: {
 		cors: false,
 	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					"react-vendor": ["react", "react-dom", "react-router"],
+					"query-vendor": ["@tanstack/react-query"],
+					"charts-vendor": ["recharts"],
+				},
+			},
+		},
+	},
 });

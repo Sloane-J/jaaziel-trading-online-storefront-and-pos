@@ -45,6 +45,7 @@ async function categoryExistsInTenant(
 // Used by the public storefront (customers should never see deactivated products).
 productsRoutes.get("/", async (c) => {
   if (!DEFAULT_TENANT_ID) {
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
   }
 

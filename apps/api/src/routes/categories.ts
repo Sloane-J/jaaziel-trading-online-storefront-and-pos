@@ -26,6 +26,7 @@ const updateCategorySchema = createCategorySchema.partial();
 // Used by the public storefront.
 categoriesRoutes.get("/", async (c) => {
   if (!DEFAULT_TENANT_ID) {
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
   }
 
