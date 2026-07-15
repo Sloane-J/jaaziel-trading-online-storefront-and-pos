@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-     "build": "tsc",
-     "dev": "tsx watch dev-server.ts"
-   },
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --packages=external",
+    "dev": "tsx watch dev-server.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "@types/node": "^24.13.2",
     "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
+    "esbuild": "^0.28.1",
     "tsx": "^4.23.0",
     "typescript": "~6.0.3",
     "vercel": "^54.20.1"
