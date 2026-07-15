@@ -1,5 +1,6 @@
 import { handle } from "hono/vercel";
-import app from "../dist/index";
+// @ts-expect-error - dist/index.js has no type declarations, but the JS output is correct
+import app from "../dist/index.js";
 
 export const runtime = "nodejs";
 
