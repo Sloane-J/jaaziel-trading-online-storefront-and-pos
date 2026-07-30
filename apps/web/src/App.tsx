@@ -8,6 +8,7 @@ import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 import { SearchResultsPage } from "@/pages/storefront/search";
+import { CheckoutPage } from "@/pages/storefront/checkout";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
@@ -71,6 +72,7 @@ function App() {
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/shop/:slug" element={<CategoryPage />} />
         <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
 
         <Route
           path="/admin"

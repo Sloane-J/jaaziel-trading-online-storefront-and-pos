@@ -47,5 +47,9 @@ export const orders = pgTable("orders", {
 	deliveryAddress: jsonb("delivery_address").$type<Record<string, unknown>>(),
 	totalAmount: numeric("total_amount", { precision: 10, scale: 2 }).notNull(),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
-	updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  contactName: text("contact_name"),
+  contactPhone: text("contact_phone"),
+  contactEmail: text("contact_email"),
 });
+

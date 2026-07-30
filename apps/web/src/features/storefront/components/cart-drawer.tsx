@@ -140,9 +140,13 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                 <span className="text-foreground">Total</span>
                 <span className="text-foreground">{formatPrice(total)}</span>
               </div>
-              <Button className="w-full" size="lg" disabled>
-                Checkout (coming soon)
-              </Button>
+              <Link
+                to="/checkout"
+                onClick={() => onOpenChange(false)}
+                className="flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              >
+                Checkout
+              </Link>
             </div>
           </>
         )}

@@ -112,18 +112,21 @@ checkoutRoutes.post("/", async (c) => {
   const totalAmount = itemsTotal + parsed.data.deliveryFee;
 
   const [order] = await db
-    .insert(orders)
-    .values({
-      tenantId: DEFAULT_TENANT_ID,
-      customerId: user?.id ?? null,
-      channel: "online",
-      fulfillmentType: parsed.data.fulfillmentType,
-      status: "pending",
-      paymentStatus: "unpaid",
-      deliveryAddress: parsed.data.deliveryAddress ?? null,
-      totalAmount: String(totalAmount),
-    })
-    .returning();
+      .insert(orders)
+      .values({
+        tenantId: DEFAULT_TENANT_ID,
+        customerId: user?.id ?? null,
+        channel: "online",
+        fulfillmentType: parsed.data.fulfillmentType,
+        status: "pending",
+        paymentStatus: "unpaid",
+        deliveryAddress: parsed.data.deliveryAddress ?? null,
+        contactName: parsed.data.contactName,
+        contactPhone: parsed.data.contactPhone,
+        contactEmail: parsed.data.contactEmail ?? null,
+        totalAmount: String(totalAmount),
+      })
+      .returning();
 
   const orderItemRows = items.map((item) => {
     const product = productById.get(item.productId)!;
