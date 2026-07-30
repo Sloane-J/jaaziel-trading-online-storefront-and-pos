@@ -42,5 +42,6 @@ app.route("/reports", reportsRoutes);
 app.route("/", sitemapRoutes);
 // ...
 app.route("/checkout", checkoutRoutes);
+app.route("/orders", ordersRoutes);
 
 export default app;

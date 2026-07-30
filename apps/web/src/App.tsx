@@ -4,11 +4,12 @@ import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { PosSaleProvider } from "@/features/pos/context/pos-sale-context";
 import { CategoryPage } from "@/pages/storefront/category";
+import { CheckoutPage } from "@/pages/storefront/checkout";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
+import { OrderConfirmationPage } from "@/pages/storefront/order-confirmation";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 import { SearchResultsPage } from "@/pages/storefront/search";
-import { CheckoutPage } from "@/pages/storefront/checkout";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
@@ -73,6 +74,7 @@ function App() {
         <Route path="/shop/:slug" element={<CategoryPage />} />
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
 
         <Route
           path="/admin"

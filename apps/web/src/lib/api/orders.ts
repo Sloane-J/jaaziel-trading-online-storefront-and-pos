@@ -83,3 +83,13 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
   });
   return handleResponse<Order>(res);
 }
+
+export type OrderConfirmation = {
+  order: Order;
+  items: OrderItem[];
+};
+
+export async function fetchOrderConfirmation(id: string): Promise<OrderConfirmation> {
+  const res = await fetch(`${API_URL}/orders/confirmation/${id}`);
+  return handleResponse<OrderConfirmation>(res);
+}
