@@ -4,6 +4,7 @@ import { auth } from "./lib/auth";
 import { sessionMiddleware } from "./middleware/session";
 import cartRoutes from "./routes/cart";
 import categoriesRoutes from "./routes/categories";
+import checkoutRoutes from "./routes/checkout";
 import ordersRoutes from "./routes/orders";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
@@ -18,7 +19,11 @@ const app = new Hono<{ Variables: Variables }>();
 app.use(
   "*",
   cors({
-    origin: ["http://localhost:5173", "http://localhost:4173"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      "https://jaaziel-trading-online-storefront-a.vercel.app",
+    ],
     credentials: true,
   }),
 );
@@ -35,5 +40,7 @@ app.route("/pos", posRoutes);
 app.route("/orders", ordersRoutes);
 app.route("/reports", reportsRoutes);
 app.route("/", sitemapRoutes);
+// ...
+app.route("/checkout", checkoutRoutes);
 
 export default app;

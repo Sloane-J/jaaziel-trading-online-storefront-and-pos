@@ -29,4 +29,10 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [process.env.WEB_URL ?? "http://localhost:5173"],
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+    },
+  },
 });
