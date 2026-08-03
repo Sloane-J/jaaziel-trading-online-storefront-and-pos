@@ -6,6 +6,7 @@ import cartRoutes from "./routes/cart";
 import categoriesRoutes from "./routes/categories";
 import checkoutRoutes from "./routes/checkout";
 import ordersRoutes from "./routes/orders";
+import paystackWebhookRoutes from "./routes/paystack-webhook";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
 import reportsRoutes from "./routes/reports";
@@ -43,5 +44,7 @@ app.route("/", sitemapRoutes);
 // ...
 app.route("/checkout", checkoutRoutes);
 app.route("/orders", ordersRoutes);
+
+app.route("/paystack", paystackWebhookRoutes);
 
 export default app;

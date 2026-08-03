@@ -1,8 +1,4 @@
-import {
-  LayoutDashboardIcon,
-  MenuIcon,
-  ShoppingCartIcon,
-} from "lucide-react";
+import { MenuIcon, ShoppingCartIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -18,24 +14,12 @@ import { CategoriesMenu } from "@/features/storefront/components/categories-menu
 import { SearchBar } from "@/features/storefront/components/search-bar";
 import { useCart } from "@/features/storefront/hooks/use-cart";
 import { usePublicCategories } from "@/features/storefront/hooks/use-storefront";
-import { useSession } from "@/hooks/use-session";
 
 type StorefrontLayoutProps = {
   children: ReactNode;
 };
 
-const ROLE_HOME: Record<string, string> = {
-  admin: "/admin",
-  superadmin: "/superadmin",
-  cashier: "/pos",
-  staff: "/orders",
-};
-
-const OUTLINE_LINK_CLASS =
-  "inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground";
-
 export function StorefrontLayout({ children }: StorefrontLayoutProps) {
-  const { data: session } = useSession();
   const { data: categories } = usePublicCategories();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -43,9 +27,6 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
   const [cartOpen, setCartOpen] = useState(false);
   const itemCount =
     cartData?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  const dashboardHref = role ? ROLE_HOME[role] : undefined;
 
   return (
     <div className="min-h-screen bg-white">
@@ -108,7 +89,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
             Jaaziel Trading
           </Link>
 
-          {/* Right: nav links + cart + dashboard/login */}
+          {/* Right: nav links + cart */}
           <div className="flex items-center justify-end gap-4 sm:gap-6">
             <nav
               aria-label="Main navigation"
@@ -136,23 +117,6 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 </span>
               )}
             </button>
-
-            {session && dashboardHref ? (
-              <Link
-                to={dashboardHref}
-                className={`${OUTLINE_LINK_CLASS} hidden sm:inline-flex`}
-              >
-                <LayoutDashboardIcon className="size-4" />
-                <span className="hidden md:inline">Dashboard</span>
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className={`${OUTLINE_LINK_CLASS} hidden sm:inline-flex`}
-              >
-                Log in
-              </Link>
-            )}
           </div>
         </div>
 

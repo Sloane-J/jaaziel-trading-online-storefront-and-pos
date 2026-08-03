@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useCart } from "@/features/storefront/hooks/use-cart";
 import { useCreateCheckout } from "@/features/storefront/hooks/use-checkout";
 import { formatPrice } from "@/lib/format-price";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 type FulfillmentType = "delivery" | "pickup_in_store";
 
@@ -24,15 +26,56 @@ export function CheckoutPage() {
   const [landmark, setLandmark] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  // Delivery fee estimate shown to the customer. Real fee is recalculated
+  // server-side when the order is actually created — this is just a preview.
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [deliveryFeeLoading, setDeliveryFeeLoading] = useState(false);
+  const [deliveryFeeError, setDeliveryFeeError] = useState<string | null>(null);
+
   const items = cartData?.items ?? [];
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,
     0,
   );
+  const total = subtotal + (fulfillmentType === "delivery" ? deliveryFee : 0);
 
-  // Delivery fee placeholder — real distance-based calculation comes in the next phase.
-  const deliveryFee = 0;
-  const total = subtotal + deliveryFee;
+  // When the customer types an area and pauses for a moment, ask the backend
+  // for a delivery fee estimate. Waits 800ms after typing stops so we don't
+  // call the API on every single keystroke.
+  useEffect(() => {
+    if (fulfillmentType !== "delivery" || !area.trim()) {
+      setDeliveryFee(0);
+      setDeliveryFeeError(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setDeliveryFeeLoading(true);
+      setDeliveryFeeError(null);
+      try {
+        const res = await fetch(`${API_URL}/checkout/delivery-fee`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ area }),
+        });
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          throw new Error(body?.error ?? "Could not calculate delivery fee.");
+        }
+        const data = await res.json();
+        setDeliveryFee(data.fee);
+      } catch (err) {
+        setDeliveryFeeError(
+          err instanceof Error ? err.message : "Could not calculate delivery fee.",
+        );
+        setDeliveryFee(0);
+      } finally {
+        setDeliveryFeeLoading(false);
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [area, fulfillmentType]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -58,7 +101,6 @@ export function CheckoutPage() {
           fulfillmentType === "delivery"
             ? { street, area, landmark: landmark || undefined }
             : undefined,
-        deliveryFee,
       });
 
       navigate(`/order-confirmation/${result.order.id}`);
@@ -97,7 +139,6 @@ export function CheckoutPage() {
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_380px]">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Fulfillment type */}
             <div className="space-y-3 rounded-2xl border border-border bg-card p-5">
               <h2 className="text-base font-semibold text-foreground">How would you like to get your order?</h2>
               <div className="grid grid-cols-2 gap-3">
@@ -128,7 +169,6 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            {/* Contact info */}
             <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
               <h2 className="text-base font-semibold text-foreground">Contact details</h2>
               <div className="space-y-2">
@@ -162,7 +202,6 @@ export function CheckoutPage() {
               </div>
             </div>
 
-            {/* Delivery address */}
             {fulfillmentType === "delivery" && (
               <div className="space-y-4 rounded-2xl border border-border bg-card p-5">
                 <h2 className="text-base font-semibold text-foreground">Delivery address</h2>
@@ -183,6 +222,17 @@ export function CheckoutPage() {
                     onChange={(e) => setArea(e.target.value)}
                     placeholder="e.g. Madina"
                   />
+                  {deliveryFeeLoading && (
+                    <p className="text-sm text-muted-foreground">Calculating delivery fee…</p>
+                  )}
+                  {deliveryFeeError && (
+                    <p className="text-sm text-destructive">{deliveryFeeError}</p>
+                  )}
+                  {!deliveryFeeLoading && !deliveryFeeError && deliveryFee > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Delivery fee: <span className="font-medium text-foreground">{formatPrice(deliveryFee)}</span>
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="landmark">Landmark (optional)</Label>
@@ -212,7 +262,6 @@ export function CheckoutPage() {
             </Button>
           </form>
 
-          {/* Order summary */}
           <div className="h-fit space-y-3 rounded-2xl border border-border bg-card p-5">
             <h2 className="text-base font-semibold text-foreground">Order summary</h2>
             <div className="space-y-2 text-sm">
