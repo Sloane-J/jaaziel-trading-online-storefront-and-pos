@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/features/storefront/hooks/use-cart";
 import { useCreateCheckout } from "@/features/storefront/hooks/use-checkout";
+import { initiatePayment } from "@/lib/api/checkout";
 import { formatPrice } from "@/lib/format-price";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -92,21 +93,22 @@ export function CheckoutPage() {
     }
 
     try {
-      const result = await createCheckout.mutateAsync({
-        fulfillmentType,
-        contactName,
-        contactPhone,
-        contactEmail: contactEmail || undefined,
-        deliveryAddress:
-          fulfillmentType === "delivery"
-            ? { street, area, landmark: landmark || undefined }
-            : undefined,
-      });
-
-      navigate(`/order-confirmation/${result.order.id}`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not place your order. Please try again.");
-    }
+          const result = await createCheckout.mutateAsync({
+            fulfillmentType,
+            contactName,
+            contactPhone,
+            contactEmail: contactEmail || undefined,
+            deliveryAddress:
+              fulfillmentType === "delivery"
+                ? { street, area, landmark: landmark || undefined }
+                : undefined,
+          });
+    
+          const payment = await initiatePayment(result.order.id);
+          window.location.href = payment.authorizationUrl;
+        } catch (err) {
+          setError(err instanceof Error ? err.message : "Could not place your order. Please try again.");
+        }
   }
 
   if (cartLoading) {

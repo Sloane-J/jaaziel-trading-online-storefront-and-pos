@@ -41,3 +41,12 @@ export async function createCheckout(input: CheckoutInput) {
   });
   return handleResponse<{ order: any; items: any[] }>(res);
 }
+
+export async function initiatePayment(orderId: string) {
+  const res = await fetch(`${API_URL}/checkout/pay`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ orderId }),
+  });
+  return handleResponse<{ authorizationUrl: string; reference: string; totalCharged: number }>(res);
+}
