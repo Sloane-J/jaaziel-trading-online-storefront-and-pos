@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, lt } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { db } from "../db/client";
@@ -9,6 +9,27 @@ import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
 const ordersRoutes = new Hono<{ Variables: Variables }>();
+
+const PENDING_ORDER_TTL_HOURS = 24;
+
+// Auto-cancels stale pending/unpaid orders whenever the orders list is checked,
+// so unpaid reservations don't lock inventory indefinitely.
+async function expireStalePendingOrders(tenantId: string) {
+  const cutoff = new Date();
+  cutoff.setHours(cutoff.getHours() - PENDING_ORDER_TTL_HOURS);
+
+  await db
+    .update(orders)
+    .set({ status: "cancelled", updatedAt: new Date() })
+    .where(
+      and(
+        eq(orders.tenantId, tenantId),
+        eq(orders.status, "pending"),
+        eq(orders.paymentStatus, "unpaid"),
+        lt(orders.createdAt, cutoff),
+      ),
+    );
+}
 
 const updateStatusSchema = z.object({
   status: z.enum(orderStatusEnum.enumValues),
@@ -21,6 +42,9 @@ ordersRoutes.get("/", requireAuth(["admin", "superadmin"]), async (c) => {
   if (!tenantId) {
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
+
+  await expireStalePendingOrders(tenantId);
+  
   const status = c.req.query("status");
   const channel = c.req.query("channel");
   const conditions = [eq(orders.tenantId, tenantId)];
