@@ -1,6 +1,5 @@
 import { MinusIcon, PlusIcon, ShoppingBagIcon, TrashIcon } from "lucide-react";
 import { Link } from "react-router";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,

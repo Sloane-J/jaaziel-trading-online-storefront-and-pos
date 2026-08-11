@@ -14,7 +14,6 @@ export type CheckoutInput = {
     latitude?: number;
     longitude?: number;
   };
-  deliveryFee: number;
 };
 
 async function handleResponse<T>(res: Response): Promise<T> {
