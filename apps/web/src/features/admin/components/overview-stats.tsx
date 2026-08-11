@@ -1,4 +1,5 @@
-import { PackageXIcon, ReceiptTextIcon, ShoppingBagIcon, TrendingDownIcon, TrendingUpIcon, WalletIcon } from "lucide-react";
+
+import { PackageXIcon, ReceiptTextIcon, ShoppingBagIcon, TrendingDownIcon, TrendingUpIcon, TruckIcon, WalletIcon } from "lucide-react";
 import { Link } from "react-router";
 import { useOverviewStats } from "@/features/admin/hooks/use-reports";
 import { formatPrice } from "@/lib/format-price";
@@ -99,6 +100,13 @@ export function OverviewStats() {
         value={formatPrice(data?.grossSales ?? 0)}
         loading={isLoading}
       />
+
+      <StatCard
+              icon={TruckIcon}
+              label="Delivery revenue"
+              value={formatPrice(data?.deliveryRevenue ?? 0)}
+              loading={isLoading}
+            />
 
       <StatCard
         icon={ReceiptTextIcon}

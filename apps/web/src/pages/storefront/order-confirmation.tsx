@@ -12,7 +12,7 @@ export function OrderConfirmationPage() {
     return (
       <StorefrontLayout>
         <div className="mx-auto max-w-[1600px] px-6 py-24 text-center">
-          <p className="text-muted-foreground">Loading your order…</p>
+          <p className="text-muted-foreground">Loading your oerder…</p>
         </div>
       </StorefrontLayout>
     );

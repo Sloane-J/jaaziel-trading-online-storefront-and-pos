@@ -22,6 +22,7 @@ export type Order = {
   paymentMethod: string | null;
   paymentReference: string | null;
   deliveryAddress: Record<string, unknown> | null;
+  deliveryFee: string;
   totalAmount: string;
   createdAt: string;
   updatedAt: string;

@@ -22,7 +22,7 @@ import type { OrderStatus } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/format-price";
 import { adminNavItems } from "@/pages/dashboard/admin/nav-items";
 
-const STATUS_BADGE_VARIANT: Record<
+const STATUS_BADGE_VARIANT: Record
   OrderStatus,
   "default" | "secondary" | "destructive"
 > = {
@@ -35,7 +35,7 @@ const STATUS_BADGE_VARIANT: Record<
 };
 
 // The next logical status for an online order moving through fulfillment.
-const NEXT_STATUS: Partial<
+const NEXT_STATUS: Partial
   Record<OrderStatus, { status: OrderStatus; label: string }>
 > = {
   pending: { status: "confirmed", label: "Confirm order" },
@@ -140,6 +140,14 @@ export function AdminOrderDetailPage(): React.JSX.Element {
                     </div>
                   ))}
                 </div>
+                {data.order.fulfillmentType === "delivery" && (
+                  <div className="mt-3 flex justify-between border-t border-border pt-3 text-sm">
+                    <span className="text-muted-foreground">Delivery fee</span>
+                    <span className="text-foreground">
+                      {formatPrice(data.order.deliveryFee)}
+                    </span>
+                  </div>
+                )}
                 <div className="mt-4 flex justify-between border-t border-border pt-3 text-base font-semibold text-foreground">
                   <span>Total</span>
                   <span>{formatPrice(data.order.totalAmount)}</span>
@@ -165,6 +173,14 @@ export function AdminOrderDetailPage(): React.JSX.Element {
                         : "Delivery"}
                     </span>
                   </div>
+                  {data.order.fulfillmentType === "delivery" && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Delivery fee</span>
+                      <span className="text-foreground">
+                        {formatPrice(data.order.deliveryFee)}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Payment</span>
                     <span className="text-foreground capitalize">

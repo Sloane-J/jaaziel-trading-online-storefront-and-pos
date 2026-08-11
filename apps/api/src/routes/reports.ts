@@ -139,6 +139,8 @@ reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async
   ]);
 
   const grossSales = allOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
+  
+  const deliveryRevenue = allOrders.reduce((sum, o) => sum + Number(o.deliveryFee), 0);
 
   const todaysOrders = allOrders.filter((o) => new Date(o.createdAt) >= startOfToday);
   const yesterdaysOrders = allOrders.filter(
@@ -149,12 +151,13 @@ reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async
   const yesterdaysSales = yesterdaysOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
 
   return c.json({
-    grossSales,
-    todaysSales,
-    yesterdaysSales,
-    todaysOrderCount: todaysOrders.length,
-    yesterdaysOrderCount: yesterdaysOrders.length,
-    lowStockCount: lowStockProducts.length,
+      grossSales,
+      deliveryRevenue,
+      todaysSales,
+      yesterdaysSales,
+      todaysOrderCount,
+      yesterdaysOrderCount,
+      lowStockCount: lowStockProducts.length,
   });
 });
 

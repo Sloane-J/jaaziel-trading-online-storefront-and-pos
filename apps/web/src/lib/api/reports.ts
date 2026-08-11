@@ -53,6 +53,7 @@ export async function fetchTodaySummary(): Promise<TodaySummary> {
 
 export type OverviewStatsResponse = {
   grossSales: number;
+  deliveryRevenue: number;
   todaysSales: number;
   yesterdaysSales: number;
   todaysOrderCount: number;
