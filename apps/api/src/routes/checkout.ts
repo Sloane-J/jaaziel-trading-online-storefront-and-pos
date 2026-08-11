@@ -35,6 +35,17 @@ const checkoutSchema = z.object({
     .optional(),
 });
 
+function generateOrderCode(): string {
+  // 6-character alphanumeric code, easy to read/say aloud — excludes visually
+  // ambiguous characters like 0/O and 1/I.
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
 // POST / — creates an order from the current visitor's cart (guest or logged-in).
 // Order is created as pending/unpaid; payment happens in a separate step.
 checkoutRoutes.post("/", async (c) => {
@@ -138,7 +149,7 @@ checkoutRoutes.post("/", async (c) => {
 
   const totalAmount = itemsTotal + actualDeliveryFee;
   
-    const [order] = await db
+  const [order] = await db
       .insert(orders)
       .values({
         tenantId: DEFAULT_TENANT_ID,
@@ -153,6 +164,7 @@ checkoutRoutes.post("/", async (c) => {
         contactEmail: parsed.data.contactEmail ?? null,
         totalAmount: String(totalAmount),
         deliveryFee: String(actualDeliveryFee),
+        orderCode: generateOrderCode(),
       })
       .returning();
 

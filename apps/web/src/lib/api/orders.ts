@@ -23,6 +23,7 @@ export type Order = {
   paymentReference: string | null;
   deliveryAddress: Record<string, unknown> | null;
   deliveryFee: string;
+  orderCode: string;
   totalAmount: string;
   createdAt: string;
   updatedAt: string;
@@ -88,6 +89,7 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
 export type OrderConfirmation = {
   order: Order;
   items: OrderItem[];
+  orderCode: string;
 };
 
 export async function fetchOrderConfirmation(id: string): Promise<OrderConfirmation> {

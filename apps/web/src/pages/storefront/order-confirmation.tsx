@@ -45,9 +45,22 @@ export function OrderConfirmationPage() {
             Thanks for your order!
           </h1>
           <p className="text-muted-foreground">
-            Order confirmation:{" "}
-            <span className="font-mono text-sm text-foreground">{order.id.slice(0, 8)}</span>
-          </p>
+                      Order confirmation:{" "}
+                      <span className="font-mono text-sm text-foreground">{order.id.slice(0, 8)}</span>
+                    </p>
+                    {order.fulfillmentType === "pickup_in_store" && (
+                      <div className="mt-3 rounded-xl border-2 border-dashed border-primary/40 bg-primary/5 px-6 py-4 text-center">
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                          Pickup code
+                        </p>
+                        <p className="font-heading text-3xl font-bold tracking-widest text-primary">
+                          {order.orderCode}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Show this code when you collect your order
+                        </p>
+                      </div>
+                    )}
         </div>
 
         <div className="space-y-4 rounded-2xl border border-border bg-card p-6">
