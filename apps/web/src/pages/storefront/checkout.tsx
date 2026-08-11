@@ -33,6 +33,8 @@ export function CheckoutPage() {
   const [deliveryFeeLoading, setDeliveryFeeLoading] = useState(false);
   const [deliveryFeeError, setDeliveryFeeError] = useState<string | null>(null);
 
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
   const items = cartData?.items ?? [];
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,
@@ -93,40 +95,53 @@ export function CheckoutPage() {
     }
 
     try {
-          const result = await createCheckout.mutateAsync({
-            fulfillmentType,
-            contactName,
-            contactPhone,
-            contactEmail: contactEmail || undefined,
-            deliveryAddress:
-              fulfillmentType === "delivery"
-                ? { street, area, landmark: landmark || undefined }
-                : undefined,
-          });
+      setIsRedirecting(true);
+      const result = await createCheckout.mutateAsync({
+        fulfillmentType,
+        contactName,
+        contactPhone,
+        contactEmail: contactEmail || undefined,
+        deliveryAddress:
+          fulfillmentType === "delivery"
+            ? { street, area, landmark: landmark || undefined }
+            : undefined,
+      });
     
-          const payment = await initiatePayment(result.order.id);
-          window.location.href = payment.authorizationUrl;
-        } catch (err) {
-          setError(err instanceof Error ? err.message : "Could not place your order. Please try again.");
-        }
+      const payment = await initiatePayment(result.order.id);
+      window.location.href = payment.authorizationUrl;
+    } catch (err) {
+      setIsRedirecting(false);
+      setError(err instanceof Error ? err.message : "Could not place your order. Please try again.");
+    }
   }
 
   if (cartLoading) {
-    return (
-      <StorefrontLayout>
-        <div className="mx-auto max-w-[1600px] px-6 py-12">
-          <p className="text-muted-foreground">Loading your cart…</p>
-        </div>
-      </StorefrontLayout>
-    );
-  }
-
-  if (items.length === 0) {
+      return (
+        <StorefrontLayout>
+          <div className="mx-auto max-w-[1600px] px-6 py-12">
+            <p className="text-muted-foreground">Loading your cart…</p>
+          </div>
+        </StorefrontLayout>
+      );
+    }
+  
+    if (isRedirecting) {
+      return (
+        <StorefrontLayout>
+          <div className="mx-auto max-w-[1600px] px-6 py-24 text-center">
+            <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <p className="text-muted-foreground">Redirecting you to payment…</p>
+          </div>
+        </StorefrontLayout>
+      );
+    }
+  
+    if (items.length === 0) {
     return (
       <StorefrontLayout>
         <div className="mx-auto max-w-[1600px] px-6 py-24 text-center">
           <p className="text-lg font-medium text-foreground">Your cart is empty</p>
-          <Button className="mt-6" onClick={() => navigate("/")}>
+          <Button className="mt-6" onClick={() => navigate("/")}>a
             Continue shopping
           </Button>
         </div>
@@ -258,9 +273,9 @@ export function CheckoutPage() {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={createCheckout.isPending}
+              disabled={createCheckout.isPending || isRedirecting}
             >
-              {createCheckout.isPending ? "Placing order..." : "Place order"}
+              {isRedirecting ? "Redirecting to payment..." : createCheckout.isPending ? "Placing order..." : "Place order"}
             </Button>
           </form>
 
@@ -287,6 +302,11 @@ export function CheckoutPage() {
                 <span>Delivery fee</span>
                 <span>{fulfillmentType === "delivery" ? formatPrice(deliveryFee) : "—"}</span>
               </div>
+              {fulfillmentType === "delivery" && deliveryFee > 0 && (
+                <p className="text-xs text-muted-foreground/80">
+                  Covers courier pickup and delivery to your address.
+                </p>
+              )}
               <div className="flex justify-between border-t border-border pt-2 text-base font-semibold text-foreground">
                 <span>Total</span>
                 <span>{formatPrice(total)}</span>

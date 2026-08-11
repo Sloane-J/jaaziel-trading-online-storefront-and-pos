@@ -137,23 +137,24 @@ checkoutRoutes.post("/", async (c) => {
   }
 
   const totalAmount = itemsTotal + actualDeliveryFee;
-
-  const [order] = await db
-    .insert(orders)
-    .values({
-      tenantId: DEFAULT_TENANT_ID,
-      customerId: user?.id ?? null,
-      channel: "online",
-      fulfillmentType: parsed.data.fulfillmentType,
-      status: "pending",
-      paymentStatus: "unpaid",
-      deliveryAddress: parsed.data.deliveryAddress ?? null,
-      contactName: parsed.data.contactName,
-      contactPhone: parsed.data.contactPhone,
-      contactEmail: parsed.data.contactEmail ?? null,
-      totalAmount: String(totalAmount),
-    })
-    .returning();
+  
+    const [order] = await db
+      .insert(orders)
+      .values({
+        tenantId: DEFAULT_TENANT_ID,
+        customerId: user?.id ?? null,
+        channel: "online",
+        fulfillmentType: parsed.data.fulfillmentType,
+        status: "pending",
+        paymentStatus: "unpaid",
+        deliveryAddress: parsed.data.deliveryAddress ?? null,
+        contactName: parsed.data.contactName,
+        contactPhone: parsed.data.contactPhone,
+        contactEmail: parsed.data.contactEmail ?? null,
+        totalAmount: String(totalAmount),
+        deliveryFee: String(actualDeliveryFee),
+      })
+      .returning();
 
   const orderItemRows = items.map((item) => {
     const product = productById.get(item.productId)!;
@@ -242,20 +243,14 @@ checkoutRoutes.post("/delivery-fee", async (c) => {
 });
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
-const PAYSTACK_SUBACCOUNT_CODE = process.env.PAYSTACK_SUBACCOUNT_CODE;
-
-// TODO: once superadmin settings exist, read this from a system-level toggle
-// instead of a hardcoded constant. Only a superadmin should control this.
-const SERVICE_FEE_ENABLED = true;
-const SERVICE_FEE_PERCENTAGE = 1; // 1% added on top of the order total, not split from it
 
 const initPaymentSchema = z.object({
   orderId: z.string().uuid(),
 });
 
 // POST /pay — initializes a Paystack transaction for an existing pending order.
-// If the service fee is enabled, an extra 1% is added ON TOP of the order total
-// (the store still receives the full order amount; the customer pays slightly more).
+// Charges the order's full total (product + delivery), all going to the store's
+// main account. No split — see order.deliveryFee for the breakdown in records.
 checkoutRoutes.post("/pay", async (c) => {
   if (!DEFAULT_TENANT_ID || !PAYSTACK_SECRET_KEY) {
     return c.json({ error: "Payment is not configured. Please contact the store." }, 500);
@@ -281,29 +276,16 @@ checkoutRoutes.post("/pay", async (c) => {
     return c.json({ error: "This order has already been paid for." }, 400);
   }
 
-  const orderAmountInPesewas = Math.round(Number(order.totalAmount) * 100);
+  const amountInPesewas = Math.round(Number(order.totalAmount) * 100);
 
-  const serviceFeeInPesewas =
-    SERVICE_FEE_ENABLED && PAYSTACK_SUBACCOUNT_CODE
-      ? Math.round(orderAmountInPesewas * (SERVICE_FEE_PERCENTAGE / 100))
-      : 0;
-
-  const totalChargeInPesewas = orderAmountInPesewas + serviceFeeInPesewas;
-
-  const paystackBody: Record<string, unknown> = {
+  const paystackBody = {
     email: order.contactEmail ?? `guest-${order.id}@jaazieltrading.com`,
-    amount: totalChargeInPesewas,
+    amount: amountInPesewas,
     currency: "GHS",
     reference: order.id,
     channels: ["card", "mobile_money"],
     callback_url: `${process.env.WEB_URL}/order-confirmation/${order.id}`,
   };
-
-  if (serviceFeeInPesewas > 0) {
-    paystackBody.subaccount = PAYSTACK_SUBACCOUNT_CODE;
-    paystackBody.transaction_charge = serviceFeeInPesewas;
-    paystackBody.bearer = "account";
-  }
 
   const res = await fetch("https://api.paystack.co/transaction/initialize", {
     method: "POST",
@@ -323,7 +305,6 @@ checkoutRoutes.post("/pay", async (c) => {
   return c.json({
     authorizationUrl: data.data.authorization_url,
     reference: data.data.reference,
-    totalCharged: totalChargeInPesewas / 100,
   });
 });
 

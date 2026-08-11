@@ -9,6 +9,7 @@ export function useCreateCheckout() {
     onSuccess: () => {
       // Cart is cleared server-side on successful checkout; refresh the cached cart.
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+      
     },
   });
 }
