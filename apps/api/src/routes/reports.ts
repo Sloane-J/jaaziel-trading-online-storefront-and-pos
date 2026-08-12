@@ -39,8 +39,6 @@ reportsRoutes.get("/sales-by-category", requireAuth(["admin", "superadmin"]), as
       and(eq(orders.tenantId, tenantId), ne(orders.status, "cancelled"), gte(orders.createdAt, since)),
     );
 
-  // Build one row per day, with each category as its own key — the shape
-  // recharts wants for a multi-line chart: [{ date, "Phones": 120, "Cars": 0, ... }, ...]
   const categoryNames = new Set<string>();
   const dayMap = new Map<string, Record<string, number> & { date: string }>();
 
@@ -61,8 +59,6 @@ reportsRoutes.get("/sales-by-category", requireAuth(["admin", "superadmin"]), as
     bucket[row.categoryName] = (bucket[row.categoryName] ?? 0) + lineTotal;
   }
 
-  // Ensure every day has a 0 entry for every category seen in the range,
-  // so each line renders continuously instead of having gaps.
   const days = Array.from(dayMap.values()).sort((a, b) => a.date.localeCompare(b.date));
   for (const day of days) {
     for (const name of categoryNames) {
@@ -113,8 +109,8 @@ reportsRoutes.get("/today-summary", requireAuth(["admin", "superadmin"]), async 
   return c.json({ revenue, orderCount: todaysOrders.length });
 });
 
-// GET /overview-stats — admin/superadmin. Gross sales (all-time), today's sales and
-// order count with day-over-day trend, and low-stock count.
+// GET /overview-stats — admin/superadmin. Gross sales (all-time), delivery revenue,
+// today's sales and order count with day-over-day trend, and low-stock count.
 reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async (c) => {
   const tenantId = c.get("tenantId");
   if (!tenantId) {
@@ -139,7 +135,6 @@ reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async
   ]);
 
   const grossSales = allOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
-  
   const deliveryRevenue = allOrders.reduce((sum, o) => sum + Number(o.deliveryFee), 0);
 
   const todaysOrders = allOrders.filter((o) => new Date(o.createdAt) >= startOfToday);
@@ -151,13 +146,13 @@ reportsRoutes.get("/overview-stats", requireAuth(["admin", "superadmin"]), async
   const yesterdaysSales = yesterdaysOrders.reduce((sum, o) => sum + Number(o.totalAmount), 0);
 
   return c.json({
-      grossSales,
-      deliveryRevenue,
-      todaysSales,
-      yesterdaysSales,
-      todaysOrderCount,
-      yesterdaysOrderCount,
-      lowStockCount: lowStockProducts.length,
+    grossSales,
+    deliveryRevenue,
+    todaysSales,
+    yesterdaysSales,
+    todaysOrderCount: todaysOrders.length,
+    yesterdaysOrderCount: yesterdaysOrders.length,
+    lowStockCount: lowStockProducts.length,
   });
 });
 
