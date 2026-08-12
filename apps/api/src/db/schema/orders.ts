@@ -47,7 +47,7 @@ export const orders = pgTable("orders", {
 	deliveryAddress: jsonb("delivery_address").$type<Record<string, unknown>>(),
   totalAmount: numeric("total_amount", { precision: 10, scale: 2 }).notNull(),
   deliveryFee: numeric("delivery_fee", { precision: 10, scale: 2 }).notNull().default("0"),
-	orderCode: text("order_code").notNull(),
+  orderCode: text("order_code").notNull().default("LEGACY"),
 	createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   contactName: text("contact_name"),
