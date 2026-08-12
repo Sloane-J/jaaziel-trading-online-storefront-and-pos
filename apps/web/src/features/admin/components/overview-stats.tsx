@@ -93,7 +93,7 @@ export function OverviewStats() {
   const ordersTrend = data ? calculateTrend(data.todaysOrderCount, data.yesterdaysOrderCount) : null;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
       <StatCard
         icon={WalletIcon}
         label="Total Revenue"
