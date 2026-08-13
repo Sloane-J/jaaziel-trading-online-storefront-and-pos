@@ -89,7 +89,6 @@ export async function updateOrderStatus(id: string, status: OrderStatus): Promis
 export type OrderConfirmation = {
   order: Order;
   items: OrderItem[];
-  orderCode: string;
 };
 
 export async function fetchOrderConfirmation(id: string): Promise<OrderConfirmation> {
