@@ -22,7 +22,7 @@ import type { OrderStatus } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/format-price";
 import { adminNavItems } from "@/pages/dashboard/admin/nav-items";
 
-const STATUS_BADGE_VARIANT: Record
+const STATUS_BADGE_VARIANT: Record<
   OrderStatus,
   "default" | "secondary" | "destructive"
 > = {
@@ -35,7 +35,7 @@ const STATUS_BADGE_VARIANT: Record
 };
 
 // The next logical status for an online order moving through fulfillment.
-const NEXT_STATUS: Partial
+const NEXT_STATUS: Partial<
   Record<OrderStatus, { status: OrderStatus; label: string }>
 > = {
   pending: { status: "confirmed", label: "Confirm order" },

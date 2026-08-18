@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { getQueryClient } from "@/lib/get-query-client";
 import App from "./App";
 import "./index.css";
+import "./storefront-theme.css";
 
 const queryClient = getQueryClient();
 

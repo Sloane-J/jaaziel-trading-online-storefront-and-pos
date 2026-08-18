@@ -3,6 +3,7 @@ import { Outlet, Route, Routes } from "react-router";
 import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { PosSaleProvider } from "@/features/pos/context/pos-sale-context";
+import { StorefrontLayout } from "@/features/storefront/storefront-layout";
 import { CategoryPage } from "@/pages/storefront/category";
 import { CheckoutPage } from "@/pages/storefront/checkout";
 import { ContactPage } from "@/pages/storefront/contact";
@@ -67,14 +68,19 @@ function App() {
   return (
     <Suspense fallback={<PageLoadingFallback />}>
       <Routes>
-        <Route path="/" element={<StorefrontHomePage />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/products/:id" element={<ProductDetailPage />} />
-        <Route path="/shop/:slug" element={<CategoryPage />} />
-        <Route path="/search" element={<SearchResultsPage />} />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
+        {/* Storefront routes — wrapped in StorefrontLayout so the
+            .storefront-theme class scopes the storefront palette
+            to only these pages. */}
+        <Route element={<StorefrontLayout />}>
+          <Route path="/" element={<StorefrontHomePage />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/shop/:slug" element={<CategoryPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
+        </Route>
 
         <Route
           path="/admin"

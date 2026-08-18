@@ -28,7 +28,10 @@ export const auth = betterAuth({
       },
     },
   },
-  trustedOrigins: [process.env.WEB_URL ?? "http://localhost:5173"],
+  trustedOrigins: [
+    "http://localhost:5173",
+    "https://jaaziel-trading-online-storefront-a.vercel.app",
+  ],
   advanced: {
     defaultCookieAttributes: {
       sameSite: "none",
