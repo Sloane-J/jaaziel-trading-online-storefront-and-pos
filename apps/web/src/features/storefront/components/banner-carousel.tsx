@@ -72,7 +72,7 @@ export function BannerCarousel({
     // centering a viewport-width element regardless of the parent container.
     <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
       <div
-        className="relative aspect-[3/2] w-full overflow-hidden sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[3/1]"
+        className="relative aspect-[16/7] w-full overflow-hidden sm:aspect-[21/8] md:aspect-[4/1] lg:aspect-[5/1]"
         role="region"
         aria-roledescription="carousel"
         aria-label="Promotional banners"
