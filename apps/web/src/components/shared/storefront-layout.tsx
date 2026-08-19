@@ -36,7 +36,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur transition-shadow">
-        <div className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 sm:grid-cols-[1fr_auto_1fr] sm:px-6">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 sm:grid-cols-[1fr_minmax(220px,42rem)_1fr] sm:px-6">
           {/* Left: hamburger (mobile) + brand name */}
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>

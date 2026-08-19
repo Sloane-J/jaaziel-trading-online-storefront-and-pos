@@ -1,6 +1,6 @@
+import { Loader2Icon, SearchIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { SearchIcon, Loader2Icon } from "lucide-react";
 import { useProductSearch } from "@/features/storefront/hooks/use-storefront";
 import { formatPrice } from "@/lib/format-price";
 
@@ -28,6 +28,14 @@ export function SearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, []);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!query.trim()) return;
@@ -44,13 +52,20 @@ export function SearchBar() {
   const showDropdown = open && debouncedQuery.trim().length > 1;
 
   return (
-    <div ref={containerRef} className="relative max-w-xs">
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+    >
       <form onSubmit={handleSubmit}>
         <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <input
           type="search"
           placeholder="Search products..."
           aria-label="Search products"
+          role="combobox"
+          aria-expanded={showDropdown}
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -62,7 +77,7 @@ export function SearchBar() {
       </form>
 
       {showDropdown && (
-        <div className="absolute left-0 top-full z-50 mt-2 w-full min-w-72 overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
+        <div className="absolute left-0 top-full z-50 mt-2 w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 p-4 text-sm text-muted-foreground">
               <Loader2Icon className="size-4 animate-spin" />
