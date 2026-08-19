@@ -308,14 +308,31 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
           </div>
 
           <div className="mt-10 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            {/* Left Column: Client Info & Location */}
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
+              <p className="text-sm text-muted-foreground">
+                &copy; {new Date().getFullYear()} Jaaziel Trading Enterprise. All rights reserved.
+              </p>
+              <span className="hidden text-muted-foreground/40 sm:inline" aria-hidden="true">|</span>
+              <p className="text-sm text-muted-foreground">
+                Accra, Ghana
+              </p>
+            </div>
+          
+            {/* Right Column: Developer Attribution with SEO Protection */}
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Jaaziel Trading Enterprise. All
-              rights reserved.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Accra, Ghana
+              Built by{" "}
+              <a
+                href="https://samuel-dorkey.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="font-medium text-foreground transition-colors hover:text-primary underline decoration-muted-foreground/30 underline-offset-4 hover:decoration-foreground"
+              >
+                Sloane Design Studio
+              </a>
             </p>
           </div>
+
         </div>
       </footer>
 
