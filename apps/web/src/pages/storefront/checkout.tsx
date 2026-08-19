@@ -341,13 +341,13 @@ export function CheckoutPage() {
 								{items.map((item) => (
 									<div key={item.id} className="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
 										<div className="flex items-center gap-3 pr-4">
-											{item.product.imageUrl && (
-												<img
-													src={item.product.imageUrl}
-													alt={item.product.name}
-													className="h-12 w-12 shrink-0 rounded-xl border border-border/50 object-cover"
-												/>
-											)}
+										{item.product.images?.[0] && (
+  <img
+    src={item.product.images[0]}
+    alt={item.product.name}
+    className="h-12 w-12 shrink-0 rounded-xl border border-border/50 object-cover"
+  />
+										)}
 											<div>
 												<p className="line-clamp-1 text-sm font-medium text-foreground">{item.product.name}</p>
 												<p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>

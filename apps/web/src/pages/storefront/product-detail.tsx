@@ -154,14 +154,14 @@ export function ProductDetailPage() {
 
   const hasMultipleImages = product.images.length > 1;
 
+  const imageCount = product.images.length;
+  
   function goPrevImage() {
-    setActiveImageIndex(
-      (i) => (i - 1 + product.images.length) % product.images.length,
-    );
+    setActiveImageIndex((i) => (i - 1 + imageCount) % imageCount);
   }
-
+  
   function goNextImage() {
-    setActiveImageIndex((i) => (i + 1) % product.images.length);
+    setActiveImageIndex((i) => (i + 1) % imageCount);
   }
 
   return (
