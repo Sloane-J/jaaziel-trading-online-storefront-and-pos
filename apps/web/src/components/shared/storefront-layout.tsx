@@ -84,7 +84,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
             <Link to="/" className="flex items-center gap-2">
               {/* Brand logo — uncomment and replace src once the logo asset is ready */}
               {/* <img src="/logo.svg" alt="" className="size-7 shrink-0" /> */}
-              <span className="whitespace-nowrap font-heading text-lg font-extrabold tracking-tight text-foreground sm:text-xl">
+              <span className="whitespace-nowrap font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl">
                 Jaaziel Trading
               </span>
             </Link>
@@ -142,7 +142,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
               <Link to="/" className="flex items-center gap-2">
                 {/* Brand logo — uncomment and replace src once the logo asset is ready */}
                 {/* <img src="/logo.svg" alt="" className="size-7 shrink-0" /> */}
-                <span className="font-heading text-lg font-extrabold tracking-tight text-foreground">
+                <span className="font-heading text-lg font-bold tracking-tight text-foreground">
                   Jaaziel Trading
                 </span>
               </Link>
