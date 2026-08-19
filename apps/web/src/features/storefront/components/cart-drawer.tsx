@@ -1,4 +1,10 @@
-import { MinusIcon, PlusIcon, ShoppingBagIcon, TrashIcon } from "lucide-react";
+import {
+  MinusIcon,
+  PlusIcon,
+  ShoppingBagIcon,
+  TrashIcon,
+  ArrowRightIcon,
+} from "lucide-react";
 import { Link } from "react-router";
 import {
   Sheet,
@@ -25,126 +31,211 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const removeItem = useRemoveCartItem();
 
   const items = data?.items ?? [];
+
   const total = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,
     0,
   );
 
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex w-full flex-col sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle className="font-heading">Your cart</SheetTitle>
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+      >
+        {/* Header */}
+        <SheetHeader className="border-b border-border px-5 py-4">
+          <SheetTitle className="flex items-center gap-2 font-heading text-lg">
+            <ShoppingBagIcon className="size-5" />
+            Your cart
+            {!isLoading && itemCount > 0 && (
+              <span className="text-sm font-normal text-muted-foreground">
+                ({itemCount} {itemCount === 1 ? "item" : "items"})
+              </span>
+            )}
+          </SheetTitle>
         </SheetHeader>
 
+        {/* Loading */}
         {isLoading ? (
-          <div className="flex-1 space-y-4 px-4 py-4">
+          <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-20 animate-pulse rounded-xl bg-muted" />
+              <div key={i} className="flex gap-3">
+                <div className="size-20 shrink-0 animate-pulse rounded-xl bg-muted" />
+
+                <div className="flex flex-1 flex-col gap-2">
+                  <div className="h-4 w-4/5 animate-pulse rounded bg-muted" />
+                  <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+                  <div className="mt-auto h-7 w-24 animate-pulse rounded bg-muted" />
+                </div>
+              </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 text-center">
-            <ShoppingBagIcon className="size-10 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">Your cart is empty.</p>
+          /* Empty Cart */
+          <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+            <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-muted">
+              <ShoppingBagIcon className="size-7 text-muted-foreground" />
+            </div>
+
+            <h3 className="font-heading text-lg font-semibold text-foreground">
+              Your cart is empty
+            </h3>
+
+            <p className="mt-1.5 max-w-xs text-sm leading-relaxed text-muted-foreground">
+              Looks like you haven't added anything to your cart yet.
+            </p>
+
             <Link
               to="/"
               onClick={() => onOpenChange(false)}
-              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Continue shopping
+              <ArrowRightIcon className="size-4" />
             </Link>
           </div>
         ) : (
           <>
-            <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
-              {items.map((item) => (
-                <div key={item.id} className="flex gap-3">
-                  <div className="size-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
-                    {item.product.images[0] ? (
-                      <img
-                        src={getImageUrl(item.product.images[0], {
-                          width: 100,
-                        })}
-                        alt={item.product.name}
-                        loading="lazy"
-                        className="size-full object-cover"
-                      />
-                    ) : (
-                      <div className="size-full bg-muted" />
-                    )}
-                  </div>
+            {/* Cart Items */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="divide-y divide-border px-5">
+                {items.map((item) => {
+                  const itemTotal =
+                    Number(item.product.price) * item.quantity;
 
-                  <div className="flex flex-1 flex-col justify-between">
-                    <div>
-                      <p className="truncate text-sm font-medium text-foreground">
-                        {item.product.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatPrice(Number(item.product.price))}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            item.quantity > 1
-                              ? updateItem.mutate({
-                                  id: item.id,
-                                  quantity: item.quantity - 1,
-                                })
-                              : removeItem.mutate(item.id)
-                          }
-                          aria-label="Decrease quantity"
-                          className="flex size-6 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-accent"
-                        >
-                          <MinusIcon className="size-3" />
-                        </button>
-                        <span className="w-4 text-center text-sm">
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            updateItem.mutate({
-                              id: item.id,
-                              quantity: item.quantity + 1,
-                            })
-                          }
-                          aria-label="Increase quantity"
-                          className="flex size-6 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-accent"
-                        >
-                          <PlusIcon className="size-3" />
-                        </button>
+                  return (
+                    <div key={item.id} className="flex gap-4 py-5">
+                      {/* Product Image */}
+                      <div className="size-20 shrink-0 overflow-hidden rounded-xl border border-border bg-muted">
+                        {item.product.images[0] ? (
+                          <img
+                            src={getImageUrl(item.product.images[0], {
+                              width: 200,
+                            })}
+                            alt={item.product.name}
+                            loading="lazy"
+                            className="block size-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex size-full items-center justify-center">
+                            <ShoppingBagIcon className="size-6 text-muted-foreground/50" />
+                          </div>
+                        )}
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => removeItem.mutate(item.id)}
-                        aria-label="Remove item"
-                        className="text-muted-foreground transition-colors hover:text-destructive"
-                      >
-                        <TrashIcon className="size-4" />
-                      </button>
+                      {/* Product Details */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="line-clamp-2 text-sm font-medium leading-snug text-foreground">
+                            {item.product.name}
+                          </p>
+
+                          <button
+                            type="button"
+                            onClick={() => removeItem.mutate(item.id)}
+                            disabled={removeItem.isPending}
+                            aria-label={`Remove ${item.product.name}`}
+                            className="shrink-0 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-destructive disabled:opacity-50"
+                          >
+                            <TrashIcon className="size-4" />
+                          </button>
+                        </div>
+
+                        <p className="mt-1 text-sm font-semibold text-foreground">
+                          {formatPrice(Number(item.product.price))}
+                        </p>
+
+                        <div className="mt-3 flex items-center justify-between gap-3">
+                          {/* Quantity */}
+                          <div className="inline-flex items-center rounded-lg border border-border bg-background">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                item.quantity > 1
+                                  ? updateItem.mutate({
+                                      id: item.id,
+                                      quantity: item.quantity - 1,
+                                    })
+                                  : removeItem.mutate(item.id)
+                              }
+                              disabled={
+                                updateItem.isPending || removeItem.isPending
+                              }
+                              aria-label="Decrease quantity"
+                              className="flex size-8 items-center justify-center rounded-l-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+                            >
+                              <MinusIcon className="size-3.5" />
+                            </button>
+
+                            <span className="flex min-w-8 items-center justify-center text-sm font-medium text-foreground">
+                              {item.quantity}
+                            </span>
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                updateItem.mutate({
+                                  id: item.id,
+                                  quantity: item.quantity + 1,
+                                })
+                              }
+                              disabled={updateItem.isPending}
+                              aria-label="Increase quantity"
+                              className="flex size-8 items-center justify-center rounded-r-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50"
+                            >
+                              <PlusIcon className="size-3.5" />
+                            </button>
+                          </div>
+
+                          {/* Item Total */}
+                          <span className="text-sm font-semibold text-foreground">
+                            {formatPrice(itemTotal)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="space-y-3 border-t border-border px-4 py-4">
-              <div className="flex items-center justify-between text-sm font-medium">
-                <span className="text-foreground">Total</span>
-                <span className="text-foreground">{formatPrice(total)}</span>
+            {/* Summary */}
+            <div className="border-t border-border bg-background px-5 pb-5 pt-4">
+              <div className="space-y-2.5 text-sm">
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+
+                <div className="flex items-center justify-between text-muted-foreground">
+                  <span>Shipping</span>
+                  <span className="text-xs">Calculated at checkout</span>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-border pt-3 text-base font-bold text-foreground">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
               </div>
+
               <Link
                 to="/checkout"
                 onClick={() => onOpenChange(false)}
-                className="flex w-full items-center justify-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
               >
-                Checkout
+                Proceed to checkout
+                <ArrowRightIcon className="size-4" />
+              </Link>
+
+              <Link
+                to="/"
+                onClick={() => onOpenChange(false)}
+                className="mt-3 block text-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Continue shopping
               </Link>
             </div>
           </>
