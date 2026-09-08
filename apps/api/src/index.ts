@@ -23,7 +23,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:4173",
-      "https://jaaziel-trading-online-storefront-a.vercel.app",
+      "https://jaaziel-trading.vercel.app",
     ],
     credentials: true,
   }),

@@ -1,12 +1,5 @@
 import app from "./index";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://jaaziel-trading.vercel.app",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  "Access-Control-Allow-Credentials": "true",
-};
-
 const securityHeaders = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
@@ -17,15 +10,10 @@ const securityHeaders = {
 
 export default {
   async fetch(request: Request, env: any, ctx: any): Promise<Response> {
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: { ...corsHeaders, ...securityHeaders } });
-    }
-
     const response = await app.fetch(request, env, ctx);
     const newResponse = new Response(response.body, response);
 
-    const allHeaders = { ...corsHeaders, ...securityHeaders };
-    Object.entries(allHeaders).forEach(([key, value]) => {
+    Object.entries(securityHeaders).forEach(([key, value]) => {
       newResponse.headers.set(key, value);
     });
 
