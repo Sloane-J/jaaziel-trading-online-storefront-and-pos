@@ -4,9 +4,9 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "https://jaaziel-trading.vercel.app",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
 };
 
-// In src/worker.ts
 const securityHeaders = {
   "X-Content-Type-Options": "nosniff",
   "X-Frame-Options": "DENY",
@@ -24,7 +24,6 @@ export default {
     const response = await app.fetch(request, env, ctx);
     const newResponse = new Response(response.body, response);
 
-    // Attach both CORS and security headers
     const allHeaders = { ...corsHeaders, ...securityHeaders };
     Object.entries(allHeaders).forEach(([key, value]) => {
       newResponse.headers.set(key, value);
