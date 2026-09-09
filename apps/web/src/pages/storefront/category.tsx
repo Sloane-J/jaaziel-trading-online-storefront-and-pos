@@ -39,10 +39,10 @@ function ProductRow({ product }: { product: Product }) {
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
-        <p className="line-clamp-2 text-base font-medium text-foreground sm:text-lg">
+        <p className="line-clamp-2 text-base font-semibold text-foreground sm:text-lg">
           {product.name}
         </p>
-        <p className="text-2xl font-semibold text-primary">
+        <p className="text-xl font-black text-primary">
           {formatPrice(product.price)}
         </p>
 
