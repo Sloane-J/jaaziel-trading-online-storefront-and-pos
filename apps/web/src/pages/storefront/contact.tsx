@@ -74,7 +74,7 @@ export function ContactPage() {
 					<div className="h-[40rem] w-[40rem] rounded-full bg-primary/5 blur-[100px]" />
 				</div>
 
-				<div className="relative z-10 overflow-hidden rounded-[2.5rem] border border-border/60 bg-card shadow-2xl shadow-primary/5">
+				<div className="relative z-10 overflow-hidden rounded bg-card shadow-2xl shadow-primary/5">
 					<div className="flex flex-col lg:flex-row">
 						{/* Left Panel: Contact Details */}
 						<div className="relative flex flex-col justify-between bg-muted/30 p-8 lg:w-2/5 lg:p-12">
