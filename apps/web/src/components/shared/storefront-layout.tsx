@@ -1,11 +1,11 @@
 import {
-  AtSignIcon,
   MenuIcon,
+  PhoneIcon,
   Share2Icon,
   ShoppingCartIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router";
 import {
   Sheet,
@@ -33,20 +33,28 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
   const itemCount =
     cartData?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
+  // Container ref for the themed wrapper — Sheets portal into this
+  // instead of document.body, so they inherit .storefront-theme variables.
+  const themeContainerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur transition-shadow">
-        <div className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-4 sm:grid-cols-[1fr_minmax(220px,42rem)_1fr] sm:px-6">
+    <div ref={themeContainerRef} className="storefront-theme min-h-screen bg-background">
+      <header className="sticky top-0 z-40 bg-primary shadow-sm">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3 sm:grid-cols-[1fr_minmax(220px,42rem)_1fr] sm:px-6 sm:py-4">
           {/* Left: hamburger (mobile) + brand name */}
           <div className="flex items-center gap-2 sm:gap-3">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger
                 aria-label="Open menu"
-                className="text-foreground transition-colors hover:text-muted-foreground lg:hidden"
+                className="flex size-8 items-center justify-center rounded-full text-primary-foreground transition-colors hover:bg-primary-light/30 lg:hidden"
               >
-                <MenuIcon className="size-6" />
+                <MenuIcon className="size-5" />
               </SheetTrigger>
-              <SheetContent side="left" className="w-72">
+              <SheetContent
+                side="left"
+                className="w-72"
+                container={themeContainerRef.current}
+              >
                 <SheetHeader>
                   <SheetTitle className="font-heading">
                     Jaaziel Trading
@@ -64,7 +72,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                       key={category.id}
                       to={`/shop/${category.slug}`}
                       onClick={() => setMenuOpen(false)}
-                      className="rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+                      className="rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-light/20 hover:text-primary"
                     >
                       {category.name}
                     </Link>
@@ -73,8 +81,9 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                   <Link
                     to="/contact"
                     onClick={() => setMenuOpen(false)}
-                    className="rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-light/20 hover:text-primary"
                   >
+                    <PhoneIcon className="size-4" />
                     Contact
                   </Link>
                 </nav>
@@ -84,7 +93,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
             <Link to="/" className="flex items-center gap-2">
               {/* Brand logo — uncomment and replace src once the logo asset is ready */}
               {/* <img src="/logo.svg" alt="" className="size-7 shrink-0" /> */}
-              <span className="whitespace-nowrap font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl">
+              <span className="whitespace-nowrap font-heading text-lg font-bold tracking-tight text-primary-foreground sm:text-xl">
                 Jaaziel Trading
               </span>
             </Link>
@@ -95,30 +104,32 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
             <SearchBar />
           </div>
 
-          {/* Right: nav links + cart */}
-          <div className="flex items-center justify-end gap-4 sm:gap-6">
+          {/* Right: nav links + icons */}
+          <div className="flex items-center justify-end gap-2 sm:gap-3">
             <nav
               aria-label="Main navigation"
               className="hidden items-center gap-6 lg:flex"
             >
               <CategoriesMenu />
-              <Link
-                to="/contact"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Contact
-              </Link>
             </nav>
+
+            <Link
+              to="/contact"
+              aria-label="Contact us"
+              className="flex size-8 items-center justify-center rounded-full bg-primary-light text-primary-light-foreground transition-transform hover:scale-105"
+            >
+              <PhoneIcon className="size-3.5" />
+            </Link>
 
             <button
               type="button"
               onClick={() => setCartOpen(true)}
               aria-label="Cart"
-              className="relative text-muted-foreground transition-colors hover:text-foreground"
+              className="relative flex size-8 items-center justify-center rounded-full bg-primary-light text-primary-light-foreground transition-transform hover:scale-105"
             >
-              <ShoppingCartIcon className="size-5" />
+              <ShoppingCartIcon className="size-3.5" />
               {itemCount > 0 && (
-                <span className="absolute -right-1.5 -top-1.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+                <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-destructive text-[9px] font-semibold text-destructive-foreground ring-2 ring-primary">
                   {itemCount}
                 </span>
               )}
@@ -127,14 +138,14 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
         </div>
 
         {/* Search bar, mobile only, below the main row */}
-        <div className="border-t border-border px-4 py-2 sm:hidden">
+        <div className="flex justify-center border-t border-primary-light/30 px-4 py-2 sm:hidden">
           <SearchBar />
         </div>
       </header>
 
       <main>{children}</main>
 
-      <footer className="border-t border-border bg-secondary/40">
+      <footer className="border-t border-border bg-muted">
         <div className="mx-auto max-w-[1600px] px-6 py-12 sm:py-14">
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
             {/* Brand column */}
@@ -150,21 +161,21 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 Quality goods, trusted service. Shop online or visit us
                 in-store.
               </p>
-              <div className="mt-5 flex items-center gap-4">
+              <div className="mt-5 flex items-center gap-3">
                 <a
                   href="#"
                   aria-label="Social media"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-105"
                 >
-                  <Share2Icon className="size-5" />
+                  <Share2Icon className="size-4" />
                 </a>
-                <a
-                  href="#"
-                  aria-label="Email us"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                <Link
+                  to="/contact"
+                  aria-label="Contact us"
+                  className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground transition-transform hover:scale-105"
                 >
-                  <AtSignIcon className="size-5" />
-                </a>
+                  <PhoneIcon className="size-4" />
+                </Link>
               </div>
             </div>
 
@@ -176,7 +187,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                   <li key={category.id}>
                     <Link
                       to={`/shop/${category.slug}`}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
                     >
                       {category.name}
                     </Link>
@@ -185,7 +196,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <Link
                     to="/search"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Search products
                   </Link>
@@ -202,7 +213,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     About Us
                   </a>
@@ -210,7 +221,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Careers
                   </a>
@@ -218,7 +229,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Blog
                   </a>
@@ -226,7 +237,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <Link
                     to="/contact"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Contact
                   </Link>
@@ -243,7 +254,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     FAQs
                   </a>
@@ -251,7 +262,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Shipping Info
                   </a>
@@ -259,7 +270,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Returns & Refunds
                   </a>
@@ -267,7 +278,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Track Order
                   </a>
@@ -282,7 +293,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Privacy Policy
                   </a>
@@ -290,7 +301,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Terms of Service
                   </a>
@@ -298,7 +309,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 <li>
                   <a
                     href="#"
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Cookie Policy
                   </a>
@@ -318,7 +329,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 Accra, Ghana
               </p>
             </div>
-          
+
             {/* Right Column: Developer Attribution with SEO Protection */}
             <p className="text-sm text-muted-foreground">
               Built by{" "}
@@ -332,11 +343,14 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
               </a>
             </p>
           </div>
-
         </div>
       </footer>
 
-      <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
+      <CartDrawer
+        open={cartOpen}
+        onOpenChange={setCartOpen}
+        container={themeContainerRef.current}
+      />
     </div>
   );
 }

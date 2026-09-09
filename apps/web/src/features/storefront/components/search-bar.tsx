@@ -54,7 +54,7 @@ export function SearchBar() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
+      className="relative mx-auto w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
     >
       <form onSubmit={handleSubmit}>
         <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -72,7 +72,7 @@ export function SearchBar() {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
-          className="w-full rounded-full border border-input bg-muted/40 py-2 pl-9 pr-4 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring focus:bg-background"
+          className="w-full rounded-full border-none bg-white py-2 pl-9 pr-4 text-sm text-foreground shadow-sm outline-none transition-shadow placeholder:text-muted-foreground focus:shadow-md focus:ring-2 focus:ring-primary-light"
         />
       </form>
 
