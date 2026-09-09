@@ -4,6 +4,8 @@ import {
   ZapIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ShieldCheckIcon,
+  TruckIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -18,10 +20,7 @@ import {
 } from "@/features/storefront/hooks/use-storefront";
 import { useDocumentTitle } from "@/lib/use-document-title";
 import { getImageUrl } from "@/lib/get-image-url";
-
-function formatPrice(price: string): string {
-  return `GHS ${Number(price).toFixed(2)}`;
-}
+import { formatPrice } from "@/lib/format-price";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -152,14 +151,14 @@ export function ProductDetailPage() {
     );
   }
 
+  const hasImages = product.images.length > 0;
   const hasMultipleImages = product.images.length > 1;
-
   const imageCount = product.images.length;
-  
+
   function goPrevImage() {
     setActiveImageIndex((i) => (i - 1 + imageCount) % imageCount);
   }
-  
+
   function goNextImage() {
     setActiveImageIndex((i) => (i + 1) % imageCount);
   }
@@ -175,7 +174,7 @@ export function ProductDetailPage() {
           >
             <Link
               to="/"
-              className="shrink-0 transition-colors hover:text-foreground"
+              className="shrink-0 transition-colors hover:text-primary"
             >
               Home
             </Link>
@@ -184,7 +183,7 @@ export function ProductDetailPage() {
 
             <Link
               to={`/shop/${category.slug}`}
-              className="shrink-0 transition-colors hover:text-foreground"
+              className="shrink-0 transition-colors hover:text-primary"
             >
               {category.name}
             </Link>
@@ -200,10 +199,10 @@ export function ProductDetailPage() {
         {/* Main Product */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(320px,1fr)] lg:gap-10">
           {/* Gallery */}
-          <div className="flex min-w-0 gap-3 sm:gap-4">
-            {hasMultipleImages && (
+          <div className="flex min-w-0 gap-3 sm:gap-4 self-start">
+            {hasImages && (
               <div className="flex w-16 shrink-0 flex-col gap-3 sm:w-20">
-                <div className="flex max-h-[600px] flex-col gap-3 overflow-y-auto">
+                <div className="flex max-h-[500px] flex-col gap-3 overflow-y-auto">
                   {product.images.map((src, i) => (
                     <button
                       key={`${src}-${i}`}
@@ -230,8 +229,8 @@ export function ProductDetailPage() {
             )}
 
             {/* Main Image */}
-            <div className="relative min-w-0 flex-1 overflow-hidden rounded-2xl bg-muted">
-              <div className="aspect-square w-full sm:aspect-[4/3] lg:aspect-square">
+            <div className="relative mx-auto w-full max-w-[420px] min-w-0 flex-1 overflow-hidden rounded-2xl bg-muted lg:max-w-[460px]">
+              <div className="aspect-square w-full">
                 {product.images.length === 0 ? (
                   <div className="flex size-full items-center justify-center text-sm text-muted-foreground">
                     No image available
@@ -239,7 +238,7 @@ export function ProductDetailPage() {
                 ) : (
                   <img
                     src={getImageUrl(product.images[activeImageIndex], {
-                      width: 1200,
+                      width: 800,
                     })}
                     alt={product.name}
                     className="block size-full object-cover"
@@ -247,13 +246,27 @@ export function ProductDetailPage() {
                 )}
               </div>
 
+              <button
+                type="button"
+                onClick={() => setIsWishlisted((v) => !v)}
+                aria-pressed={isWishlisted}
+                aria-label="Add to wishlist"
+                className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-background/90 shadow-sm backdrop-blur transition-colors hover:text-destructive"
+              >
+                <HeartIcon
+                  className={`size-4.5 ${
+                    isWishlisted ? "fill-primary text-primary" : "text-foreground"
+                  }`}
+                />
+              </button>
+
               {hasMultipleImages && (
                 <>
                   <button
                     type="button"
                     onClick={goPrevImage}
                     aria-label="Previous photo"
-                    className="absolute left-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-foreground shadow-md transition hover:bg-background"
+                    className="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-foreground shadow-md transition hover:bg-background"
                   >
                     <ChevronLeftIcon className="size-5" />
                   </button>
@@ -262,12 +275,12 @@ export function ProductDetailPage() {
                     type="button"
                     onClick={goNextImage}
                     aria-label="Next photo"
-                    className="absolute right-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-foreground shadow-md transition hover:bg-background"
+                    className="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/90 text-foreground shadow-md transition hover:bg-background"
                   >
                     <ChevronRightIcon className="size-5" />
                   </button>
 
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white">
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white">
                     {activeImageIndex + 1} / {product.images.length}
                   </div>
                 </>
@@ -283,21 +296,18 @@ export function ProductDetailPage() {
                 {product.name}
               </h1>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
                 {category && (
                   <Link
                     to={`/shop/${category.slug}`}
-                    className="text-primary transition-colors hover:underline"
+                    className="rounded-full bg-primary-light/30 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary-light/50"
                   >
                     {category.name}
                   </Link>
                 )}
 
-                <span className="text-muted-foreground/40">•</span>
-
-                <span>
-                  Condition:{" "}
-                  <span className="font-medium text-foreground">New</span>
+                <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
+                  Condition: New
                 </span>
               </div>
             </div>
@@ -305,12 +315,12 @@ export function ProductDetailPage() {
             {/* Price */}
             <div className="mt-6">
               <div className="flex flex-wrap items-baseline gap-3">
-                <p className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                <p className="text-2xl font-bold tracking-tight text-primary sm:text-3xl">
                   {formatPrice(product.price)}
                 </p>
 
                 {isOutOfStock && (
-                  <span className="text-sm font-semibold text-destructive">
+                  <span className="rounded-full bg-destructive/10 px-2.5 py-1 text-xs font-semibold text-destructive">
                     Out of stock
                   </span>
                 )}
@@ -324,7 +334,7 @@ export function ProductDetailPage() {
             {/* Product Description */}
             {product.description && (
               <div className="mt-5">
-                <h2 className="mb-3 font-heading text-xl font-bold text-foreground">
+                <h2 className="mb-3 font-heading text-lg font-semibold text-foreground">
                   Description
                 </h2>
                 <p className="whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
@@ -381,23 +391,29 @@ export function ProductDetailPage() {
             </div>
 
             {/* Basic Trust Information */}
-            <div className="mt-7 grid max-w-md grid-cols-2 gap-x-6 gap-y-4 text-sm">
-              <div>
-                <p className="font-medium text-foreground">
-                  Secure checkout
-                </p>
-                <p className="mt-0.5 text-muted-foreground">
-                  Safe and secure payment
-                </p>
+            <div className="mt-7 grid max-w-md grid-cols-2 gap-4">
+              <div className="flex items-start gap-2.5 rounded-xl bg-muted/60 p-3">
+                <ShieldCheckIcon className="mt-0.5 size-5 shrink-0 text-primary" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    Secure checkout
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Safe and secure payment
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <p className="font-medium text-foreground">
-                  Delivery available
-                </p>
-                <p className="mt-0.5 text-muted-foreground">
-                  Shipping calculated at checkout
-                </p>
+              <div className="flex items-start gap-2.5 rounded-xl bg-muted/60 p-3">
+                <TruckIcon className="mt-0.5 size-5 shrink-0 text-primary" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    Delivery available
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    Calculated at checkout
+                  </p>
+                </div>
               </div>
             </div>
           </div>
