@@ -339,7 +339,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                 rel="noopener noreferrer nofollow"
                 className="font-medium text-foreground transition-colors hover:text-primary underline decoration-muted-foreground/30 underline-offset-4 hover:decoration-foreground"
               >
-                Sloane Design Studio
+                Sloane Dev
               </a>
             </p>
           </div>

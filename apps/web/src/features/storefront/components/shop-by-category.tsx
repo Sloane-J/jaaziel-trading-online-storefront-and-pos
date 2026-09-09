@@ -10,11 +10,11 @@ export function ShopByCategory() {
     return (
       <section className="mx-auto max-w-[1600px] px-6 py-10">
         <div className="mb-4 h-7 w-48 animate-pulse rounded bg-muted" />
-        <div className="flex gap-4 overflow-hidden">
+        <div className="flex gap-6 overflow-hidden">
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="size-40 shrink-0 animate-pulse rounded-full bg-muted"
+              className="size-32 shrink-0 animate-pulse rounded-full bg-muted md:size-40"
             />
           ))}
         </div>
@@ -38,10 +38,10 @@ export function ShopByCategory() {
         </div>
         <Link
           to="/search"
-          className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary sm:flex"
+          className="group hidden shrink-0 items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary sm:flex"
         >
           Browse everything
-          <ArrowRightIcon className="size-4" />
+          <ArrowRightIcon className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>
 
@@ -52,7 +52,7 @@ export function ShopByCategory() {
             to={`/shop/${category.slug}`}
             className="group flex shrink-0 flex-col items-center gap-3"
           >
-            <div className="relative size-32 overflow-hidden rounded-full ring-2 ring-transparent ring-offset-2 ring-offset-background transition-all duration-300 group-hover:scale-105 group-hover:ring-primary md:size-40">
+            <div className="relative size-32 overflow-hidden rounded-full shadow-sm ring-2 ring-transparent ring-offset-2 ring-offset-background transition-all duration-300 group-hover:scale-105 group-hover:shadow-lg group-hover:ring-primary group-active:scale-95 md:size-40">
               {product?.images[0] ? (
                 <img
                   src={getImageUrl(product.images[0], { width: 200 })}
@@ -75,7 +75,7 @@ export function ShopByCategory() {
                 </span>
               </div>
             </div>
-            <p className="max-w-[8rem] truncate text-sm font-medium text-foreground">
+            <p className="max-w-[8rem] truncate text-sm font-medium text-foreground transition-colors duration-200 group-hover:text-primary">
               {category.name}
             </p>
           </Link>

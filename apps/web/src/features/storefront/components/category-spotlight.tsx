@@ -10,7 +10,9 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
   if (!product) {
     return (
       <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-secondary/40 text-center">
-        <PackageIcon className="size-6 text-muted-foreground" />
+        <span className="flex size-10 items-center justify-center rounded-full bg-muted">
+          <PackageIcon className="size-5 text-muted-foreground" />
+        </span>
         <p className="px-4 text-sm text-muted-foreground">
           No products yet in {category.name}
         </p>
@@ -20,10 +22,10 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
 
   return (
     <Link to={`/products/${product.id}`} className="group flex flex-col">
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-card transition-shadow group-hover:shadow-lg">
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 group-hover:shadow-lg group-active:scale-95">
         {product.images[0] ? (
           <img
-            src={getImageUrl(product.images[0], { width: 500 })}
+            src={getImageUrl(product.images[0], { width: 400 })}
             alt={product.name}
             loading="lazy"
             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -31,7 +33,7 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
         ) : (
           <div className="size-full bg-muted" />
         )}
-        <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium text-foreground shadow-sm backdrop-blur">
+        <span className="absolute left-2.5 top-2.5 rounded-full bg-primary px-2.5 py-1 text-xs font-medium text-primary-foreground shadow-sm">
           {category.name}
         </span>
       </div>
@@ -43,7 +45,7 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
           <p className="text-sm font-semibold text-primary">
             {formatPrice(product.price)}
           </p>
-          <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+          <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-active:opacity-100">
             Shop now
             <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
           </span>
@@ -77,13 +79,13 @@ export function CategorySpotlightSection({
         </p>
         <Link
           to="/search"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary"
+          className="group inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary"
         >
           Browse everything
-          <ArrowRightIcon className="size-4" />
+          <ArrowRightIcon className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-3 sm:max-w-none sm:grid-cols-3 lg:grid-cols-4">
         {items.map((item) => (
           <SpotlightCard key={item.category.id} item={item} />
         ))}

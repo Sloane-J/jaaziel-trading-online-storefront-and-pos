@@ -23,7 +23,7 @@ function ProductRow({ product }: { product: Product }) {
   return (
     <Link
       to={`/products/${product.id}`}
-      className="group flex gap-4 border-b border-border py-4 first:pt-0 last:border-b-0 sm:gap-6"
+      className="group flex gap-4 rounded-xl border-b border-border py-4 transition-colors first:pt-0 last:border-b-0 hover:bg-accent/40 active:scale-[0.99] sm:gap-6 sm:px-2"
     >
       <div className="size-28 shrink-0 overflow-hidden rounded-xl border border-border bg-card sm:size-36">
         {product.images[0] ? (
@@ -87,7 +87,7 @@ function PaginationBar({
         onClick={() => onChange(page - 1)}
         disabled={page === 1}
         aria-label="Previous page"
-        className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent disabled:opacity-40 disabled:hover:bg-transparent"
+        className="flex size-9 items-center justify-center rounded-full text-foreground transition-all hover:bg-accent active:scale-90 disabled:opacity-40 disabled:hover:bg-transparent disabled:active:scale-100"
       >
         <ChevronLeftIcon className="size-4" />
       </button>
@@ -98,7 +98,7 @@ function PaginationBar({
           type="button"
           onClick={() => onChange(p)}
           aria-current={p === page}
-          className={`flex size-9 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+          className={`flex size-9 items-center justify-center rounded-full text-sm font-medium transition-all active:scale-90 ${
             p === page
               ? "bg-primary text-primary-foreground"
               : "text-foreground hover:bg-accent"
@@ -113,7 +113,7 @@ function PaginationBar({
         onClick={() => onChange(page + 1)}
         disabled={page === totalPages}
         aria-label="Next page"
-        className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-accent disabled:opacity-40 disabled:hover:bg-transparent"
+        className="flex size-9 items-center justify-center rounded-full text-foreground transition-all hover:bg-accent active:scale-90 disabled:opacity-40 disabled:hover:bg-transparent disabled:active:scale-100"
       >
         <ChevronRightIcon className="size-4" />
       </button>
@@ -252,7 +252,7 @@ export function CategoryPage() {
                 type="button"
                 onClick={() => setSelectedCategoryId(c.id)}
                 aria-current={c.id === selectedCategoryId}
-                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                className={`shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-all active:scale-95 ${
                   c.id === selectedCategoryId
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border text-foreground hover:bg-accent"
@@ -278,7 +278,7 @@ export function CategoryPage() {
                       type="button"
                       onClick={() => setSelectedCategoryId(c.id)}
                       aria-current={c.id === selectedCategoryId}
-                      className={`block w-full py-2.5 text-left text-sm transition-colors ${
+                      className={`block w-full py-2.5 text-left text-sm transition-colors duration-200 ${
                         c.id === selectedCategoryId
                           ? "font-semibold text-primary"
                           : "text-muted-foreground hover:text-foreground"
@@ -300,7 +300,7 @@ export function CategoryPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+                  className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary-light"
                 >
                   <option value="newest">Newest</option>
                   <option value="price-asc">Price: Low to High</option>
@@ -317,7 +317,7 @@ export function CategoryPage() {
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
                   placeholder="0"
-                  className="w-24 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+                  className="w-24 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary-light"
                 />
               </label>
 
@@ -330,7 +330,7 @@ export function CategoryPage() {
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
                   placeholder="Any"
-                  className="w-24 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
+                  className="w-24 rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary-light"
                 />
               </label>
 
@@ -342,7 +342,7 @@ export function CategoryPage() {
                     setMaxPrice("");
                     setSortBy("newest");
                   }}
-                  className="text-sm font-medium text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
+                  className="animate-in fade-in text-sm font-medium text-muted-foreground underline-offset-2 transition-colors duration-200 hover:text-foreground hover:underline"
                 >
                   Clear filters
                 </button>

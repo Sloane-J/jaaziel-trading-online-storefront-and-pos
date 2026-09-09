@@ -1,4 +1,3 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { getImageUrl } from "@/lib/get-image-url";
 
@@ -86,7 +85,7 @@ export function BannerCarousel({
   return (
     <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
       <div
-        className="relative aspect-[16/7] w-full overflow-hidden sm:aspect-[21/8] md:aspect-[4/1] lg:aspect-[5/1]"
+        className="relative aspect-[3/2] w-full overflow-hidden sm:aspect-[2/1] lg:aspect-[29/10]"
         role="region"
         aria-roledescription="carousel"
         aria-label="Promotional banners"
@@ -108,7 +107,7 @@ export function BannerCarousel({
           ).join(", ");
 
           const optimizedSrc = getImageUrl(src, {
-            width: 1280,
+            width: 1600,
             quality: 80,
           });
 
@@ -122,7 +121,7 @@ export function BannerCarousel({
               srcSet={srcSet}
               sizes="100vw"
               width={1600}
-              height={640}
+              height={552}
               alt=""
               role="group"
               aria-roledescription="slide"
@@ -131,7 +130,7 @@ export function BannerCarousel({
               loading={isFirst ? "eager" : "lazy"}
               fetchPriority={isFirst ? "high" : "auto"}
               decoding="async"
-              className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ease-out motion-reduce:transition-none ${
+              className={`absolute inset-0 size-full object-cover transition-opacity duration-1000 ease-in-out motion-reduce:transition-none ${
                 isActive ? "opacity-100" : "opacity-0"
               }`}
             />
@@ -143,52 +142,32 @@ export function BannerCarousel({
         </span>
 
         {hasMultiple && (
-          <>
-            <button
-              type="button"
-              onClick={goPrev}
-              aria-label="Previous banner"
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            >
-              <ChevronLeftIcon className="size-5" aria-hidden="true" />
-            </button>
-
-            <button
-              type="button"
-              onClick={goNext}
-              aria-label="Next banner"
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-            >
-              <ChevronRightIcon className="size-5" aria-hidden="true" />
-            </button>
-
-            <div
-              className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5"
-              role="tablist"
-              aria-label="Banner navigation"
-            >
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setIndex(i)}
-                  role="tab"
-                  aria-label={`Go to banner ${i + 1}`}
-                  aria-selected={i === index}
-                  className="h-1.5 w-6 origin-left rounded-full bg-white/60 transition-transform duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring motion-reduce:transition-none"
-                  style={{
-                    transform: i === index ? "scaleX(1)" : "scaleX(0.25)",
-                  }}
-                >
-                  <span
-                    className={`block h-full w-full rounded-full transition-colors motion-reduce:transition-none ${
-                      i === index ? "bg-white" : "bg-transparent"
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-          </>
+          <div
+            className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5"
+            role="tablist"
+            aria-label="Banner navigation"
+          >
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                role="tab"
+                aria-label={`Go to banner ${i + 1}`}
+                aria-selected={i === index}
+                className="h-1.5 w-6 origin-left rounded-full bg-white/60 transition-transform duration-300 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring motion-reduce:transition-none"
+                style={{
+                  transform: i === index ? "scaleX(1)" : "scaleX(0.25)",
+                }}
+              >
+                <span
+                  className={`block h-full w-full rounded-full transition-colors duration-300 motion-reduce:transition-none ${
+                    i === index ? "bg-white" : "bg-transparent"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
         )}
       </div>
     </div>

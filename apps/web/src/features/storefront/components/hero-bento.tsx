@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import { ImageOffIcon } from "lucide-react";
 import { ImageCarousel } from "@/features/storefront/components/image-carousel";
 import { useStorefrontHome } from "@/features/storefront/hooks/use-storefront";
 import { formatPrice } from "@/lib/format-price";
@@ -11,9 +12,13 @@ export function HeroBento() {
 
   if (isLoading) {
     return (
-      <div className={`mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-6 py-8 md:grid-cols-3`}>
-        <div className={`col-span-1 animate-pulse rounded-3xl bg-muted md:col-span-2 ${HERO_HEIGHT}`} />
-        <div className={`col-span-1 animate-pulse rounded-3xl bg-muted ${HERO_HEIGHT}`} />
+      <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-4 px-6 py-8 md:grid-cols-3">
+        <div
+          className={`col-span-1 animate-pulse rounded-3xl bg-muted md:col-span-2 ${HERO_HEIGHT}`}
+        />
+        <div
+          className={`col-span-1 animate-pulse rounded-3xl bg-muted ${HERO_HEIGHT}`}
+        />
       </div>
     );
   }
@@ -30,30 +35,35 @@ export function HeroBento() {
       {primary?.product ? (
         <Link
           to={`/products/${primary.product.id}`}
-          className={`group relative overflow-hidden rounded-3xl bg-accent md:col-span-2 ${HERO_HEIGHT}`}
+          className={`group relative overflow-hidden rounded-3xl bg-accent shadow-sm transition-shadow duration-300 hover:shadow-xl md:col-span-2 ${HERO_HEIGHT}`}
         >
           <ImageCarousel
             images={primary.product.images}
             alt={primary.product.name}
             showControls
           />
-          <div className="pointer-events-none absolute inset-x-4 bottom-4 flex items-end justify-between gap-4 rounded-2xl border border-white/50 bg-neutral-200/60 p-4 shadow-lg backdrop-blur-lg">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-foreground/70">
+          <div className="pointer-events-none absolute inset-x-4 bottom-4 flex items-end justify-between gap-4 rounded-2xl border border-white/40 bg-background/70 p-4 shadow-lg backdrop-blur-lg transition-transform duration-300 group-hover:scale-[1.02]">
+            <div className="min-w-0">
+              <span className="inline-block rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-primary-foreground">
                 {primary.category.name}
-              </p>
-              <p className="font-heading text-lg font-semibold text-foreground">
+              </span>
+              <p className="mt-1.5 truncate font-heading text-lg font-semibold text-foreground">
                 {primary.product.name}
               </p>
             </div>
-            <p className="shrink-0 text-sm font-semibold text-foreground">
+            <p className="shrink-0 rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">
               {formatPrice(primary.product.price)}
             </p>
           </div>
         </Link>
       ) : (
-        <div className={`flex items-center justify-center rounded-3xl bg-accent text-sm text-muted-foreground md:col-span-2 ${HERO_HEIGHT}`}>
-          {primary ? `No products yet in ${primary.category.name}` : "Featured category not set"}
+        <div
+          className={`flex flex-col items-center justify-center gap-2 rounded-3xl bg-accent text-sm text-muted-foreground md:col-span-2 ${HERO_HEIGHT}`}
+        >
+          <ImageOffIcon className="size-8 text-muted-foreground/50" />
+          {primary
+            ? `No products yet in ${primary.category.name}`
+            : "Featured category not set"}
         </div>
       )}
 
@@ -61,21 +71,29 @@ export function HeroBento() {
       {secondary?.product ? (
         <Link
           to={`/products/${secondary.product.id}`}
-          className={`group relative overflow-hidden rounded-3xl bg-accent md:col-span-1 ${HERO_HEIGHT}`}
+          className={`group relative overflow-hidden rounded-3xl bg-accent shadow-sm transition-shadow duration-300 hover:shadow-xl md:col-span-1 ${HERO_HEIGHT}`}
         >
-          <ImageCarousel images={secondary.product.images} alt={secondary.product.name} />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-4">
-            <p className="rounded-full bg-white/90 px-3 py-1 text-sm font-medium text-foreground shadow-sm">
+          <ImageCarousel
+            images={secondary.product.images}
+            alt={secondary.product.name}
+          />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-4 transition-transform duration-300 group-hover:scale-[1.02]">
+            <p className="min-w-0 truncate rounded-full bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-sm backdrop-blur-sm">
               {secondary.product.name}
             </p>
-            <p className="rounded-full bg-black px-3 py-1 text-sm font-medium text-white">
+            <p className="shrink-0 rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">
               {formatPrice(secondary.product.price)}
             </p>
           </div>
         </Link>
       ) : (
-        <div className={`flex items-center justify-center rounded-3xl bg-accent text-sm text-muted-foreground md:col-span-1 ${HERO_HEIGHT}`}>
-          {secondary ? `No products yet in ${secondary.category.name}` : "Featured category not set"}
+        <div
+          className={`flex flex-col items-center justify-center gap-2 rounded-3xl bg-accent text-sm text-muted-foreground md:col-span-1 ${HERO_HEIGHT}`}
+        >
+          <ImageOffIcon className="size-8 text-muted-foreground/50" />
+          {secondary
+            ? `No products yet in ${secondary.category.name}`
+            : "Featured category not set"}
         </div>
       )}
     </div>
