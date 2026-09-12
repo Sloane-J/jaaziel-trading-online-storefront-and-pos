@@ -60,6 +60,11 @@ const AdminActivityLogPage = lazy(() =>
     default: m.AdminActivityLogPage,
   })),
 );
+const AdminReportsPage = lazy(() =>
+  import("@/pages/dashboard/admin/reports").then((m) => ({
+    default: m.AdminReportsPage,
+  })),
+);
 const SuperadminDashboard = lazy(() =>
   import("@/pages/dashboard/superadmin-dashboard").then((m) => ({
     default: m.SuperadminDashboard,
@@ -179,6 +184,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
               <AdminActivityLogPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminReportsPage />
             </ProtectedRoute>
           }
         />
