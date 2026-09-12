@@ -55,7 +55,7 @@ const AdminStaffPage = lazy(() =>
   })),
 );
 const AdminActivityLogPage = lazy(() =>
-  import("@/pages/dashboard/admin/activity-log").then((m) => ({
+  import("@/pages/dashboard/admin/activity-logs").then((m) => ({
     default: m.AdminActivityLogPage,
   })),
 );
@@ -174,7 +174,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/activity-log"
+          path="/admin/activity-logs"
           element={
             <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
               <AdminActivityLogPage />

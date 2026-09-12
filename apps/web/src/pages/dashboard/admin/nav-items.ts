@@ -19,7 +19,7 @@ export const adminNavItems = [
   { label: "POS", href: "/pos", icon: MonitorIcon },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCartIcon },
   { label: "Staff", href: "/admin/staff", icon: UsersIcon },
-  { label: "Activity Log", href: "/admin/activity-log", icon: ActivityIcon },
+  { label: "Activity Log", href: "/admin/activity-logs", icon: ActivityIcon },
   { label: "Reports", href: "/admin/reports", icon: BarChart3Icon },
   { label: "Settings", href: "/admin/settings", icon: SettingsIcon },
 ];

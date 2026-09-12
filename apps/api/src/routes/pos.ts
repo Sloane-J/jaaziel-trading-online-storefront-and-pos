@@ -6,7 +6,7 @@ import { categories } from "../db/schema/categories";
 import { orderItems } from "../db/schema/order-items";
 import { orders } from "../db/schema/orders";
 import { products } from "../db/schema/products";
-import { logActivity } from "../lib/activity-log";
+import { logActivity } from "../lib/activity-logs";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 

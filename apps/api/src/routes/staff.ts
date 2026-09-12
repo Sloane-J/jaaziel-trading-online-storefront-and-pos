@@ -4,7 +4,7 @@ import { z } from "zod";
 import { db } from "../db/client";
 import { user } from "../db/schema/auth";
 import { auth } from "../lib/auth";
-import { logActivity } from "../lib/activity-log";
+import { logActivity } from "../lib/activity-logs";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 

@@ -1,5 +1,5 @@
 import { DashboardLayout } from "@/components/shared/dashboard-layout";
-import { ActivityLogTable } from "@/features/admin/components/activity-log-table";
+import { ActivityLogTable } from "@/features/admin/components/activity-logs-table";
 import { adminNavItems } from "@/pages/dashboard/admin/nav-items";
 
 export function AdminActivityLogPage(): React.JSX.Element {
