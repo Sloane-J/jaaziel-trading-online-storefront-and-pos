@@ -11,6 +11,7 @@ import { StorefrontHomePage } from "@/pages/storefront/home";
 import { OrderConfirmationPage } from "@/pages/storefront/order-confirmation";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 import { SearchResultsPage } from "@/pages/storefront/search";
+import { InstallPromptBanner } from "@/components/shared/install-prompt-banner";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
@@ -217,6 +218,7 @@ function App() {
           <Route path="/pos/payment" element={<PosPaymentPage />} />
         </Route>
       </Routes>
+      <InstallPromptBanner />
     </Suspense>
   );
 }

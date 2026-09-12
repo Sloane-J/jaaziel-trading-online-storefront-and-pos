@@ -8,7 +8,7 @@ import type { Variables } from "../types/context";
 const sitemapRoutes = new Hono<{ Variables: Variables }>();
 
 const DEFAULT_TENANT_ID = process.env.DEFAULT_TENANT_ID;
-const SITE_URL = process.env.SITE_URL ?? "https://jaazieltrading.com";
+const SITE_URL = process.env.SITE_URL ?? "https://jaaziel-trading.vercel.app";
 
 function xmlEscape(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

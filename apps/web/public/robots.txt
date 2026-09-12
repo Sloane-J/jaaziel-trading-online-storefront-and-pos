@@ -6,4 +6,4 @@ Disallow: /superadmin
 Disallow: /orders
 Disallow: /login
 
-Sitemap: https://jaazieltrading.com/sitemap.xml
+Sitemap: https://jaaziel-trading.vercel.app/sitemap.xml
