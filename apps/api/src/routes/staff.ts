@@ -4,6 +4,7 @@ import { z } from "zod";
 import { db } from "../db/client";
 import { user } from "../db/schema/auth";
 import { auth } from "../lib/auth";
+import { logActivity } from "../lib/activity-log";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
@@ -58,6 +59,8 @@ staffRoutes.post("/", requireAuth(["admin", "superadmin"]), async (c) => {
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
 
+  const actor = c.get("user")!;
+
   const body = await c.req.json();
   const parsed = createStaffSchema.safeParse(body);
 
@@ -98,6 +101,16 @@ staffRoutes.post("/", requireAuth(["admin", "superadmin"]), async (c) => {
       createdAt: user.createdAt,
     });
 
+  await logActivity({
+    tenantId,
+    actorId: actor.id,
+    actorName: actor.name ?? actor.email,
+    action: "staff.created",
+    targetType: "user",
+    targetId: updated.id,
+    details: `Created staff account "${updated.name}" with role "${role}"`,
+  });
+
   return c.json(updated, 201);
 });
 
@@ -110,6 +123,7 @@ staffRoutes.patch("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
 
+  const actor = c.get("user")!;
   const id = c.req.param("id") as string;
   const body = await c.req.json();
   const parsed = updateStaffSchema.safeParse(body);
@@ -123,7 +137,7 @@ staffRoutes.patch("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
   }
 
   const [target] = await db
-    .select({ role: user.role })
+    .select({ role: user.role, name: user.name })
     .from(user)
     .where(and(eq(user.id, id), eq(user.tenantId, tenantId)))
     .limit(1);
@@ -148,6 +162,30 @@ staffRoutes.patch("/:id", requireAuth(["admin", "superadmin"]), async (c) => {
       isActive: user.isActive,
       createdAt: user.createdAt,
     });
+
+  if (parsed.data.role && parsed.data.role !== target.role) {
+    await logActivity({
+      tenantId,
+      actorId: actor.id,
+      actorName: actor.name ?? actor.email,
+      action: "staff.role_changed",
+      targetType: "user",
+      targetId: id,
+      details: `Changed "${target.name}"'s role from "${target.role}" to "${parsed.data.role}"`,
+    });
+  }
+
+  if (typeof parsed.data.isActive === "boolean") {
+    await logActivity({
+      tenantId,
+      actorId: actor.id,
+      actorName: actor.name ?? actor.email,
+      action: parsed.data.isActive ? "staff.activated" : "staff.deactivated",
+      targetType: "user",
+      targetId: id,
+      details: `${parsed.data.isActive ? "Activated" : "Deactivated"} "${target.name}"`,
+    });
+  }
 
   return c.json(updated);
 });
