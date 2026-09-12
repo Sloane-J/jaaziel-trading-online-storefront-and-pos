@@ -1,4 +1,5 @@
-import type { LucideIcon } from "lucide-react";import {
+import type { LucideIcon } from "lucide-react";
+import {
 	BarChart3Icon,
 	BellIcon,
 	CircleDotIcon,
@@ -13,6 +14,7 @@ import type { LucideIcon } from "lucide-react";import {
 } from "lucide-react";
 
 import type { JSX, ReactNode } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
@@ -80,10 +82,15 @@ export function DashboardLayout({
 }: DashboardLayoutProps): JSX.Element {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
 	async function handleLogout(): Promise<void> {
-		await authClient.signOut();
-		navigate("/login");
+		setIsLoggingOut(true);
+		try {
+			await authClient.signOut();
+		} finally {
+			navigate("/login");
+		}
 	}
 
 	return (
@@ -150,11 +157,15 @@ export function DashboardLayout({
 						type="button"
 						variant="ghost"
 						onClick={handleLogout}
+						disabled={isLoggingOut}
 						aria-label="Log out"
-						className="w-full justify-start gap-2 rounded-sm text-destructive transition-colors duration-200 ease-out hover:bg-destructive/10 hover:text-destructive"
+						className="w-full justify-start gap-2 rounded-sm text-destructive transition-colors duration-200 ease-out hover:bg-destructive/10 hover:text-destructive disabled:opacity-60"
 					>
-						<LogOutIcon className="size-4" aria-hidden="true" />
-						Log out
+						<LogOutIcon
+							className={`size-4 ${isLoggingOut ? "animate-pulse" : ""}`}
+							aria-hidden="true"
+						/>
+						{isLoggingOut ? "Logging out..." : "Log out"}
 					</Button>
 				</SidebarFooter>
 			</Sidebar>

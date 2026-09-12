@@ -29,6 +29,7 @@ export const user = pgTable("user", {
 		.notNull(),
 	role: userRoleEnum("role").default("customer"),
 	tenantId: text("tenant_id"),
+	isActive: boolean("is_active").default(true).notNull(),
 });
 
 export const session = pgTable(
