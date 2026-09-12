@@ -5,6 +5,7 @@ import { db } from "../db/client";
 import { orderItems } from "../db/schema/order-items";
 import { orderStatusEnum, orders } from "../db/schema/orders";
 import { products } from "../db/schema/products";
+import { logActivity } from "../lib/activity-log";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
@@ -44,7 +45,7 @@ ordersRoutes.get("/", requireAuth(["admin", "superadmin"]), async (c) => {
   }
 
   await expireStalePendingOrders(tenantId);
-  
+
   const status = c.req.query("status");
   const channel = c.req.query("channel");
   const conditions = [eq(orders.tenantId, tenantId)];
@@ -123,12 +124,24 @@ ordersRoutes.patch("/:id/status", requireAuth(["admin", "superadmin"]), async (c
   if (!tenantId) {
     return c.json({ error: "No tenant associated with this account" }, 400);
   }
+  const actor = c.get("user")!;
   const id = c.req.param("id") as string;
   const body = await c.req.json();
   const parsed = updateStatusSchema.safeParse(body);
   if (!parsed.success) {
     return c.json({ error: parsed.error.flatten() }, 400);
   }
+
+  const [existing] = await db
+    .select({ status: orders.status })
+    .from(orders)
+    .where(and(eq(orders.id, id), eq(orders.tenantId, tenantId)))
+    .limit(1);
+
+  if (!existing) {
+    return c.json({ error: "Order not found" }, 404);
+  }
+
   const [updated] = await db
     .update(orders)
     .set({ status: parsed.data.status, updatedAt: new Date() })
@@ -137,6 +150,19 @@ ordersRoutes.patch("/:id/status", requireAuth(["admin", "superadmin"]), async (c
   if (!updated) {
     return c.json({ error: "Order not found" }, 404);
   }
+
+  if (parsed.data.status !== existing.status) {
+    await logActivity({
+      tenantId,
+      actorId: actor.id,
+      actorName: actor.name ?? actor.email,
+      action: "order.status_changed",
+      targetType: "order",
+      targetId: id,
+      details: `Changed order status from "${existing.status}" to "${parsed.data.status}"`,
+    });
+  }
+
   return c.json(updated);
 });
 
