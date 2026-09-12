@@ -6,6 +6,7 @@ import { categories } from "../db/schema/categories";
 import { orderItems } from "../db/schema/order-items";
 import { orders } from "../db/schema/orders";
 import { products } from "../db/schema/products";
+import { logActivity } from "../lib/activity-log";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
@@ -119,6 +120,16 @@ posRoutes.post(
 				.set({ stock: product.stock - item.quantity, updatedAt: new Date() })
 				.where(eq(products.id, item.productId));
 		}
+
+		await logActivity({
+			tenantId: DEFAULT_TENANT_ID,
+			actorId: user!.id,
+			actorName: user!.name ?? user!.email,
+			action: "pos.sale_created",
+			targetType: "order",
+			targetId: order.id,
+			details: `POS sale of ${itemRows.length} item(s) totaling GHS ${totalAmount.toFixed(2)}, paid via ${parsed.data.paymentMethod}`,
+		});
 
 		return c.json({ order, items: itemRows }, 201);
 	},

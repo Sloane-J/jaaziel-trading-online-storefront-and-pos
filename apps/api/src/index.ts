@@ -15,6 +15,8 @@ import storefrontRoutes from "./routes/storefront";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
 import staffRoutes from "./routes/staff";
+import activityLogsRoutes from "./routes/activity-logs";
+
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -50,5 +52,7 @@ app.route("/paystack", paystackWebhookRoutes);
 
 // ...
 app.route("/staff", staffRoutes);
+
+app.route("/activity-logs", activityLogsRoutes);
 
 export default app;
