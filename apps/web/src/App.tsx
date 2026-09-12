@@ -15,37 +15,64 @@ import { SearchResultsPage } from "@/pages/storefront/search";
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
 const AdminDashboard = lazy(() =>
-  import("@/pages/dashboard/admin-dashboard").then((m) => ({ default: m.AdminDashboard })),
+  import("@/pages/dashboard/admin-dashboard").then((m) => ({
+    default: m.AdminDashboard,
+  })),
 );
 const AdminCategoriesPage = lazy(() =>
-  import("@/pages/dashboard/admin/categories").then((m) => ({ default: m.AdminCategoriesPage })),
+  import("@/pages/dashboard/admin/categories").then((m) => ({
+    default: m.AdminCategoriesPage,
+  })),
 );
 const AdminProductsPage = lazy(() =>
-  import("@/pages/dashboard/admin/products").then((m) => ({ default: m.AdminProductsPage })),
+  import("@/pages/dashboard/admin/products").then((m) => ({
+    default: m.AdminProductsPage,
+  })),
 );
 const AdminStorefrontPage = lazy(() =>
-  import("@/pages/dashboard/admin/storefront").then((m) => ({ default: m.AdminStorefrontPage })),
+  import("@/pages/dashboard/admin/storefront").then((m) => ({
+    default: m.AdminStorefrontPage,
+  })),
 );
 const AdminOrdersPage = lazy(() =>
-  import("@/pages/dashboard/admin/orders").then((m) => ({ default: m.AdminOrdersPage })),
+  import("@/pages/dashboard/admin/orders").then((m) => ({
+    default: m.AdminOrdersPage,
+  })),
 );
 const AdminOrderDetailPage = lazy(() =>
-  import("@/pages/dashboard/admin/order-detail").then((m) => ({ default: m.AdminOrderDetailPage })),
+  import("@/pages/dashboard/admin/order-detail").then((m) => ({
+    default: m.AdminOrderDetailPage,
+  })),
 );
 const AdminSettingsPage = lazy(() =>
-  import("@/pages/dashboard/admin/settings").then((m) => ({ default: m.AdminSettingsPage })),
+  import("@/pages/dashboard/admin/settings").then((m) => ({
+    default: m.AdminSettingsPage,
+  })),
+);
+const AdminStaffPage = lazy(() =>
+  import("@/pages/dashboard/admin/staff").then((m) => ({
+    default: m.AdminStaffPage,
+  })),
 );
 const SuperadminDashboard = lazy(() =>
-  import("@/pages/dashboard/superadmin-dashboard").then((m) => ({ default: m.SuperadminDashboard })),
+  import("@/pages/dashboard/superadmin-dashboard").then((m) => ({
+    default: m.SuperadminDashboard,
+  })),
 );
 const StaffDashboard = lazy(() =>
-  import("@/pages/dashboard/staff-dashboard").then((m) => ({ default: m.StaffDashboard })),
+  import("@/pages/dashboard/staff-dashboard").then((m) => ({
+    default: m.StaffDashboard,
+  })),
 );
 const PosScreen = lazy(() =>
-  import("@/pages/dashboard/pos/pos-screen").then((m) => ({ default: m.PosScreen })),
+  import("@/pages/dashboard/pos/pos-screen").then((m) => ({
+    default: m.PosScreen,
+  })),
 );
 const PosPaymentPage = lazy(() =>
-  import("@/pages/dashboard/pos/pos-payment").then((m) => ({ default: m.PosPaymentPage })),
+  import("@/pages/dashboard/pos/pos-payment").then((m) => ({
+    default: m.PosPaymentPage,
+  })),
 );
 
 function PageLoadingFallback() {
@@ -79,7 +106,10 @@ function App() {
           <Route path="/shop/:slug" element={<CategoryPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/order-confirmation/:id" element={<OrderConfirmationPage />} />
+          <Route
+            path="/order-confirmation/:id"
+            element={<OrderConfirmationPage />}
+          />
         </Route>
 
         <Route
@@ -127,6 +157,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminOrderDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/staff"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "superadmin"]}>
+              <AdminStaffPage />
             </ProtectedRoute>
           }
         />

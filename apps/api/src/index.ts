@@ -14,6 +14,7 @@ import sitemapRoutes from "./routes/sitemap";
 import storefrontRoutes from "./routes/storefront";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
+import staffRoutes from "./routes/staff";
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -46,5 +47,8 @@ app.route("/checkout", checkoutRoutes);
 app.route("/orders", ordersRoutes);
 
 app.route("/paystack", paystackWebhookRoutes);
+
+// ...
+app.route("/staff", staffRoutes);
 
 export default app;
