@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { auth } from "./lib/auth";
 import { sessionMiddleware } from "./middleware/session";
+import activityLogsRoutes from "./routes/activity-logs";
 import cartRoutes from "./routes/cart";
 import categoriesRoutes from "./routes/categories";
 import checkoutRoutes from "./routes/checkout";
@@ -11,11 +12,11 @@ import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
 import reportsRoutes from "./routes/reports";
 import sitemapRoutes from "./routes/sitemap";
+import staffRoutes from "./routes/staff";
 import storefrontRoutes from "./routes/storefront";
+import superadminOrdersRoutes from "./routes/superadmin-orders";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
-import staffRoutes from "./routes/staff";
-import activityLogsRoutes from "./routes/activity-logs";
 
 
 const app = new Hono<{ Variables: Variables }>();
@@ -54,5 +55,8 @@ app.route("/paystack", paystackWebhookRoutes);
 app.route("/staff", staffRoutes);
 
 app.route("/activity-logs", activityLogsRoutes);
+// ...
+app.route("/superadmin/orders", superadminOrdersRoutes);
+
 
 export default app;

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Outlet, Route, Routes } from "react-router";
+import { InstallPromptBanner } from "@/components/shared/install-prompt-banner";
 import { ProtectedRoute } from "@/components/shared/protected-route";
 import { LoginForm } from "@/features/auth/login-form";
 import { PosSaleProvider } from "@/features/pos/context/pos-sale-context";
@@ -11,7 +12,6 @@ import { StorefrontHomePage } from "@/pages/storefront/home";
 import { OrderConfirmationPage } from "@/pages/storefront/order-confirmation";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 import { SearchResultsPage } from "@/pages/storefront/search";
-import { InstallPromptBanner } from "@/components/shared/install-prompt-banner";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
@@ -75,31 +75,32 @@ const SuperadminOrdersPage = lazy(() =>
     default: m.SuperadminOrdersPage,
   })),
 );
-const SuperadminDataIntegrityPage = lazy(() =>
-  import("@/pages/dashboard/superadmin/data-integrity").then((m) => ({
-    default: m.SuperadminDataIntegrityPage,
-  })),
-);
-const SuperadminStorefrontPage = lazy(() =>
-  import("@/pages/dashboard/superadmin/storefront").then((m) => ({
-    default: m.SuperadminStorefrontPage,
-  })),
-);
-const SuperadminHealthPage = lazy(() =>
-  import("@/pages/dashboard/superadmin/health").then((m) => ({
-    default: m.SuperadminHealthPage,
-  })),
-);
-const SuperadminMultiTenantPage = lazy(() =>
-  import("@/pages/dashboard/superadmin/multi-tenant").then((m) => ({
-    default: m.SuperadminMultiTenantPage,
-  })),
-);
-const SuperadminSettingsPage = lazy(() =>
-  import("@/pages/dashboard/superadmin/settings").then((m) => ({
-    default: m.SuperadminSettingsPage,
-  })),
-);
+// Not yet built — uncomment as each page is created.
+// const SuperadminDataIntegrityPage = lazy(() =>
+//   import("@/pages/dashboard/superadmin/data-integrity").then((m) => ({
+//     default: m.SuperadminDataIntegrityPage,
+//   })),
+// );
+// const SuperadminStorefrontPage = lazy(() =>
+//   import("@/pages/dashboard/superadmin/storefront").then((m) => ({
+//     default: m.SuperadminStorefrontPage,
+//   })),
+// );
+// const SuperadminHealthPage = lazy(() =>
+//   import("@/pages/dashboard/superadmin/health").then((m) => ({
+//     default: m.SuperadminHealthPage,
+//   })),
+// );
+// const SuperadminMultiTenantPage = lazy(() =>
+//   import("@/pages/dashboard/superadmin/multi-tenant").then((m) => ({
+//     default: m.SuperadminMultiTenantPage,
+//   })),
+// );
+// const SuperadminSettingsPage = lazy(() =>
+//   import("@/pages/dashboard/superadmin/settings").then((m) => ({
+//     default: m.SuperadminSettingsPage,
+//   })),
+// );
 const StaffDashboard = lazy(() =>
   import("@/pages/dashboard/staff-dashboard").then((m) => ({
     default: m.StaffDashboard,
@@ -250,6 +251,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Not yet built — uncomment as each page is created.
         <Route
           path="/superadmin/data-integrity"
           element={
@@ -290,6 +292,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        */}
 
         <Route
           path="/orders"
