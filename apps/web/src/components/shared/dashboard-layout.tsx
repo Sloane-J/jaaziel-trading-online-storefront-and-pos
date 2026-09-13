@@ -33,11 +33,17 @@ import {
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/hooks/use-session";
 
 type NavItem = {
 	label: string;
 	href: string;
 	icon?: LucideIcon;
+	// Roles allowed to see this item in the sidebar. Omit to show it to
+	// everyone who can see this dashboard at all (e.g. both admin and
+	// superadmin on a shared layout). This only controls sidebar
+	// visibility — actual access is still enforced by ProtectedRoute.
+	roles?: string[];
 };
 
 type DashboardLayoutProps = {
@@ -83,6 +89,12 @@ export function DashboardLayout({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
+	const { data: session } = useSession();
+	const role = (session?.user as { role?: string } | undefined)?.role;
+
+	const visibleNavItems = navItems.filter(
+		(item) => !item.roles || (role && item.roles.includes(role)),
+	);
 
 	async function handleLogout(): Promise<void> {
 		setIsLoggingOut(true);
@@ -114,7 +126,7 @@ export function DashboardLayout({
 						</SidebarGroupLabel>
 						<SidebarGroupContent>
 							<SidebarMenu className="gap-1">
-								{navItems.map((item) => {
+								{visibleNavItems.map((item) => {
 									const isActive = location.pathname === item.href;
 									const Icon = resolveIcon(item);
 

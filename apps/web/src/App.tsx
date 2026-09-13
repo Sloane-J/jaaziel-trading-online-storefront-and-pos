@@ -70,6 +70,36 @@ const SuperadminDashboard = lazy(() =>
     default: m.SuperadminDashboard,
   })),
 );
+const SuperadminOrdersPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/orders").then((m) => ({
+    default: m.SuperadminOrdersPage,
+  })),
+);
+const SuperadminDataIntegrityPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/data-integrity").then((m) => ({
+    default: m.SuperadminDataIntegrityPage,
+  })),
+);
+const SuperadminStorefrontPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/storefront").then((m) => ({
+    default: m.SuperadminStorefrontPage,
+  })),
+);
+const SuperadminHealthPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/health").then((m) => ({
+    default: m.SuperadminHealthPage,
+  })),
+);
+const SuperadminMultiTenantPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/multi-tenant").then((m) => ({
+    default: m.SuperadminMultiTenantPage,
+  })),
+);
+const SuperadminSettingsPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/settings").then((m) => ({
+    default: m.SuperadminSettingsPage,
+  })),
+);
 const StaffDashboard = lazy(() =>
   import("@/pages/dashboard/staff-dashboard").then((m) => ({
     default: m.StaffDashboard,
@@ -203,6 +233,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/superadmin"
           element={
@@ -211,6 +242,55 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/superadmin/orders"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminOrdersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/data-integrity"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminDataIntegrityPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/storefront"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminStorefrontPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/health"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminHealthPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/multi-tenant"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminMultiTenantPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/superadmin/settings"
+          element={
+            <ProtectedRoute allowedRoles={["superadmin"]}>
+              <SuperadminSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/orders"
           element={
