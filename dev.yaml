@@ -1,0 +1,19 @@
+version: 1
+
+services:
+  drizzle:
+    command: npx
+    args: ["drizzle-kit", "studio"]
+    working_dir: ./apps/api
+
+  api:
+    command: pnpm
+    args: ["dev"]
+    working_dir: ./apps/api
+    depends_on: [drizzle]
+
+  web:
+    command: pnpm
+    args: ["dev"]
+    working_dir: ./apps/web
+    depends_on: [api]
