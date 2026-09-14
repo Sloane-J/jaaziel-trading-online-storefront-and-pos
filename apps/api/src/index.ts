@@ -15,6 +15,7 @@ import sitemapRoutes from "./routes/sitemap";
 import staffRoutes from "./routes/staff";
 import storefrontRoutes from "./routes/storefront";
 import dataIntegrityRoutes from "./routes/superadmin-data-integrity";
+import healthRoutes from "./routes/superadmin-health";
 import superadminOrdersRoutes from "./routes/superadmin-orders";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
@@ -51,5 +52,7 @@ app.route("/staff", staffRoutes);
 app.route("/activity-logs", activityLogsRoutes);
 app.route("/superadmin/orders", superadminOrdersRoutes);
 app.route("/superadmin/data-integrity", dataIntegrityRoutes);
+// ...
+app.route("/superadmin/health", healthRoutes);
 
 export default app;

@@ -86,21 +86,21 @@ const SuperadminStorefrontPage = lazy(() =>
     default: m.SuperadminStorefrontPage,
   })),
 );
-// const SuperadminHealthPage = lazy(() =>
-//   import("@/pages/dashboard/superadmin/health").then((m) => ({
-//     default: m.SuperadminHealthPage,
-//   })),
-// );
-// const SuperadminMultiTenantPage = lazy(() =>
-//   import("@/pages/dashboard/superadmin/multi-tenant").then((m) => ({
-//     default: m.SuperadminMultiTenantPage,
-//   })),
-// );
-// const SuperadminSettingsPage = lazy(() =>
-//   import("@/pages/dashboard/superadmin/settings").then((m) => ({
-//     default: m.SuperadminSettingsPage,
-//   })),
-// );
+const SuperadminHealthPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/health").then((m) => ({
+    default: m.SuperadminHealthPage,
+  })),
+);
+const SuperadminMultiTenantPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/multi-tenant").then((m) => ({
+    default: m.SuperadminMultiTenantPage,
+  })),
+);
+const SuperadminSettingsPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/settings").then((m) => ({
+    default: m.SuperadminSettingsPage,
+  })),
+);
 const StaffDashboard = lazy(() =>
   import("@/pages/dashboard/staff-dashboard").then((m) => ({
     default: m.StaffDashboard,
@@ -269,7 +269,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* Not yet built — uncomment as each page is created.
+       
         <Route
           path="/superadmin/health"
           element={
@@ -278,6 +278,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/superadmin/multi-tenant"
           element={
@@ -286,6 +287,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+     
         <Route
           path="/superadmin/settings"
           element={
@@ -294,7 +296,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        */}
 
         <Route
           path="/orders"
