@@ -3,6 +3,7 @@ export * from "./auth";
 export * from "./cart-items";
 export * from "./carts";
 export * from "./categories";
+export * from "./cron-runs";
 export * from "./inventory-movements";
 export * from "./order-items";
 export * from "./orders";

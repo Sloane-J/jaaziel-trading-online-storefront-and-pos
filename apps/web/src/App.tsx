@@ -76,16 +76,16 @@ const SuperadminOrdersPage = lazy(() =>
   })),
 );
 // Not yet built — uncomment as each page is created.
-// const SuperadminDataIntegrityPage = lazy(() =>
-//   import("@/pages/dashboard/superadmin/data-integrity").then((m) => ({
-//     default: m.SuperadminDataIntegrityPage,
-//   })),
-// );
-// const SuperadminStorefrontPage = lazy(() =>
-//   import("@/pages/dashboard/superadmin/storefront").then((m) => ({
-//     default: m.SuperadminStorefrontPage,
-//   })),
-// );
+const SuperadminDataIntegrityPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/data-integrity").then((m) => ({
+    default: m.SuperadminDataIntegrityPage,
+  })),
+);
+const SuperadminStorefrontPage = lazy(() =>
+  import("@/pages/dashboard/superadmin/storefront").then((m) => ({
+    default: m.SuperadminStorefrontPage,
+  })),
+);
 // const SuperadminHealthPage = lazy(() =>
 //   import("@/pages/dashboard/superadmin/health").then((m) => ({
 //     default: m.SuperadminHealthPage,
@@ -251,7 +251,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        {/* Not yet built — uncomment as each page is created.
+        
         <Route
           path="/superadmin/data-integrity"
           element={
@@ -260,6 +260,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        
         <Route
           path="/superadmin/storefront"
           element={
@@ -268,6 +269,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        {/* Not yet built — uncomment as each page is created.
         <Route
           path="/superadmin/health"
           element={

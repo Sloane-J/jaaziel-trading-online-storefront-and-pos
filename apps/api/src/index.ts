@@ -14,10 +14,10 @@ import reportsRoutes from "./routes/reports";
 import sitemapRoutes from "./routes/sitemap";
 import staffRoutes from "./routes/staff";
 import storefrontRoutes from "./routes/storefront";
+import dataIntegrityRoutes from "./routes/superadmin-data-integrity";
 import superadminOrdersRoutes from "./routes/superadmin-orders";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
-
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -45,18 +45,11 @@ app.route("/pos", posRoutes);
 app.route("/orders", ordersRoutes);
 app.route("/reports", reportsRoutes);
 app.route("/", sitemapRoutes);
-// ...
 app.route("/checkout", checkoutRoutes);
-app.route("/orders", ordersRoutes);
-
 app.route("/paystack", paystackWebhookRoutes);
-
-// ...
 app.route("/staff", staffRoutes);
-
 app.route("/activity-logs", activityLogsRoutes);
-// ...
 app.route("/superadmin/orders", superadminOrdersRoutes);
-
+app.route("/superadmin/data-integrity", dataIntegrityRoutes);
 
 export default app;
