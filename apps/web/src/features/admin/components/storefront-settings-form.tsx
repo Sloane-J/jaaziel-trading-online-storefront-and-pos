@@ -8,7 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ImageUpload } from "@/features/admin/components/image-upload";
+import {
+  BannerSlidesEditor,
+  type BannerSlide,
+} from "@/features/admin/components/banner-slides-editor";
 import { useCategories } from "@/features/admin/hooks/use-categories";
 import {
   useStorefrontSettings,
@@ -22,8 +25,8 @@ export function StorefrontSettingsForm() {
   const { data: categories } = useCategories();
   const updateSettings = useUpdateStorefrontSettings();
 
-  const [topBannerImages, setTopBannerImages] = useState<string[]>([]);
-  const [secondBannerImages, setSecondBannerImages] = useState<string[]>([]);
+  const [topBannerImages, setTopBannerImages] = useState<BannerSlide[]>([]);
+  const [secondBannerImages, setSecondBannerImages] = useState<BannerSlide[]>([]);
   const [heroPrimaryCategoryId, setHeroPrimaryCategoryId] =
     useState<string>(NONE_VALUE);
   const [heroSecondaryCategoryId, setHeroSecondaryCategoryId] =
@@ -34,7 +37,7 @@ export function StorefrontSettingsForm() {
     NONE_VALUE,
   ]);
 
-  const [saveState, setSaveState] = useState<
+  const [saveState, setSaveState] = useState
     "idle" | "saving" | "saved" | "error"
   >("idle");
   const [error, setError] = useState<string | null>(null);
@@ -120,11 +123,11 @@ export function StorefrontSettingsForm() {
           <h3 className="text-lg font-semibold text-foreground">Top banner</h3>
           <p className="text-sm text-muted-foreground">
             Wide images shown at the very top of the homepage. Add more than one
-            for a rotating carousel.
+            for a rotating carousel. Optionally link each slide to a category.
           </p>
         </div>
-        <ImageUpload
-          images={topBannerImages}
+        <BannerSlidesEditor
+          slides={topBannerImages}
           onChange={setTopBannerImages}
           maxImages={5}
         />
@@ -228,11 +231,12 @@ export function StorefrontSettingsForm() {
             Second banner
           </h3>
           <p className="text-sm text-muted-foreground">
-            A second wide banner shown further down the homepage.
+            A second wide banner shown further down the homepage. Optionally
+            link each slide to a category.
           </p>
         </div>
-        <ImageUpload
-          images={secondBannerImages}
+        <BannerSlidesEditor
+          slides={secondBannerImages}
           onChange={setSecondBannerImages}
           maxImages={5}
         />

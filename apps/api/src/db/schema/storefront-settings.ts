@@ -2,6 +2,12 @@ import { jsonb, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 import { categories } from "./categories";
 import { tenants } from "./tenants";
 
+export type BannerSlide = {
+	image: string;
+	buttonLabel: string | null;
+	href: string | null;
+};
+
 export const storefrontSettings = pgTable("storefront_settings", {
 	id: uuid("id").primaryKey().defaultRandom(),
 	tenantId: uuid("tenant_id")
@@ -9,12 +15,14 @@ export const storefrontSettings = pgTable("storefront_settings", {
 		.unique()
 		.references(() => tenants.id),
 
-	// Top banner carousel — ordered list of image URLs, admin-configurable.
-	topBannerImages: jsonb("top_banner_images").$type<string[]>().default([]),
+	// Top banner carousel — ordered list of slides, each with an image and
+	// an optional overlay button (label + destination). buttonLabel/href
+	// are null for plain advertisement-only slides with no button.
+	topBannerImages: jsonb("top_banner_images").$type<BannerSlide[]>().default([]),
 
-	// Second banner, placed lower on the homepage.
+	// Second banner, placed lower on the homepage. Same shape as above.
 	secondBannerImages: jsonb("second_banner_images")
-		.$type<string[]>()
+		.$type<BannerSlide[]>()
 		.default([]),
 
 	// Hero bento — 2 featured category slots.
