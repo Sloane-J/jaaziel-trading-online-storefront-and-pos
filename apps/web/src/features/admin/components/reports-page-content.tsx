@@ -269,9 +269,9 @@ export function ReportsPageContent() {
                   border: "1px solid var(--border)",
                   fontSize: 12,
                 }}
-                formatter={(value: number) => [formatPrice(value), "Revenue"]}
+                formatter={(value) => [formatPrice(Number(value)), "Revenue"]}
                 labelFormatter={(value) =>
-                  new Date(value).toLocaleDateString("en-GH", {
+                  new Date(String(value)).toLocaleDateString("en-GH", {
                     month: "short",
                     day: "numeric",
                   })
