@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { getImageUrl } from "@/lib/get-image-url";
+import type { BannerSlide } from "@/lib/api/storefront-settings";
 
 type BannerCarouselProps = {
-  images: string[];
+  slides: BannerSlide[];
   autoPlayMs?: number;
 };
 
@@ -14,7 +16,7 @@ const SWIPE_THRESHOLD = 40;
 const BANNER_WIDTHS = [480, 768, 1024, 1280, 1600];
 
 export function BannerCarousel({
-  images,
+  slides,
   autoPlayMs = 5000,
 }: BannerCarouselProps) {
   const [index, setIndex] = useState(0);
@@ -24,7 +26,7 @@ export function BannerCarousel({
   const touchDeltaX = useRef(0);
   const prefersReducedMotion = useRef(false);
 
-  const hasMultiple = images.length > 1;
+  const hasMultiple = slides.length > 1;
 
   useEffect(() => {
     prefersReducedMotion.current = window.matchMedia(
@@ -38,18 +40,18 @@ export function BannerCarousel({
     }
 
     const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % images.length);
+      setIndex((current) => (current + 1) % slides.length);
     }, autoPlayMs);
 
     return () => window.clearInterval(timer);
-  }, [hasMultiple, isPaused, images.length, autoPlayMs]);
+  }, [hasMultiple, isPaused, slides.length, autoPlayMs]);
 
   function goPrev() {
-    setIndex((current) => (current - 1 + images.length) % images.length);
+    setIndex((current) => (current - 1 + slides.length) % slides.length);
   }
 
   function goNext() {
-    setIndex((current) => (current + 1) % images.length);
+    setIndex((current) => (current + 1) % slides.length);
   }
 
   function handleTouchStart(e: React.TouchEvent<HTMLDivElement>) {
@@ -80,7 +82,9 @@ export function BannerCarousel({
     touchDeltaX.current = 0;
   }
 
-  if (images.length === 0) return null;
+  if (slides.length === 0) return null;
+
+  const activeSlide = slides[index];
 
   return (
     <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
@@ -97,16 +101,16 @@ export function BannerCarousel({
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {images.map((src, i) => {
+        {slides.map((slide, i) => {
           const srcSet = BANNER_WIDTHS.map(
             (width) =>
-              `${getImageUrl(src, {
+              `${getImageUrl(slide.image, {
                 width,
                 quality: 80,
               })} ${width}w`,
           ).join(", ");
 
-          const optimizedSrc = getImageUrl(src, {
+          const optimizedSrc = getImageUrl(slide.image, {
             width: 1600,
             quality: 80,
           });
@@ -116,7 +120,7 @@ export function BannerCarousel({
 
           return (
             <img
-              key={src}
+              key={slide.image}
               src={optimizedSrc}
               srcSet={srcSet}
               sizes="100vw"
@@ -125,7 +129,7 @@ export function BannerCarousel({
               alt=""
               role="group"
               aria-roledescription="slide"
-              aria-label={`${i + 1} of ${images.length}`}
+              aria-label={`${i + 1} of ${slides.length}`}
               aria-hidden={!isActive}
               loading={isFirst ? "eager" : "lazy"}
               fetchPriority={isFirst ? "high" : "auto"}
@@ -137,8 +141,19 @@ export function BannerCarousel({
           );
         })}
 
+        {/* Overlay button for the active slide, if it has one. A real,
+            keyboard-accessible link — not baked into the image. */}
+        {activeSlide.buttonLabel && activeSlide.href && (
+          <Link
+            to={activeSlide.href}
+            className="absolute bottom-14 left-4 rounded-full bg-black px-4 py-2 text-sm font-semibold text-white shadow-lg transition-transform hover:scale-105 sm:bottom-16 sm:left-8 sm:px-5 sm:py-2.5 sm:text-base"
+          >
+            {activeSlide.buttonLabel}
+          </Link>
+        )}
+
         <span className="sr-only" aria-live="polite">
-          {`Showing banner ${index + 1} of ${images.length}`}
+          {`Showing banner ${index + 1} of ${slides.length}`}
         </span>
 
         {hasMultiple && (
@@ -147,7 +162,7 @@ export function BannerCarousel({
             role="tablist"
             aria-label="Banner navigation"
           >
-            {images.map((_, i) => (
+            {slides.map((_, i) => (
               <button
                 key={i}
                 type="button"

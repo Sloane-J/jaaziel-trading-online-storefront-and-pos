@@ -1,5 +1,6 @@
 import type { Category } from "@/lib/api/categories";
 import type { Product } from "@/lib/api/products";
+import type { BannerSlide } from "@/lib/api/storefront-settings";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,8 +15,8 @@ export type SpotlightItem = {
 };
 
 export type StorefrontHome = {
-  topBannerImages: string[];
-  secondBannerImages: string[];
+  topBannerImages: BannerSlide[];
+  secondBannerImages: BannerSlide[];
   hero: {
     primary: FeaturedSlot;
     secondary: FeaturedSlot;

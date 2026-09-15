@@ -171,9 +171,24 @@ storefrontRoutes.get("/categories-preview", async (c) => {
 	return c.json(results);
 });
 
+// Each banner slide is an image with an optional overlay button. buttonLabel
+// and href must both be present together, or both absent — a button with a
+// label but no destination (or vice versa) doesn't make sense to render.
+const bannerSlideSchema = z
+	.object({
+		image: z.string().url(),
+		buttonLabel: z.string().min(1).nullable(),
+		href: z.string().min(1).nullable(),
+	})
+	.refine(
+		(slide) =>
+			(slide.buttonLabel === null) === (slide.href === null),
+		{ message: "buttonLabel and href must both be set, or both be null" },
+	);
+
 const updateSettingsSchema = z.object({
-	topBannerImages: z.array(z.string().url()).optional(),
-	secondBannerImages: z.array(z.string().url()).optional(),
+	topBannerImages: z.array(bannerSlideSchema).optional(),
+	secondBannerImages: z.array(bannerSlideSchema).optional(),
 	heroPrimaryCategoryId: z.string().uuid().nullable().optional(),
 	heroSecondaryCategoryId: z.string().uuid().nullable().optional(),
 	spotlightCategoryIds: z

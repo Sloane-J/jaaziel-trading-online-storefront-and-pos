@@ -1,17 +1,27 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
+export type BannerSlide = {
+  image: string;
+  buttonLabel: string | null;
+  href: string | null;
+};
+
 export type StorefrontSettings = {
   tenantId: string;
-  topBannerImages: string[];
-  secondBannerImages: string[];
+  topBannerImages: BannerSlide[];
+  secondBannerImages: BannerSlide[];
   heroPrimaryCategoryId: string | null;
-  heroSecondaryCategoryId: string |null;
+  heroSecondaryCategoryId: string | null;
   spotlightCategoryIds: string[];
 };
 
-export type UpdateStorefrontSettingsInput = Partial<
-  Omit<StorefrontSettings, "tenantId">
->;
+export type UpdateStorefrontSettingsInput = {
+  topBannerImages?: BannerSlide[];
+  secondBannerImages?: BannerSlide[];
+  heroPrimaryCategoryId?: string | null;
+  heroSecondaryCategoryId?: string | null;
+  spotlightCategoryIds?: string[];
+};
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
@@ -20,6 +30,7 @@ async function handleResponse<T>(res: Response): Promise<T> {
       body?.error && typeof body.error === "string"
         ? body.error
         : `Request failed with status ${res.status}`;
+
     throw new Error(message);
   }
 

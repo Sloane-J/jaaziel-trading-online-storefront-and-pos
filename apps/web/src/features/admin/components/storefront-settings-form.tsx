@@ -37,9 +37,8 @@ export function StorefrontSettingsForm() {
     NONE_VALUE,
   ]);
 
-  const [saveState, setSaveState] = useState
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

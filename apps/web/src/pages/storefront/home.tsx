@@ -43,7 +43,7 @@ export function StorefrontHomePage() {
     <StorefrontLayout>
       {home?.topBannerImages && home.topBannerImages.length > 0 && (
         <div className="pt-6">
-          <BannerCarousel images={home.topBannerImages} />
+          <BannerCarousel slides={home.topBannerImages} />
         </div>
       )}
       <HeroBento />
@@ -51,7 +51,7 @@ export function StorefrontHomePage() {
       {home?.spotlight && <CategorySpotlightSection items={home.spotlight} />}
       {home?.secondBannerImages && home.secondBannerImages.length > 0 && (
         <div className="py-6">
-          <BannerCarousel images={home.secondBannerImages} />
+          <BannerCarousel slides={home.secondBannerImages} />
         </div>
       )}
       {categories?.map((category) => (
