@@ -18,13 +18,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCategories } from "@/features/admin/hooks/use-categories";
 import {
   useStorefrontSettings,
   useUpdateStorefrontSettings,
 } from "@/features/admin/hooks/use-storefront-settings";
+import type { BannerSlide } from "@/lib/api/storefront-settings";
 
 function isValidUrl(value: string): boolean {
   try {
@@ -71,17 +71,19 @@ export function StorefrontDiagnosticsContent() {
     (id) => !validCategoryIds.has(id),
   );
 
-  const invalidTopBannerUrls = settings.topBannerImages.filter((u) => !isValidUrl(u));
-  const invalidSecondBannerUrls = settings.secondBannerImages.filter(
-    (u) => !isValidUrl(u),
+  const invalidTopBannerSlides = settings.topBannerImages.filter(
+    (slide) => !isValidUrl(slide.image),
+  );
+  const invalidSecondBannerSlides = settings.secondBannerImages.filter(
+    (slide) => !isValidUrl(slide.image),
   );
 
   const hasAnyIssue =
     heroPrimaryBroken ||
     heroSecondaryBroken ||
     brokenSpotlightIds.length > 0 ||
-    invalidTopBannerUrls.length > 0 ||
-    invalidSecondBannerUrls.length > 0;
+    invalidTopBannerSlides.length > 0 ||
+    invalidSecondBannerSlides.length > 0;
 
   function removeSpotlightId(id: string) {
     updateSettings.mutate({
@@ -97,9 +99,12 @@ export function StorefrontDiagnosticsContent() {
     updateSettings.mutate({ heroSecondaryCategoryId: null });
   }
 
-  function removeBannerUrl(field: "topBannerImages" | "secondBannerImages", url: string) {
+  function removeBannerSlide(
+    field: "topBannerImages" | "secondBannerImages",
+    image: string,
+  ) {
     updateSettings.mutate({
-      [field]: settings![field].filter((u) => u !== url),
+      [field]: settings![field].filter((slide) => slide.image !== image),
     });
   }
 
@@ -112,6 +117,55 @@ export function StorefrontDiagnosticsContent() {
       spotlightCategoryIds: [],
     });
     setResetOpen(false);
+  }
+
+  function renderBannerList(
+    slides: BannerSlide[],
+    field: "topBannerImages" | "secondBannerImages",
+  ) {
+    if (slides.length === 0) {
+      return <p className="text-sm text-muted-foreground">None set</p>;
+    }
+
+    return (
+      <ul className="space-y-1.5">
+        {slides.map((slide) => {
+          const broken = !isValidUrl(slide.image);
+          return (
+            <li
+              key={slide.image}
+              className="flex items-center justify-between gap-3 rounded-lg border border-border p-2 text-xs"
+            >
+              <span className="flex min-w-0 items-center gap-1.5 truncate">
+                <LinkIcon className="size-3 shrink-0 text-muted-foreground" />
+                <span
+                  className={
+                    broken ? "text-destructive" : "truncate text-muted-foreground"
+                  }
+                >
+                  {broken ? `Malformed URL: ${slide.image}` : slide.image}
+                </span>
+                {slide.buttonLabel && (
+                  <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium text-accent-foreground">
+                    {slide.buttonLabel}
+                  </span>
+                )}
+              </span>
+              {broken && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => removeBannerSlide(field, slide.image)}
+                  className="shrink-0 text-destructive hover:bg-destructive/10"
+                >
+                  <XIcon className="size-3.5" />
+                </Button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    );
   }
 
   return (
@@ -243,38 +297,7 @@ export function StorefrontDiagnosticsContent() {
             Top banner ({settings.topBannerImages.length} images)
           </p>
         </div>
-        {settings.topBannerImages.length === 0 ? (
-          <p className="text-sm text-muted-foreground">None set</p>
-        ) : (
-          <ul className="space-y-1.5">
-            {settings.topBannerImages.map((url) => {
-              const broken = !isValidUrl(url);
-              return (
-                <li
-                  key={url}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-border p-2 text-xs"
-                >
-                  <span className="flex min-w-0 items-center gap-1.5 truncate">
-                    <LinkIcon className="size-3 shrink-0 text-muted-foreground" />
-                    <span className={broken ? "text-destructive" : "truncate text-muted-foreground"}>
-                      {broken ? `Malformed URL: ${url}` : url}
-                    </span>
-                  </span>
-                  {broken && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => removeBannerUrl("topBannerImages", url)}
-                      className="shrink-0 text-destructive hover:bg-destructive/10"
-                    >
-                      <XIcon className="size-3.5" />
-                    </Button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {renderBannerList(settings.topBannerImages, "topBannerImages")}
       </section>
 
       <section className="space-y-3 rounded-xl border border-border bg-card p-4">
@@ -284,38 +307,7 @@ export function StorefrontDiagnosticsContent() {
             Second banner ({settings.secondBannerImages.length} images)
           </p>
         </div>
-        {settings.secondBannerImages.length === 0 ? (
-          <p className="text-sm text-muted-foreground">None set</p>
-        ) : (
-          <ul className="space-y-1.5">
-            {settings.secondBannerImages.map((url) => {
-              const broken = !isValidUrl(url);
-              return (
-                <li
-                  key={url}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-border p-2 text-xs"
-                >
-                  <span className="flex min-w-0 items-center gap-1.5 truncate">
-                    <LinkIcon className="size-3 shrink-0 text-muted-foreground" />
-                    <span className={broken ? "text-destructive" : "truncate text-muted-foreground"}>
-                      {broken ? `Malformed URL: ${url}` : url}
-                    </span>
-                  </span>
-                  {broken && (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => removeBannerUrl("secondBannerImages", url)}
-                      className="shrink-0 text-destructive hover:bg-destructive/10"
-                    >
-                      <XIcon className="size-3.5" />
-                    </Button>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {renderBannerList(settings.secondBannerImages, "secondBannerImages")}
       </section>
 
       {/* Danger zone */}
