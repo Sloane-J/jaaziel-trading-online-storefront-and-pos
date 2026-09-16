@@ -44,11 +44,11 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 p-0 sm:max-w-md"
+        className="flex h-dvh w-full min-w-0 flex-col gap-0 p-0 sm:max-w-md"
         container={container}
       >
         {/* Header */}
-        <SheetHeader className="border-b border-border px-5 py-4">
+        <SheetHeader className="shrink-0 border-b border-border px-5 py-4">
           <SheetTitle className="flex items-center gap-2.5 font-heading text-lg">
             <span className="flex size-8 items-center justify-center rounded-full bg-primary-light text-primary-light-foreground">
               <ShoppingBagIcon className="size-4" />
@@ -64,7 +64,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
 
         {/* Loading */}
         {isLoading ? (
-          <div className="flex-1 space-y-4 overflow-y-auto px-5 py-5">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-5">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="flex gap-3">
                 <div className="size-20 shrink-0 animate-pulse rounded-xl bg-muted" />
@@ -79,7 +79,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
           </div>
         ) : items.length === 0 ? (
           /* Empty Cart */
-          <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+          <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-8 text-center">
             <div className="mb-5 flex size-16 items-center justify-center rounded-full bg-primary-light">
               <ShoppingBagIcon className="size-7 text-primary-light-foreground" />
             </div>
@@ -95,7 +95,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
             <Link
               to="/"
               onClick={() => onOpenChange(false)}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-transform duration-100 active:scale-95 hover:bg-primary/90"
             >
               Continue shopping
               <ArrowRightIcon className="size-4" />
@@ -103,8 +103,8 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
           </div>
         ) : (
           <>
-            {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto">
+            {/* Cart Items — the only scrollable region */}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
               <div className="divide-y divide-border px-5">
                 {items.map((item) => {
                   const itemTotal =
@@ -142,7 +142,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
                             onClick={() => removeItem.mutate(item.id)}
                             disabled={removeItem.isPending}
                             aria-label={`Remove ${item.product.name}`}
-                            className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
+                            className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-transform duration-100 active:scale-90 hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
                           >
                             <TrashIcon className="size-4" />
                           </button>
@@ -169,7 +169,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
                                 updateItem.isPending || removeItem.isPending
                               }
                               aria-label="Decrease quantity"
-                              className="flex size-8 items-center justify-center rounded-l-full text-muted-foreground transition-colors hover:bg-primary-light/20 hover:text-primary disabled:opacity-50"
+                              className="flex size-8 items-center justify-center rounded-l-full text-muted-foreground transition-transform duration-100 active:scale-90 hover:bg-primary-light/20 hover:text-primary disabled:opacity-50"
                             >
                               <MinusIcon className="size-3.5" />
                             </button>
@@ -188,7 +188,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
                               }
                               disabled={updateItem.isPending}
                               aria-label="Increase quantity"
-                              className="flex size-8 items-center justify-center rounded-r-full text-muted-foreground transition-colors hover:bg-primary-light/20 hover:text-primary disabled:opacity-50"
+                              className="flex size-8 items-center justify-center rounded-r-full text-muted-foreground transition-transform duration-100 active:scale-90 hover:bg-primary-light/20 hover:text-primary disabled:opacity-50"
                             >
                               <PlusIcon className="size-3.5" />
                             </button>
@@ -206,8 +206,8 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
               </div>
             </div>
 
-            {/* Summary */}
-            <div className="border-t border-border bg-muted/40 px-5 pb-5 pt-4">
+            {/* Summary — pinned, never scrolls away */}
+            <div className="shrink-0 border-t border-border bg-muted/40 px-5 pb-5 pt-4">
               <div className="space-y-2.5 text-sm">
                 <div className="flex items-center justify-between text-muted-foreground">
                   <span>Subtotal</span>
@@ -228,7 +228,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
               <Link
                 to="/checkout"
                 onClick={() => onOpenChange(false)}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-transform duration-100 active:scale-95 hover:bg-primary/90 hover:shadow-md"
               >
                 Proceed to checkout
                 <ArrowRightIcon className="size-4" />
@@ -237,7 +237,7 @@ export function CartDrawer({ open, onOpenChange, container }: CartDrawerProps) {
               <Link
                 to="/"
                 onClick={() => onOpenChange(false)}
-                className="mt-3 block text-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                className="mt-3 block text-center text-sm font-medium text-muted-foreground transition-transform duration-100 active:scale-95 hover:text-primary"
               >
                 Continue shopping
               </Link>
