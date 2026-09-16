@@ -13,6 +13,16 @@ const superadminOrdersRoutes = new Hono<{ Variables: Variables }>();
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
+type PaystackVerifyResponse = {
+  status: boolean;
+  message?: string;
+  data?: {
+    status: string;
+    amount: number;
+    paid_at?: string;
+  };
+};
+
 // GET /search — superadmin only. Finds an order by its ID (UUID) or its
 // 6-character order code, scoped to the tenant.
 superadminOrdersRoutes.get("/search", requireAuth(["superadmin"]), async (c) => {
@@ -116,12 +126,9 @@ superadminOrdersRoutes.get(
       headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
     });
 
-    const data = await res.json();
+    const data = (await res.json()) as PaystackVerifyResponse;
 
-    if (!data.status) {
-      // Paystack has no record of this reference at all — most likely
-      // payment was never initiated for this order (checkout abandoned
-      // before reaching Paystack), a legitimate and distinguishable result.
+    if (!data.data) {
       return c.json({
         found: false,
         dbPaymentStatus: order.paymentStatus,
@@ -131,7 +138,7 @@ superadminOrdersRoutes.get(
       });
     }
 
-    const paystackStatus = data.data.status as string;
+    const paystackStatus = data.data.status;
     const expectedAmountInPesewas = Math.round(Number(order.totalAmount) * 100);
     const amountMatches = data.data.amount === expectedAmountInPesewas;
 
@@ -188,9 +195,9 @@ superadminOrdersRoutes.patch(
     const res = await fetch(`https://api.paystack.co/transaction/verify/${order.id}`, {
       headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` },
     });
-    const data = await res.json();
+    const data = (await res.json()) as PaystackVerifyResponse;
 
-    if (!data.status || data.data.status !== "success") {
+    if (!data.status || !data.data || data.data.status !== "success") {
       return c.json(
         { error: "Paystack does not confirm this payment as successful. No changes made." },
         400,

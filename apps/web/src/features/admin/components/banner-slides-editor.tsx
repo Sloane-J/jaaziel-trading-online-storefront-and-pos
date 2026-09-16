@@ -1,4 +1,3 @@
-import { XIcon } from "lucide-react";
 import {
   Select,
   SelectContent,

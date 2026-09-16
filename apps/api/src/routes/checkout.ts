@@ -308,9 +308,13 @@ checkoutRoutes.post("/pay", async (c) => {
     body: JSON.stringify(paystackBody),
   });
 
-  const data = await res.json();
+  const data = (await res.json()) as {
+    status: boolean;
+    message?: string;
+    data?: { authorization_url: string; reference: string };
+  };
 
-  if (!data.status) {
+  if (!data.status || !data.data) {
     return c.json({ error: data.message ?? "Could not start payment. Please try again." }, 400);
   }
 
