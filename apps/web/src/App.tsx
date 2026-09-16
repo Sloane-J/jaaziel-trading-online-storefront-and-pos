@@ -12,6 +12,7 @@ import { StorefrontHomePage } from "@/pages/storefront/home";
 import { OrderConfirmationPage } from "@/pages/storefront/order-confirmation";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
 import { SearchResultsPage } from "@/pages/storefront/search";
+import { ReturnsPage } from "@/pages/storefront/returns";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefront visitor
 // never downloads this code (including the heavy Recharts dependency).
@@ -125,6 +126,17 @@ function PageLoadingFallback() {
   );
 }
 
+const AdminReturnsPage = lazy(() =>
+  import("@/pages/dashboard/admin/returns").then((m) => ({
+    default: m.AdminReturnsPage,
+  })),
+);
+const AdminReturnDetailPage = lazy(() =>
+  import("@/pages/dashboard/admin/return-detail").then((m) => ({
+    default: m.AdminReturnDetailPage,
+  })),
+);
+
 function PosLayout() {
   return (
     <PosSaleProvider>
@@ -148,6 +160,7 @@ function App() {
           <Route path="/shop/:slug" element={<CategoryPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/returns" element={<ReturnsPage />} />
           <Route
             path="/order-confirmation/:id"
             element={<OrderConfirmationPage />}
@@ -231,6 +244,22 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminSettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/returns"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminReturnsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/returns/:id"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminReturnDetailPage />
             </ProtectedRoute>
           }
         />

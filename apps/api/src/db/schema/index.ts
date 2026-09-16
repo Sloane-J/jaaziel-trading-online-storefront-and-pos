@@ -8,4 +8,5 @@ export * from "./inventory-movements";
 export * from "./order-items";
 export * from "./orders";
 export * from "./products";
+export * from "./returns";
 export * from "./tenants";

@@ -1,6 +1,6 @@
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, SearchIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,8 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useOrders } from "@/features/admin/hooks/use-orders";
-import { formatPrice } from "@/lib/format-price";
 import type { Order, OrderStatus } from "@/lib/api/orders";
+import { formatPrice } from "@/lib/format-price";
 
 const STATUS_FILTERS: { value: OrderStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },

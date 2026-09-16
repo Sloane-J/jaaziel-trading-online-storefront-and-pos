@@ -19,6 +19,8 @@ const ACTION_LABELS: Record<string, string> = {
   "staff.deactivated": "Staff deactivated",
   "order.status_changed": "Order status changed",
   "pos.sale_created": "POS sale",
+  "return.status_changed": "Return status changed",
+  "return.inventory_restored": "Return inventory restored",
 };
 
 function formatTimestamp(iso: string): string {

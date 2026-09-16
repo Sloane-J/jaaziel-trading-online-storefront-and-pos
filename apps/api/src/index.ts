@@ -11,6 +11,7 @@ import paystackWebhookRoutes from "./routes/paystack-webhook";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
 import reportsRoutes from "./routes/reports";
+import returnsRoutes from "./routes/returns";
 import sitemapRoutes from "./routes/sitemap";
 import staffRoutes from "./routes/staff";
 import storefrontRoutes from "./routes/storefront";
@@ -54,5 +55,8 @@ app.route("/superadmin/orders", superadminOrdersRoutes);
 app.route("/superadmin/data-integrity", dataIntegrityRoutes);
 // ...
 app.route("/superadmin/health", healthRoutes);
+
+// ...
+app.route("/returns", returnsRoutes);
 
 export default app;
