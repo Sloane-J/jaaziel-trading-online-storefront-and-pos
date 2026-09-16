@@ -21,7 +21,7 @@ function SpotlightCard({ item }: { item: SpotlightItem }) {
   }
 
   return (
-    <Link to={`/products/${product.id}`} className="group flex flex-col">
+    <Link to={`/products/${product.slug}`} className="group flex flex-col">
       <div className="relative aspect-square w-full overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 group-hover:shadow-lg group-active:scale-95">
         {product.images[0] ? (
           <img

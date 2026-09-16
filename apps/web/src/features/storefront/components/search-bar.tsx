@@ -43,10 +43,10 @@ export function SearchBar() {
     navigate(`/search?q=${encodeURIComponent(query.trim())}`);
   }
 
-  function handleResultClick(productId: string) {
+  function handleResultClick(productSlug: string) {
     setOpen(false);
     setQuery("");
-    navigate(`/products/${productId}`);
+    navigate(`/products/${productSlug}`);
   }
 
   const showDropdown = open && debouncedQuery.trim().length > 1;
@@ -90,7 +90,7 @@ export function SearchBar() {
                   <li key={product.id}>
                     <button
                       type="button"
-                      onClick={() => handleResultClick(product.id)}
+                      onClick={() => handleResultClick(product.slug)}
                       className="flex w-full items-center gap-3 px-4 py-2 text-left transition-colors hover:bg-accent"
                     >
                       <div className="size-10 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">

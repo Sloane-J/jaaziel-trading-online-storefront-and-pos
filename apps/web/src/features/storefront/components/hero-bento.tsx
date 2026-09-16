@@ -34,7 +34,7 @@ export function HeroBento() {
       {/* Primary bento — wide, frosted glass panel + prev/next controls */}
       {primary?.product ? (
         <Link
-          to={`/products/${primary.product.id}`}
+          to={`/products/${primary.product.slug}`}
           className={`group relative overflow-hidden rounded-3xl bg-accent shadow-sm transition-shadow duration-300 hover:shadow-xl md:col-span-2 ${HERO_HEIGHT}`}
         >
           <ImageCarousel
@@ -70,7 +70,7 @@ export function HeroBento() {
       {/* Secondary bento — square, carousel only, pill-shaped price */}
       {secondary?.product ? (
         <Link
-          to={`/products/${secondary.product.id}`}
+          to={`/products/${secondary.product.slug}`}
           className={`group relative overflow-hidden rounded-3xl bg-accent shadow-sm transition-shadow duration-300 hover:shadow-xl md:col-span-1 ${HERO_HEIGHT}`}
         >
           <ImageCarousel

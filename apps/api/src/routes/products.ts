@@ -41,6 +41,8 @@ async function categoryExistsInTenant(
   return Boolean(category);
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 // GET / — public. Returns only ACTIVE products for the default tenant.
 // Used by the public storefront (customers should never see deactivated products).
 productsRoutes.get("/", async (c) => {
@@ -87,20 +89,23 @@ productsRoutes.get("/admin/all", requireAuth(["admin", "superadmin"]), async (c)
   return c.json(results);
 });
 
-// GET /:id — public. Single active product detail.
-productsRoutes.get("/:id", async (c) => {
+// GET /:idOrSlug — public. Single active product detail. Accepts either the
+// product's UUID or its slug, so both old ID-based links and new slug-based
+// links keep working — no redirect needed.
+productsRoutes.get("/:idOrSlug", async (c) => {
   if (!DEFAULT_TENANT_ID) {
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
   }
 
-  const id = c.req.param("id") as string;
+  const idOrSlug = c.req.param("idOrSlug") as string;
+  const isUuid = UUID_PATTERN.test(idOrSlug);
 
   const [product] = await db
     .select()
     .from(products)
     .where(
       and(
-        eq(products.id, id),
+        isUuid ? eq(products.id, idOrSlug) : eq(products.slug, idOrSlug),
         eq(products.tenantId, DEFAULT_TENANT_ID),
         eq(products.isActive, true),
       ),

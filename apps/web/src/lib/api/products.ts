@@ -56,8 +56,8 @@ export async function fetchAllProductsAdmin(): Promise<Product[]> {
   return handleResponse<Product[]>(res);
 }
 
-export async function fetchProduct(id: string): Promise<Product> {
-  const res = await fetch(`${API_URL}/products/${id}`, {
+export async function fetchProduct(idOrSlug: string): Promise<Product> {
+  const res = await fetch(`${API_URL}/products/${idOrSlug}`, {
     credentials: "include",
   });
   return handleResponse<Product>(res);

@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link
-      to={`/products/${product.id}`}
+      to={`/products/${product.slug}`}
       className="group flex flex-col transition-transform duration-150 active:scale-[0.98]"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-border bg-card transition-shadow group-hover:shadow-md">
