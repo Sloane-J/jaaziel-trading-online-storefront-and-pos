@@ -18,6 +18,7 @@ const createCategorySchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
   description: z.string().trim().optional(),
+  isInquiryOnly: z.boolean().optional(),
 });
 
 const updateCategorySchema = createCategorySchema.partial();
@@ -104,6 +105,7 @@ categoriesRoutes.post("/", requireAuth(["admin", "superadmin"]), async (c) => {
         name: parsed.data.name,
         slug: parsed.data.slug,
         description: parsed.data.description,
+        isInquiryOnly: parsed.data.isInquiryOnly ?? false,
       })
       .returning();
 
