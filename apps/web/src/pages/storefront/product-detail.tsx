@@ -347,7 +347,7 @@ export function ProductDetailPage() {
             {/* Actions */}
             <div className="mt-7 flex max-w-md flex-col gap-3">
               {category?.isInquiryOnly ? (
-                
+                <a
                   href={`https://wa.me/233248830918?text=${encodeURIComponent(
                     `Hi, I'm interested in "${product.name}" (${window.location.href})`,
                   )}`}
