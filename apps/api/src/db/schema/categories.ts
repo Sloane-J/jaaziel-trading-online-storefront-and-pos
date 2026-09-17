@@ -10,6 +10,11 @@ export const categories = pgTable(
     slug: text("slug").notNull(),
     description: text("description"),
     isActive: boolean("is_active").notNull().default(true),
+    // When true, products in this category show an "Inquire" CTA instead of
+    // add-to-cart/checkout — for listing-style categories like Land or
+    // Property, where Jaaziel brokers the connection rather than selling
+    // the item directly.
+    isInquiryOnly: boolean("is_inquiry_only").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
