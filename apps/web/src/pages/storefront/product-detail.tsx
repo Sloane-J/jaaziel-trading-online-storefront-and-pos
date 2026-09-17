@@ -1,11 +1,12 @@
 import {
-  HeartIcon,
-  ShoppingBagIcon,
-  ZapIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  HeartIcon,
+  MessageCircleIcon,
   ShieldCheckIcon,
+  ShoppingBagIcon,
   TruckIcon,
+  ZapIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
@@ -18,9 +19,9 @@ import {
   usePublicProduct,
   usePublicProducts,
 } from "@/features/storefront/hooks/use-storefront";
-import { useDocumentTitle } from "@/lib/use-document-title";
-import { getImageUrl } from "@/lib/get-image-url";
 import { formatPrice } from "@/lib/format-price";
+import { getImageUrl } from "@/lib/get-image-url";
+import { useDocumentTitle } from "@/lib/use-document-title";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -345,30 +346,46 @@ export function ProductDetailPage() {
 
             {/* Actions */}
             <div className="mt-7 flex max-w-md flex-col gap-3">
-              <Button
-                size="lg"
-                disabled={isOutOfStock || addCartItem.isPending}
-                onClick={handleBuyNow}
-                className="h-12 w-full gap-2 rounded-full text-base font-semibold shadow-sm transition-transform active:scale-[0.99]"
-              >
-                <ZapIcon className="size-5 fill-current" />
-                {isOutOfStock ? "Out of stock" : "Buy It Now"}
-              </Button>
+              {category?.isInquiryOnly ? (
+                
+                  href={`https://wa.me/233248830918?text=${encodeURIComponent(
+                    `Hi, I'm interested in "${product.name}" (${window.location.href})`,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary text-base font-semibold text-primary-foreground shadow-sm transition-transform active:scale-[0.99]"
+                >
+                  <MessageCircleIcon className="size-5" />
+                  Inquire about this listing
+                </a>
+              ) : (
+                <>
+                  <Button
+                    size="lg"
+                    disabled={isOutOfStock || addCartItem.isPending}
+                    onClick={handleBuyNow}
+                    className="h-12 w-full gap-2 rounded-full text-base font-semibold shadow-sm transition-transform active:scale-[0.99]"
+                  >
+                    <ZapIcon className="size-5 fill-current" />
+                    {isOutOfStock ? "Out of stock" : "Buy It Now"}
+                  </Button>
 
-              <Button
-                size="lg"
-                variant="outline"
-                disabled={isOutOfStock || addCartItem.isPending}
-                onClick={() =>
-                  addCartItem.mutate({
-                    productId: product.id,
-                  })
-                }
-                className="h-12 w-full gap-2 rounded-full border-2 border-primary text-base font-semibold text-primary transition-colors hover:bg-primary/5 active:scale-[0.99]"
-              >
-                <ShoppingBagIcon className="size-5" />
-                {addCartItem.isPending ? "Adding..." : "Add to cart"}
-              </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    disabled={isOutOfStock || addCartItem.isPending}
+                    onClick={() =>
+                      addCartItem.mutate({
+                        productId: product.id,
+                      })
+                    }
+                    className="h-12 w-full gap-2 rounded-full border-2 border-primary text-base font-semibold text-primary transition-colors hover:bg-primary/5 active:scale-[0.99]"
+                  >
+                    <ShoppingBagIcon className="size-5" />
+                    {addCartItem.isPending ? "Adding..." : "Add to cart"}
+                  </Button>
+                </>
+              )}
 
               <Button
                 variant="ghost"

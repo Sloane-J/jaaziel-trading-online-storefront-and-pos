@@ -7,6 +7,7 @@ export type Category = {
   slug: string;
   description: string | null;
   isActive: boolean;
+  isInquiryOnly: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -15,6 +16,7 @@ export type CreateCategoryInput = {
   name: string;
   slug: string;
   description?: string;
+  isInquiryOnly?: boolean;
 };
 
 export type UpdateCategoryInput = Partial<CreateCategoryInput>;

@@ -40,6 +40,7 @@ export function CategoryFormDialog({
 	const [name, setName] = useState("");
 	const [slug, setSlug] = useState("");
 	const [description, setDescription] = useState("");
+	const [isInquiryOnly, setIsInquiryOnly] = useState(false);
 	const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -53,6 +54,7 @@ export function CategoryFormDialog({
 			setName(category?.name ?? "");
 			setSlug(category?.slug ?? "");
 			setDescription(category?.description ?? "");
+			setIsInquiryOnly(category?.isInquiryOnly ?? false);
 			setSlugManuallyEdited(false);
 			setError(null);
 		}
@@ -83,13 +85,14 @@ export function CategoryFormDialog({
 			if (isEditMode && category) {
 				await updateCategory.mutateAsync({
 					id: category.id,
-					input: { name, slug, description: description || undefined },
+					input: { name, slug, description: description || undefined, isInquiryOnly },
 				});
 			} else {
 				await createCategory.mutateAsync({
 					name,
 					slug,
 					description: description || undefined,
+					isInquiryOnly,
 				});
 			}
 			onOpenChange(false);
@@ -147,6 +150,25 @@ export function CategoryFormDialog({
 							rows={3}
 						/>
 					</div>
+
+					<label className="flex items-start gap-2.5 rounded-lg border border-border p-3">
+						<input
+							type="checkbox"
+							checked={isInquiryOnly}
+							onChange={(e) => setIsInquiryOnly(e.target.checked)}
+							className="mt-0.5 size-4 accent-primary"
+						/>
+						<span>
+							<span className="block text-sm font-medium text-foreground">
+								Inquiry only
+							</span>
+							<span className="block text-xs text-muted-foreground">
+								Products in this category show an "Inquire" button instead of
+								add to cart/checkout. Use this for listings like land or
+								property.
+							</span>
+						</span>
+					</label>
 
 					{error && (
 						<p role="alert" className="text-sm text-destructive">

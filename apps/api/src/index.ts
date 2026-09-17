@@ -10,6 +10,7 @@ import ordersRoutes from "./routes/orders";
 import paystackWebhookRoutes from "./routes/paystack-webhook";
 import posRoutes from "./routes/pos";
 import productsRoutes from "./routes/products";
+import propertySubmissionsRoutes from "./routes/property-submissions";
 import reportsRoutes from "./routes/reports";
 import returnsRoutes from "./routes/returns";
 import sitemapRoutes from "./routes/sitemap";
@@ -20,7 +21,6 @@ import healthRoutes from "./routes/superadmin-health";
 import superadminOrdersRoutes from "./routes/superadmin-orders";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
-import propertySubmissionsRoutes from "./routes/property-submissions";
 
 const app = new Hono<{ Variables: Variables }>();
 
