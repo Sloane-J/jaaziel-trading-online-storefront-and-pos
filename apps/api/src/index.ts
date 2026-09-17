@@ -20,6 +20,7 @@ import healthRoutes from "./routes/superadmin-health";
 import superadminOrdersRoutes from "./routes/superadmin-orders";
 import uploadsRoutes from "./routes/uploads";
 import type { Variables } from "./types/context";
+import propertySubmissionsRoutes from "./routes/property-submissions";
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -53,10 +54,7 @@ app.route("/staff", staffRoutes);
 app.route("/activity-logs", activityLogsRoutes);
 app.route("/superadmin/orders", superadminOrdersRoutes);
 app.route("/superadmin/data-integrity", dataIntegrityRoutes);
-// ...
 app.route("/superadmin/health", healthRoutes);
-
-// ...
 app.route("/returns", returnsRoutes);
-
+app.route("/property-submissions", propertySubmissionsRoutes);
 export default app;
