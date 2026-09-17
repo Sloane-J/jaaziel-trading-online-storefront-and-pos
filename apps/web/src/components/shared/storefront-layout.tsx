@@ -79,6 +79,13 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                   ))}
                   <div className="my-2 border-t border-border" />
                   <Link
+                    to="/services"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-light/20 hover:text-primary"
+                  >
+                    Services
+                  </Link>
+                  <Link
                     to="/contact"
                     onClick={() => setMenuOpen(false)}
                     className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-primary-light/20 hover:text-primary"
@@ -111,6 +118,12 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
               className="hidden items-center gap-6 lg:flex"
             >
               <CategoriesMenu />
+              <Link
+                to="/services"
+                className="text-sm font-medium text-primary-foreground/90 transition-colors hover:text-primary-foreground"
+              >
+                Services
+              </Link>
             </nav>
 
             <Link
@@ -268,12 +281,20 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <Link
+                    to="/returns"
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     Returns & Refunds
-                  </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/services"
+                    className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    Our Services
+                  </Link>
                 </li>
                 <li>
                   <a
