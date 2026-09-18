@@ -353,7 +353,7 @@ export function StorefrontLayout({ children }: StorefrontLayoutProps) {
 
             {/* Right Column: Developer Attribution with SEO Protection */}
             <p className="text-sm text-muted-foreground">
-              Built by{" "}
+              Development by{" "}
               <a
                 href="https://samuel-dorkey.vercel.app/"
                 target="_blank"

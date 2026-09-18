@@ -9,10 +9,11 @@ import { CategoryPage } from "@/pages/storefront/category";
 import { CheckoutPage } from "@/pages/storefront/checkout";
 import { ContactPage } from "@/pages/storefront/contact";
 import { StorefrontHomePage } from "@/pages/storefront/home";
+import { ListPropertyPage } from "@/pages/storefront/list-property";
 import { OrderConfirmationPage } from "@/pages/storefront/order-confirmation";
 import { ProductDetailPage } from "@/pages/storefront/product-detail";
-import { SearchResultsPage } from "@/pages/storefront/search";
 import { ReturnsPage } from "@/pages/storefront/returns";
+import { SearchResultsPage } from "@/pages/storefront/search";
 import { ServicesPage } from "@/pages/storefront/services";
 
 // Admin, POS, and superadmin routes are lazy-loaded — a storefrostnt visitor
@@ -163,6 +164,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/returns" element={<ReturnsPage />} />
           <Route path="/services" element={<ServicesPage />} />
+          <Route path="/list-property" element={<ListPropertyPage />} />
           <Route
             path="/order-confirmation/:id"
             element={<OrderConfirmationPage />}

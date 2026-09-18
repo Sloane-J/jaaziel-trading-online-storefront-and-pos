@@ -10,12 +10,17 @@ type ImageUploadProps = {
 	images: string[];
 	onChange: (images: string[]) => void;
 	maxImages?: number;
+	// Defaults to the admin product-image upload path. Pass a different
+	// function (e.g. uploadPropertySubmissionImage) to reuse this same
+	// component/UI for a different, unauthenticated upload target.
+	uploadFn?: (file: File) => Promise<string>;
 };
 
 export function ImageUpload({
 	images,
 	onChange,
 	maxImages = 5,
+	uploadFn = uploadProductImage,
 }: ImageUploadProps) {
 	const [isUploading, setIsUploading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -44,7 +49,7 @@ export function ImageUpload({
 
 		setIsUploading(true);
 		try {
-			const url = await uploadProductImage(file);
+			const url = await uploadFn(file);
 			onChange([...images, url]);
 		} catch (err) {
 			setError(
@@ -85,7 +90,7 @@ export function ImageUpload({
 						type="button"
 						onClick={() => inputRef.current?.click()}
 						disabled={isUploading}
-						aria-label="Add product image"
+						aria-label="Add photo"
 						className="flex size-24 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
 					>
 						{isUploading ? (
