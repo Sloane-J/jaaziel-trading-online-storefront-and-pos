@@ -24,12 +24,11 @@ import {
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
 import { useDocumentTitle } from "@/lib/use-document-title";
 
-const WHATSAPP_NUMBER = "+233248830918"; // matches the number used elsewhere
+const WHATSAPP_NUMBER = "233248830918";
 
 function whatsappLink(message: string): string {
-  return `https://wa.me/233248830918?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
-
 /* ---------------------------------- */
 /* Micro-animation utilities (no deps) */
 /* ---------------------------------- */

@@ -51,10 +51,6 @@ export function ReturnDetailContent() {
     returnRecord.status as (typeof STATUS_STEPS)[number],
   );
 
-  const itemsSubtotal = items.reduce((sum, item) => {
-    return sum;
-  }, 0);
-
   async function handleMarkReceived() {
     await updateStatus.mutateAsync({ status: "item_received" });
   }

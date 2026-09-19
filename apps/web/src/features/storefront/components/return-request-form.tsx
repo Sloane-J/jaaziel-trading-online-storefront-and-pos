@@ -9,7 +9,6 @@ import {
   PackageSearchIcon,
   PhoneIcon,
   ReceiptIcon,
-  RotateCcwIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -163,7 +162,7 @@ function RequestStep({
   const [notes, setNotes] = useState("");
   const createReturn = useCreateReturn();
 
-  function toggleItem(productId: string, maxQuantity: number) {
+  function toggleItem(productId: string) {
     setSelected((prev) => {
       const next = { ...prev };
       if (next[productId]) {
@@ -285,7 +284,7 @@ function RequestStep({
                   <input
                     type="checkbox"
                     checked={isSelected}
-                    onChange={() => toggleItem(item.productId, item.quantity)}
+                    onChange={() => toggleItem(item.productId)}
                     className="sr-only"
                   />
                   <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">

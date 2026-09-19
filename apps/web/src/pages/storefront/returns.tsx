@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
 import { ReturnRequestForm } from "@/features/storefront/components/return-request-form";
-import { Button } from "@/components/ui/button";
 import { useDocumentTitle } from "@/lib/use-document-title";
 
 const TRUST_POINTS = [
@@ -79,9 +78,12 @@ export function ReturnsPage() {
               <span className="font-medium text-foreground">We're happy to help.</span>
             </p>
           </div>
-          <Button variant="outline" className="rounded-full" asChild>
-            <a href="/contact">Contact support</a>
-          </Button>
+          <a
+            href="/contact"
+            className="inline-flex items-center justify-center rounded-full border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Contact support
+          </a>
         </div>
       </div>
     </StorefrontLayout>
