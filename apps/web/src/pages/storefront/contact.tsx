@@ -21,7 +21,7 @@ const SHOP_LAT = 5.6837;
 const SHOP_LNG = -0.1669;
 const MAP_EMBED_SRC = `https://www.google.com/maps?q=${SHOP_LAT},${SHOP_LNG}&z=15&output=embed`;
 
-const SHOP_PHONE = "+233 000 000 000"; // replace with real number
+const SHOP_PHONE = "233248830918"; // replace with real number
 const SHOP_EMAIL = "jaazieltradingenterprise@gmail.com"; // replace with real email
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
