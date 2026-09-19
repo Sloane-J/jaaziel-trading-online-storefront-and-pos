@@ -21,7 +21,8 @@ export type PropertySubmission = {
   tenantId: string;
   submitterName: string;
   submitterPhone: string;
-  propertyType: string;
+  categoryId: string;
+  title: string;
   description: string;
   images: string[];
   status: PropertySubmissionStatus;
@@ -48,16 +49,19 @@ export async function fetchPropertySubmission(id: string): Promise<PropertySubmi
   return handleResponse<PropertySubmission>(res);
 }
 
+export type UpdatePropertySubmissionStatusInput =
+  | { status: "declined"; adminNotes?: string }
+  | { status: "listed"; price: number; stock?: number; adminNotes?: string };
+
 export async function updatePropertySubmissionStatus(
   id: string,
-  status: "listed" | "declined",
-  adminNotes?: string,
+  input: UpdatePropertySubmissionStatusInput,
 ): Promise<PropertySubmission> {
   const res = await fetch(`${API_URL}/property-submissions/${id}/status`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ status, adminNotes }),
+    body: JSON.stringify(input),
   });
   return handleResponse<PropertySubmission>(res);
 }

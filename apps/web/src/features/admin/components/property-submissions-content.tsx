@@ -7,6 +7,8 @@ import {
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   usePropertySubmissions,
@@ -32,9 +34,33 @@ function formatTimestamp(iso: string): string {
 function SubmissionCard({ submission }: { submission: PropertySubmission }) {
   const [expanded, setExpanded] = useState(false);
   const [notes, setNotes] = useState(submission.adminNotes ?? "");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("1");
   const updateStatus = useUpdatePropertySubmissionStatus();
 
   const isPending = submission.status === "pending";
+
+  function handleList() {
+    const priceNumber = Number(price);
+    if (!price || Number.isNaN(priceNumber) || priceNumber <= 0) return;
+
+    updateStatus.mutate({
+      id: submission.id,
+      input: {
+        status: "listed",
+        price: priceNumber,
+        stock: Number(stock) || 1,
+        adminNotes: notes || undefined,
+      },
+    });
+  }
+
+  function handleDecline() {
+    updateStatus.mutate({
+      id: submission.id,
+      input: { status: "declined", adminNotes: notes || undefined },
+    });
+  }
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
@@ -64,7 +90,7 @@ function SubmissionCard({ submission }: { submission: PropertySubmission }) {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <p className="truncate font-medium text-foreground">
-              {submission.propertyType}
+              {submission.title}
             </p>
             <p className="text-xs text-muted-foreground">
               {formatTimestamp(submission.createdAt)}
@@ -119,6 +145,37 @@ function SubmissionCard({ submission }: { submission: PropertySubmission }) {
 
             {isPending ? (
               <>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <Label htmlFor={`price-${submission.id}`} className="text-xs">
+                      Price (GHS)
+                    </Label>
+                    <Input
+                      id={`price-${submission.id}`}
+                      type="number"
+                      min={0}
+                      step="0.01"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="0.00"
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor={`stock-${submission.id}`} className="text-xs">
+                      Stock
+                    </Label>
+                    <Input
+                      id={`stock-${submission.id}`}
+                      type="number"
+                      min={0}
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      className="h-8"
+                    />
+                  </div>
+                </div>
+
                 <Textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
@@ -126,42 +183,31 @@ function SubmissionCard({ submission }: { submission: PropertySubmission }) {
                   rows={2}
                   className="text-sm"
                 />
+
                 <div className="flex gap-2">
                   <Button
                     size="sm"
                     className="gap-1.5"
-                    disabled={updateStatus.isPending}
-                    onClick={() =>
-                      updateStatus.mutate({
-                        id: submission.id,
-                        status: "listed",
-                        adminNotes: notes || undefined,
-                      })
-                    }
+                    disabled={updateStatus.isPending || !price}
+                    onClick={handleList}
                   >
                     <CheckCircle2Icon className="size-3.5" />
-                    Mark listed
+                    List as product
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     className="gap-1.5 text-destructive hover:bg-destructive/10"
                     disabled={updateStatus.isPending}
-                    onClick={() =>
-                      updateStatus.mutate({
-                        id: submission.id,
-                        status: "declined",
-                        adminNotes: notes || undefined,
-                      })
-                    }
+                    onClick={handleDecline}
                   >
                     <XCircleIcon className="size-3.5" />
                     Decline
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Marking as "listed" doesn't auto-create a product — add it
-                  yourself via Products once reviewed.
+                  Listing creates a live product immediately using this
+                  submission's title, description, photos, and category.
                 </p>
               </>
             ) : (

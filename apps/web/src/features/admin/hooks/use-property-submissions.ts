@@ -4,6 +4,7 @@ import {
   fetchPropertySubmissions,
   updatePropertySubmissionStatus,
   type PropertySubmissionStatus,
+  type UpdatePropertySubmissionStatusInput,
 } from "@/lib/api/admin-property-submissions";
 
 export function usePropertySubmissions(status?: PropertySubmissionStatus) {
@@ -26,18 +27,19 @@ export function useUpdatePropertySubmissionStatus() {
   return useMutation({
     mutationFn: ({
       id,
-      status,
-      adminNotes,
+      input,
     }: {
       id: string;
-      status: "listed" | "declined";
-      adminNotes?: string;
-    }) => updatePropertySubmissionStatus(id, status, adminNotes),
+      input: UpdatePropertySubmissionStatusInput;
+    }) => updatePropertySubmissionStatus(id, input),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["admin", "property-submissions"] });
       queryClient.invalidateQueries({
         queryKey: ["admin", "property-submissions", variables.id],
       });
+      // A "listed" submission creates a real product, so refresh the
+      // admin products list too.
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }

@@ -21,7 +21,8 @@ export type PropertySubmission = {
   tenantId: string;
   submitterName: string;
   submitterPhone: string;
-  propertyType: string;
+  categoryId: string;
+  title: string;
   description: string;
   images: string[];
   status: PropertySubmissionStatus;
@@ -34,7 +35,8 @@ export type PropertySubmission = {
 export type CreatePropertySubmissionInput = {
   submitterName: string;
   submitterPhone: string;
-  propertyType: string;
+  categoryId: string;
+  title: string;
   description: string;
   images: string[];
 };

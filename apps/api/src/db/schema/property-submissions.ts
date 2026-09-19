@@ -1,6 +1,7 @@
 import { jsonb, pgEnum, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { tenants } from "./tenants";
 import { user } from "./auth";
+import { categories } from "./categories";
+import { tenants } from "./tenants";
 
 export const propertySubmissionStatusEnum = pgEnum("property_submission_status", [
   "pending",
@@ -15,7 +16,10 @@ export const propertySubmissions = pgTable("property_submissions", {
     .references(() => tenants.id),
   submitterName: text("submitter_name").notNull(),
   submitterPhone: text("submitter_phone").notNull(),
-  propertyType: text("property_type").notNull(),
+  categoryId: uuid("category_id")
+    .notNull()
+    .references(() => categories.id),
+  title: text("title").notNull(),
   description: text("description").notNull(),
   images: jsonb("images").$type<string[]>().default([]),
   status: propertySubmissionStatusEnum("status").notNull().default("pending"),
