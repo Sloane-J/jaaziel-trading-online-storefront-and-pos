@@ -138,6 +138,11 @@ const AdminReturnDetailPage = lazy(() =>
     default: m.AdminReturnDetailPage,
   })),
 );
+const AdminPropertySubmissionsPage = lazy(() =>
+  import("@/pages/dashboard/admin/property-submissions").then((m) => ({
+    default: m.AdminPropertySubmissionsPage,
+  })),
+);
 
 function PosLayout() {
   return (
@@ -264,6 +269,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["admin"]}>
               <AdminReturnDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/property-submissions"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminPropertySubmissionsPage />
             </ProtectedRoute>
           }
         />

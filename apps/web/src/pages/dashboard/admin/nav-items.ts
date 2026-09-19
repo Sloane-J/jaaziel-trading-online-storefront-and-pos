@@ -1,6 +1,7 @@
 import {
   ActivityIcon,
   BarChart3Icon,
+  HomeIcon,
   LayersIcon,
   LayoutDashboardIcon,
   MonitorIcon,
@@ -24,4 +25,5 @@ export const adminNavItems = [
   { label: "Activity Log", href: "/admin/activity-logs", icon: ActivityIcon },
   { label: "Reports", href: "/admin/reports", icon: BarChart3Icon },
   { label: "Settings", href: "/admin/settings", icon: SettingsIcon },
+  { label: "Property Submissions", href: "/admin/property-submissions", icon: HomeIcon },
 ];
