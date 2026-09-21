@@ -4,7 +4,6 @@ import {
   CheckCircle2Icon,
   ChevronRightIcon,
   Clock3Icon,
-  HomeIcon,
   MapPinIcon,
   MessageCircleIcon,
   PhoneCallIcon,
@@ -13,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { StorefrontLayout } from "@/components/shared/storefront-layout";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -229,19 +228,17 @@ export function ListPropertyPage() {
                 >
                   List another property
                 </Button>
-                <Button
-                  asChild
-                  className="flex-1 rounded-full bg-[#25D366] text-white hover:bg-[#25D366]/90"
+                <a
+                  href={whatsappLink(`Hi, I just submitted a listing: "${title}". Can we chat?`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={buttonVariants({
+                    className: "flex-1 rounded-full bg-[#25D366] text-white hover:bg-[#25D366]/90",
+                  })}
                 >
-                  <a
-                    href={whatsappLink(`Hi, I just submitted a listing: "${title}". Can we chat?`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircleIcon className="size-4" />
-                    Chat on WhatsApp
-                  </a>
-                </Button>
+                  <MessageCircleIcon className="size-4" />
+                  Chat on WhatsApp
+                </a>
               </div>
             </div>
 
@@ -575,19 +572,17 @@ export function ListPropertyPage() {
                     answer questions about pricing or the process.
                   </p>
 
-                  <Button
-                    asChild
-                    className="mt-5 w-full rounded-full bg-[#25D366] text-white hover:bg-[#25D366]/90"
+                  <a
+                    href={whatsappLink("Hi, I'd like to list my property with you.")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonVariants({
+                      className: "mt-5 w-full rounded-full bg-[#25D366] text-white hover:bg-[#25D366]/90",
+                    })}
                   >
-                    <a
-                      href={whatsappLink("Hi, I'd like to list my property with you.")}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <MessageCircleIcon className="size-4" />
-                      Message on WhatsApp
-                    </a>
-                  </Button>
+                    <MessageCircleIcon className="size-4" />
+                    Message on WhatsApp
+                  </a>
 
                   <ul className="mt-5 space-y-2.5 border-t border-white/15 pt-5 text-sm text-primary-foreground/80">
                     <li className="flex items-center gap-2.5">
