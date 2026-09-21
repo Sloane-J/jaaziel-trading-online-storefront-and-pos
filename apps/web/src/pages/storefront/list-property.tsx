@@ -473,7 +473,7 @@ export function ListPropertyPage() {
                     role="alert"
                     className="mt-6 flex items-start gap-3 rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3"
                   >
-                    <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-destructive" />
+                    <ShieldCheckIcon className="mt-0.5 size-4 shrink-0 text-destrucenvtive" />
                     <div className="space-y-1">
                       {error && <p className="text-sm text-destructive">{error}</p>}
                       {createSubmission.isError && (

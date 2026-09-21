@@ -13,9 +13,19 @@ export default defineConfig({
 			injectRegister: false,
 			manifest: false, // we already link our own /manifest.json in index.html
 			workbox: {
-				navigateFallback: "/offline.html",
+				navigateFallback: "/index.html",
 				navigateFallbackDenylist: [/^\/api\//],
 				globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+				runtimeCaching: [
+					{
+						urlPattern: ({ request }) => request.mode === "navigate",
+						handler: "NetworkFirst",
+						options: {
+							cacheName: "pages",
+							networkTimeoutSeconds: 5,
+						},
+					},
+				],
 			},
 		}),
 	],
