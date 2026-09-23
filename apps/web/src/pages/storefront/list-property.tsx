@@ -569,7 +569,7 @@ export function ListPropertyPage() {
                   </h2>
                   <p className="mt-2 text-sm leading-relaxed text-primary-foreground/80">
                     Call or message us before you submit — we're happy to
-                    answer questions about pricing or the process.
+                    answer questions about prnicing or the process.
                   </p>
 
                   <a

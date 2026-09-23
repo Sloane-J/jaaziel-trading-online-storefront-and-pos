@@ -10,6 +10,14 @@ import { logActivity } from "../lib/activity-logs";
 import { requireAuth } from "../middleware/require-auth";
 import type { Variables } from "../types/context";
 
+function normalizePhone(phone: string): string {
+  // Strips all non-digits, then normalizes to the last 9 digits (Ghana
+  // numbers without the leading 0 or country code) so "0245604171",
+  // "+233245604171", and "233245604171" all compare equal.
+  const digits = phone.replace(/\D/g, "");
+  return digits.slice(-9);
+}
+
 const returnsRoutes = new Hono<{ Variables: Variables }>();
 
 const DEFAULT_TENANT_ID = process.env.DEFAULT_TENANT_ID;
@@ -21,7 +29,7 @@ const lookupOrderSchema = z.object({
 
 // POST /lookup — public. Finds an order by order code + phone, for the
 // customer return-request flow. Returns limited info: enough to build the
-// return form, not the full internal order record.
+// return form, not the full internal order record.sr
 returnsRoutes.post("/lookup", async (c) => {
   if (!DEFAULT_TENANT_ID) {
     return c.json({ error: "Server misconfigured: missing DEFAULT_TENANT_ID" }, 500);
@@ -33,17 +41,23 @@ returnsRoutes.post("/lookup", async (c) => {
     return c.json({ error: parsed.error.flatten() }, 400);
   }
 
-  const [order] = await db
+  const [orderByCode] = await db
     .select()
     .from(orders)
     .where(
       and(
         eq(orders.tenantId, DEFAULT_TENANT_ID),
         eq(orders.orderCode, parsed.data.orderCode.toUpperCase()),
-        eq(orders.contactPhone, parsed.data.phone),
       ),
     )
     .limit(1);
+
+  const order =
+    orderByCode &&
+    orderByCode.contactPhone &&
+    normalizePhone(orderByCode.contactPhone) === normalizePhone(parsed.data.phone)
+      ? orderByCode
+      : undefined;
 
   if (!order) {
     return c.json(
@@ -114,7 +128,7 @@ returnsRoutes.post("/", async (c) => {
     return c.json({ error: parsed.error.flatten() }, 400);
   }
 
-  const [order] = await db
+  const [orderByOrderCode] = await db
     .select()
     .from(orders)
     .where(
@@ -122,10 +136,16 @@ returnsRoutes.post("/", async (c) => {
         eq(orders.id, parsed.data.orderId),
         eq(orders.tenantId, DEFAULT_TENANT_ID),
         eq(orders.orderCode, parsed.data.orderCode.toUpperCase()),
-        eq(orders.contactPhone, parsed.data.phone),
       ),
     )
     .limit(1);
+
+  const order =
+    orderByOrderCode &&
+    orderByOrderCode.contactPhone &&
+    normalizePhone(orderByOrderCode.contactPhone) === normalizePhone(parsed.data.phone)
+      ? orderByOrderCode
+      : undefined;
 
   if (!order) {
     return c.json({ error: "Order details do not match. Please check and try again." }, 404);
